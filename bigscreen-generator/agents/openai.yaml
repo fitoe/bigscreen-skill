@@ -1,0 +1,4 @@
+version: 1
+display_name: Bigscreen Generator
+short_description: Generate Vue 3 plus ECharts big-screen projects from requirements, using template libraries only as style and layout references.
+default_prompt: Generate a componentized Vue 3 plus ECharts big-screen page from my requirements. Use template libraries only as reference material, produce a blueprint first, then scaffold maintainable sections, charts, mock data, theme tokens, and page docs.

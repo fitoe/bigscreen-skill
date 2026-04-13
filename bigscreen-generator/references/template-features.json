@@ -1,0 +1,3272 @@
+[
+  {
+    "id": "001 政务服务大数据可视化监管平台",
+    "templateName": "政务服务大数据可视化监管平台",
+    "fileCount": 15,
+    "sceneTags": [
+      "government"
+    ],
+    "pageTypes": [
+      "overview-home",
+      "thematic-cockpit"
+    ],
+    "chartFamilies": [
+      "bar",
+      "pie"
+    ],
+    "features": {
+      "hasMap": false,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": false,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "002 水质情况实时监测预警系统",
+    "templateName": "水质情况实时监测预警系统",
+    "fileCount": 4,
+    "sceneTags": [
+      "water"
+    ],
+    "pageTypes": [
+      "alarm-center",
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": false,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "003 酷炫智能大屏数据中心",
+    "templateName": "酷炫智能大屏数据中心",
+    "fileCount": 8,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "004 政务大数据共享交换平台",
+    "templateName": "政务大数据共享交换平台",
+    "fileCount": 10,
+    "sceneTags": [
+      "government"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "005 可视化监控管理",
+    "templateName": "可视化监控管理",
+    "fileCount": 8,
+    "sceneTags": [
+      "security"
+    ],
+    "pageTypes": [
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "unknown"
+    ],
+    "features": {
+      "hasMap": false,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": false,
+      "hasBar": false,
+      "hasPie": false,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "006 全国疫情实时监控",
+    "templateName": "全国疫情实时监控",
+    "fileCount": 12,
+    "sceneTags": [
+      "epidemic",
+      "security"
+    ],
+    "pageTypes": [
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": false,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "007 惠民服务平台",
+    "templateName": "惠民服务平台",
+    "fileCount": 6,
+    "sceneTags": [
+      "community"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "008 兰州智慧消防大数据平台",
+    "templateName": "兰州智慧消防大数据平台",
+    "fileCount": 14,
+    "sceneTags": [
+      "fire"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "009 某公司大数据监控平台",
+    "templateName": "某公司大数据监控平台",
+    "fileCount": 9,
+    "sceneTags": [
+      "security"
+    ],
+    "pageTypes": [
+      "monitoring-analysis",
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "010 双数智慧公卫-传染病督导平台",
+    "templateName": "双数智慧公卫-传染病督导平台",
+    "fileCount": 6,
+    "sceneTags": [
+      "epidemic"
+    ],
+    "pageTypes": [
+      "alarm-center",
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "011 大数据可视化系统数据分析通用模版",
+    "templateName": "大数据可视化系统数据分析通用模版",
+    "fileCount": 5,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "012 某公司大数据展示模版",
+    "templateName": "某公司大数据展示模版",
+    "fileCount": 8,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "thematic-cockpit"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "013 某公司大数据展示模版",
+    "templateName": "某公司大数据展示模版",
+    "fileCount": 8,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "thematic-cockpit"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "014 时实客流量监控中心",
+    "templateName": "时实客流量监控中心",
+    "fileCount": 8,
+    "sceneTags": [
+      "security"
+    ],
+    "pageTypes": [
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "015 广西矿产资源大数据监管平台",
+    "templateName": "广西矿产资源大数据监管平台",
+    "fileCount": 8,
+    "sceneTags": [
+      "government",
+      "mining"
+    ],
+    "pageTypes": [
+      "overview-home",
+      "thematic-cockpit"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "016 广西矿产资源大数据监管平台",
+    "templateName": "广西矿产资源大数据监管平台",
+    "fileCount": 7,
+    "sceneTags": [
+      "government",
+      "mining"
+    ],
+    "pageTypes": [
+      "overview-home",
+      "thematic-cockpit"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "017 大数据可视化通用素材",
+    "templateName": "大数据可视化通用素材",
+    "fileCount": 9,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "018 大数据可视化系统数据分析通用模版",
+    "templateName": "大数据可视化系统数据分析通用模版",
+    "fileCount": 8,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "019 大数据可视化系统数据分析通用模版",
+    "templateName": "大数据可视化系统数据分析通用模版",
+    "fileCount": 8,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "020 大数据通用模版大标题样式",
+    "templateName": "大数据通用模版大标题样式",
+    "fileCount": 8,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "021 大数据通用模版",
+    "templateName": "大数据通用模版",
+    "fileCount": 9,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "022 全息档案平台中心",
+    "templateName": "全息档案平台中心",
+    "fileCount": 616,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "unknown"
+    ],
+    "features": {
+      "hasMap": false,
+      "hasAlarm": true,
+      "hasTable": false,
+      "hasLine": false,
+      "hasBar": false,
+      "hasPie": false,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "023 医院大数据展示",
+    "templateName": "医院大数据展示",
+    "fileCount": 22,
+    "sceneTags": [
+      "medical"
+    ],
+    "pageTypes": [
+      "thematic-cockpit"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "024 智慧社区内网比对平台",
+    "templateName": "智慧社区内网比对平台",
+    "fileCount": 23,
+    "sceneTags": [
+      "community"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "025 大数据可视化展板通用模板",
+    "templateName": "大数据可视化展板通用模板",
+    "fileCount": 8,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "026 设备环境监测平台",
+    "templateName": "设备环境监测平台",
+    "fileCount": 7,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "monitoring-analysis",
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "027 全国消费者情况看板",
+    "templateName": "全国消费者情况看板",
+    "fileCount": 8,
+    "sceneTags": [
+      "retail"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "028 移动能耗管理平台",
+    "templateName": "移动能耗管理平台",
+    "fileCount": 121,
+    "sceneTags": [
+      "energy"
+    ],
+    "pageTypes": [
+      "monitoring-analysis",
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "gauge"
+    ],
+    "features": {
+      "hasMap": false,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": false,
+      "hasBar": false,
+      "hasPie": false,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "029 南方软件视频平台大屏中心",
+    "templateName": "南方软件视频平台大屏中心",
+    "fileCount": 11,
+    "sceneTags": [
+      "network"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "030 全国图书零售检测中心",
+    "templateName": "全国图书零售检测中心",
+    "fileCount": 64,
+    "sceneTags": [
+      "retail"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "unknown"
+    ],
+    "features": {
+      "hasMap": false,
+      "hasAlarm": true,
+      "hasTable": false,
+      "hasLine": false,
+      "hasBar": false,
+      "hasPie": false,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "031 数据可视化大屏展示系统",
+    "templateName": "数据可视化大屏展示系统",
+    "fileCount": 4,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home",
+      "thematic-cockpit"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "032 物流云数据看板平台",
+    "templateName": "物流云数据看板平台",
+    "fileCount": 17,
+    "sceneTags": [
+      "traffic"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "033 数据可视化页面设计",
+    "templateName": "数据可视化页面设计",
+    "fileCount": 5,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "034 晋城高速综合管控大数据",
+    "templateName": "晋城高速综合管控大数据",
+    "fileCount": 13,
+    "sceneTags": [
+      "traffic"
+    ],
+    "pageTypes": [
+      "map-command-page"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "035 视频监控前后台通用模板",
+    "templateName": "视频监控前后台通用模板",
+    "fileCount": 209,
+    "sceneTags": [
+      "security",
+      "network"
+    ],
+    "pageTypes": [
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "word-cloud"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "036 门店销售监控平台",
+    "templateName": "门店销售监控平台",
+    "fileCount": 3,
+    "sceneTags": [
+      "retail",
+      "security"
+    ],
+    "pageTypes": [
+      "monitoring-analysis",
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "unknown"
+    ],
+    "features": {
+      "hasMap": false,
+      "hasAlarm": true,
+      "hasTable": false,
+      "hasLine": false,
+      "hasBar": false,
+      "hasPie": false,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "037 建筑智慧工地管控",
+    "templateName": "建筑智慧工地管控",
+    "fileCount": 4,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": false,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "038 无线网络大数据平台",
+    "templateName": "无线网络大数据平台",
+    "fileCount": 22,
+    "sceneTags": [
+      "network"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "word-cloud",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "039 湖南省大数据可视化平台",
+    "templateName": "湖南省大数据可视化平台",
+    "fileCount": 6,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "bar",
+      "pie"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": false,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "040 Echart图例使用",
+    "templateName": "Echart图例使用",
+    "fileCount": 47,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "041 智慧物流服务中心",
+    "templateName": "智慧物流服务中心",
+    "fileCount": 20,
+    "sceneTags": [
+      "traffic"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "042 大数据分析系统",
+    "templateName": "大数据分析系统",
+    "fileCount": 65,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "pie"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": false,
+      "hasBar": false,
+      "hasPie": true,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "043 网络当天实时发稿量",
+    "templateName": "网络当天实时发稿量",
+    "fileCount": 13,
+    "sceneTags": [
+      "network"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie"
+    ],
+    "features": {
+      "hasMap": false,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "044 车联网平台数据概览",
+    "templateName": "车联网平台数据概览",
+    "fileCount": 7,
+    "sceneTags": [
+      "traffic"
+    ],
+    "pageTypes": [
+      "map-command-page",
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "045 信用风险定位系统(银行版)",
+    "templateName": "信用风险定位系统(银行版)",
+    "fileCount": 8,
+    "sceneTags": [
+      "security",
+      "finance"
+    ],
+    "pageTypes": [
+      "alarm-center"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "046 作战指挥室",
+    "templateName": "作战指挥室",
+    "fileCount": 13,
+    "sceneTags": [
+      "security"
+    ],
+    "pageTypes": [
+      "map-command-page"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "word-cloud",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "047 公司名称大数据可视化平台",
+    "templateName": "公司名称大数据可视化平台",
+    "fileCount": 9,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "048 大数据可视化展板通用模板",
+    "templateName": "大数据可视化展板通用模板",
+    "fileCount": 8,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "049 工厂信息监控台",
+    "templateName": "工厂信息监控台",
+    "fileCount": 7,
+    "sceneTags": [
+      "manufacturing",
+      "security"
+    ],
+    "pageTypes": [
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "050 大数据可视化展示平台通用模板",
+    "templateName": "大数据可视化展示平台通用模板",
+    "fileCount": 7,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home",
+      "thematic-cockpit"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "051 通用大数据可视化展示平台模板",
+    "templateName": "通用大数据可视化展示平台模板",
+    "fileCount": 7,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home",
+      "thematic-cockpit"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "052 智慧社区内网比对平台",
+    "templateName": "智慧社区内网比对平台",
+    "fileCount": 23,
+    "sceneTags": [
+      "community"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "053 通用大数据可视化展示平台模板",
+    "templateName": "通用大数据可视化展示平台模板",
+    "fileCount": 8,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home",
+      "thematic-cockpit"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "054 公安大数据监控平台",
+    "templateName": "公安大数据监控平台",
+    "fileCount": 15,
+    "sceneTags": [
+      "security"
+    ],
+    "pageTypes": [
+      "monitoring-analysis",
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "055 物流大数据服务平台",
+    "templateName": "物流大数据服务平台",
+    "fileCount": 20,
+    "sceneTags": [
+      "traffic"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "word-cloud",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "056 大数据统计展示大屏",
+    "templateName": "大数据统计展示大屏",
+    "fileCount": 17,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home",
+      "thematic-cockpit"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "057 大屏数据统计",
+    "templateName": "大屏数据统计",
+    "fileCount": 8,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "058 大屏数据智慧中心统计",
+    "templateName": "大屏数据智慧中心统计",
+    "fileCount": 10,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "unknown"
+    ],
+    "features": {
+      "hasMap": false,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": false,
+      "hasBar": false,
+      "hasPie": false,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "059 物联网平台数据统计",
+    "templateName": "物联网平台数据统计",
+    "fileCount": 17,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "060 广西电子商务公共服务平台大数据中心",
+    "templateName": "广西电子商务公共服务平台大数据中心",
+    "fileCount": 12,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "061 智慧小区大数据分析",
+    "templateName": "智慧小区大数据分析",
+    "fileCount": 18,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "062 数据概览演示案例",
+    "templateName": "数据概览演示案例",
+    "fileCount": 7,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "063 商品运营大数据",
+    "templateName": "商品运营大数据",
+    "fileCount": 6,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "thematic-cockpit"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "064 设备环境监测平台",
+    "templateName": "设备环境监测平台",
+    "fileCount": 7,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "monitoring-analysis",
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "065 游戏可视化大数据用户案例",
+    "templateName": "游戏可视化大数据用户案例",
+    "fileCount": 9,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "066 系统架构可视化监控",
+    "templateName": "系统架构可视化监控",
+    "fileCount": 4,
+    "sceneTags": [
+      "security"
+    ],
+    "pageTypes": [
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "unknown"
+    ],
+    "features": {
+      "hasMap": false,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": false,
+      "hasBar": false,
+      "hasPie": false,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "067 xx区智慧旅游综合服务平台",
+    "templateName": "xx区智慧旅游综合服务平台",
+    "fileCount": 171,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "word-cloud"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "068 中国电信厅店营业效能分析",
+    "templateName": "中国电信厅店营业效能分析",
+    "fileCount": 12,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "069 智能看板新中心",
+    "templateName": "智能看板新中心",
+    "fileCount": 8,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "070 翼兴消防监控",
+    "templateName": "翼兴消防监控",
+    "fileCount": 21,
+    "sceneTags": [
+      "fire",
+      "security"
+    ],
+    "pageTypes": [
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "071 市突发预警平台实时监控",
+    "templateName": "市突发预警平台实时监控",
+    "fileCount": 24,
+    "sceneTags": [
+      "security"
+    ],
+    "pageTypes": [
+      "alarm-center",
+      "monitoring-analysis",
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "072 大连市突发预警实时监控",
+    "templateName": "大连市突发预警实时监控",
+    "fileCount": 23,
+    "sceneTags": [
+      "security"
+    ],
+    "pageTypes": [
+      "alarm-center",
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "073 观测站综合监控平台",
+    "templateName": "观测站综合监控平台",
+    "fileCount": 44,
+    "sceneTags": [
+      "security"
+    ],
+    "pageTypes": [
+      "monitoring-analysis",
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "074 酒机运行状态",
+    "templateName": "酒机运行状态",
+    "fileCount": 38,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "075 数据可视化展示",
+    "templateName": "数据可视化展示",
+    "fileCount": 7,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "thematic-cockpit"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "076 交管大数据人脸识别系统",
+    "templateName": "交管大数据人脸识别系统",
+    "fileCount": 5,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "unknown"
+    ],
+    "features": {
+      "hasMap": false,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": false,
+      "hasBar": false,
+      "hasPie": false,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "078 河长制大数据显示平台",
+    "templateName": "河长制大数据显示平台",
+    "fileCount": 74,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "pie"
+    ],
+    "features": {
+      "hasMap": false,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": false,
+      "hasPie": true,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "079 保税区A仓监控中心",
+    "templateName": "保税区A仓监控中心",
+    "fileCount": 8,
+    "sceneTags": [
+      "security"
+    ],
+    "pageTypes": [
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie"
+    ],
+    "features": {
+      "hasMap": false,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "080 北斗车联网大数据平台",
+    "templateName": "北斗车联网大数据平台",
+    "fileCount": 24,
+    "sceneTags": [
+      "traffic"
+    ],
+    "pageTypes": [
+      "map-command-page",
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "081 北京市执法信息平台",
+    "templateName": "北京市执法信息平台",
+    "fileCount": 6,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "unknown"
+    ],
+    "features": {
+      "hasMap": false,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": false,
+      "hasBar": false,
+      "hasPie": false,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "082 南方草木商品交易[超级大屏]",
+    "templateName": "南方草木商品交易[超级大屏]",
+    "fileCount": 10,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "083 兴福公安综合监管大屏",
+    "templateName": "兴福公安综合监管大屏",
+    "fileCount": 20,
+    "sceneTags": [
+      "government"
+    ],
+    "pageTypes": [
+      "overview-home",
+      "thematic-cockpit"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "word-cloud",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "084 压力容器大屏",
+    "templateName": "压力容器大屏",
+    "fileCount": 20,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "word-cloud",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "085 车辆综合管控平台",
+    "templateName": "车辆综合管控平台",
+    "fileCount": 11,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "086 物流大数据展示系统",
+    "templateName": "物流大数据展示系统",
+    "fileCount": 24,
+    "sceneTags": [
+      "traffic"
+    ],
+    "pageTypes": [
+      "thematic-cockpit"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "087 农业产业大数据指挥仓系统",
+    "templateName": "农业产业大数据指挥仓系统",
+    "fileCount": 6,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "088 HTML大数据综合分析平台模板",
+    "templateName": "HTML大数据综合分析平台模板",
+    "fileCount": 6,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "monitoring-analysis",
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "word-cloud"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "089 警务综合监控管理平台HTML模板",
+    "templateName": "警务综合监控管理平台HTML模板",
+    "fileCount": 62,
+    "sceneTags": [
+      "security"
+    ],
+    "pageTypes": [
+      "monitoring-analysis",
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "bar",
+      "pie"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": false,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "090 企业营收大数据统计可视化大屏",
+    "templateName": "企业营收大数据统计可视化大屏",
+    "fileCount": 7,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "091 ECharts扩展示例自定义视图",
+    "templateName": "ECharts扩展示例自定义视图",
+    "fileCount": 8,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "thematic-cockpit"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "word-cloud",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "092 酷炫大屏数据可视化模板",
+    "templateName": "酷炫大屏数据可视化模板",
+    "fileCount": 6,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "093 办税渠道运行状态大数据监控平台",
+    "templateName": "办税渠道运行状态大数据监控平台",
+    "fileCount": 5,
+    "sceneTags": [
+      "security"
+    ],
+    "pageTypes": [
+      "monitoring-analysis",
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "094 大数据统计展示大屏",
+    "templateName": "大数据统计展示大屏",
+    "fileCount": 12,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home",
+      "thematic-cockpit"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "095 交通大数据展示平台",
+    "templateName": "交通大数据展示平台",
+    "fileCount": 41,
+    "sceneTags": [
+      "traffic"
+    ],
+    "pageTypes": [
+      "map-command-page",
+      "overview-home",
+      "thematic-cockpit"
+    ],
+    "chartFamilies": [
+      "unknown"
+    ],
+    "features": {
+      "hasMap": false,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": false,
+      "hasBar": false,
+      "hasPie": false,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "096 智慧农业大数据展示",
+    "templateName": "智慧农业大数据展示",
+    "fileCount": 8,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "thematic-cockpit"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "097 程序员数据可视化大屏展示",
+    "templateName": "程序员数据可视化大屏展示",
+    "fileCount": 7,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home",
+      "thematic-cockpit"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": false,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "098 销售大数据分析",
+    "templateName": "销售大数据分析",
+    "fileCount": 7,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "099 英雄联盟LPL比赛数据可视化",
+    "templateName": "英雄联盟LPL比赛数据可视化",
+    "fileCount": 7,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "100 新型冠状肺炎实时监测大屏",
+    "templateName": "新型冠状肺炎实时监测大屏",
+    "fileCount": 4,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "monitoring-analysis",
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": false,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "101 校情数据综合分析平台",
+    "templateName": "校情数据综合分析平台",
+    "fileCount": 9,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "monitoring-analysis",
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "102 人口增长对经济影响可视化分析",
+    "templateName": "人口增长对经济影响可视化分析",
+    "fileCount": 8,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "103 人口增长对医疗影响可视化分析",
+    "templateName": "人口增长对医疗影响可视化分析",
+    "fileCount": 8,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "104 人口增长对社会影响可视化分析",
+    "templateName": "人口增长对社会影响可视化分析",
+    "fileCount": 9,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "105 人口增长对国家发展可视化分析",
+    "templateName": "人口增长对国家发展可视化分析",
+    "fileCount": 9,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "monitoring-analysis"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": false,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "106 黄山茶园大数据平台指挥舱",
+    "templateName": "黄山茶园大数据平台指挥舱",
+    "fileCount": 13,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": false,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "107 上海XX大学迎新实时大数据看板",
+    "templateName": "上海XX大学迎新实时大数据看板",
+    "fileCount": 10,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "108 银行数据可视化",
+    "templateName": "银行数据可视化",
+    "fileCount": 96,
+    "sceneTags": [
+      "finance"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "bar"
+    ],
+    "features": {
+      "hasMap": false,
+      "hasAlarm": true,
+      "hasTable": false,
+      "hasLine": false,
+      "hasBar": true,
+      "hasPie": false,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "109 嘉定区区办税监控平台",
+    "templateName": "嘉定区区办税监控平台",
+    "fileCount": 5,
+    "sceneTags": [
+      "security"
+    ],
+    "pageTypes": [
+      "monitoring-analysis",
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie"
+    ],
+    "features": {
+      "hasMap": false,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "110 崇明观测站",
+    "templateName": "崇明观测站",
+    "fileCount": 23,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie"
+    ],
+    "features": {
+      "hasMap": false,
+      "hasAlarm": true,
+      "hasTable": false,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "111 智慧消防大屏",
+    "templateName": "智慧消防大屏",
+    "fileCount": 5,
+    "sceneTags": [
+      "fire"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "112 茶叶种植大数据溯源平台",
+    "templateName": "茶叶种植大数据溯源平台",
+    "fileCount": 20,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "113 白茶种植大数据溯源平台",
+    "templateName": "白茶种植大数据溯源平台",
+    "fileCount": 23,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "114 HELLO共享单车运营管理平台",
+    "templateName": "HELLO共享单车运营管理平台",
+    "fileCount": 14,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home",
+      "thematic-cockpit"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "115 新能源汽车数量统计大屏",
+    "templateName": "新能源汽车数量统计大屏",
+    "fileCount": 11,
+    "sceneTags": [
+      "energy"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "word-cloud",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "116 学生综合成绩评价系统大屏",
+    "templateName": "学生综合成绩评价系统大屏",
+    "fileCount": 5,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": false,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "117 上海市图书馆大屏看板",
+    "templateName": "上海市图书馆大屏看板",
+    "fileCount": 15,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "118 旅游智慧中心",
+    "templateName": "旅游智慧中心",
+    "fileCount": 21,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "line",
+      "bar",
+      "pie",
+      "gauge",
+      "scatter"
+    ],
+    "features": {
+      "hasMap": true,
+      "hasAlarm": true,
+      "hasTable": true,
+      "hasLine": true,
+      "hasBar": true,
+      "hasPie": true,
+      "hasGauge": true,
+      "darkTone": true
+    }
+  },
+  {
+    "id": "login-web",
+    "templateName": "login-web",
+    "fileCount": 47,
+    "sceneTags": [
+      "general"
+    ],
+    "pageTypes": [
+      "overview-home"
+    ],
+    "chartFamilies": [
+      "unknown"
+    ],
+    "features": {
+      "hasMap": false,
+      "hasAlarm": true,
+      "hasTable": false,
+      "hasLine": false,
+      "hasBar": false,
+      "hasPie": false,
+      "hasGauge": false,
+      "darkTone": true
+    }
+  }
+]

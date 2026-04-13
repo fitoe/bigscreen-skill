@@ -1,0 +1,9 @@
+# build/output
+/tmp/
+/vendor/
+/*.zip
+/*.gif
+
+# node
+/node_modules/
+.DS_Store
