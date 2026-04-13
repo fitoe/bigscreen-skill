@@ -30,12 +30,23 @@ goal:
 layout_pattern:
 reference_templates: []
 theme_direction:
+block_priority: []
+height_strategy:
+  overall:
+  notes:
 sections:
   - id:
     area:
     purpose:
     component:
     data_contract:
+    priority:
+    height_policy:
+      fixed:
+      min:
+      flex:
+      scroll:
+      auto_rotate:
 ```
 
 ## Layout heuristics
@@ -45,6 +56,45 @@ sections:
 - Use a KPI strip when the user emphasizes leadership summary or health status.
 - Use a bottom event rail when alerts, work orders, or incidents must stay visible.
 - Use fewer but larger panels for executive pages. Use more compact panels for operational monitoring.
+- Prefer above-the-fold completeness by default: avoid page-level vertical scrolling.
+- Do not hardcode the full-page pixel height first; allocate space by section weights and only pin minimum readable heights for critical blocks.
+- Separate layout into title / primary content / auxiliary content layers instead of evenly slicing columns.
+- KPI blocks should not automatically consume a full top row; place them in the main column or above the primary view to preserve side-column height.
+- Keep section count restrained and merge weakly related micro-panels to prevent unreadable tiles.
+
+## Content composition rules
+
+- Give large real estate to narrative-heavy modules: map, primary trend, primary alerts, primary table.
+- Reduce summary panels; avoid stacking multiple sub-blocks inside one panel.
+- If a panel contains two charts, prefer splitting or keep only one primary chart to avoid tiny visuals.
+- Right-side summary zones should favor one dominant visual plus a minimal legend, not multiple small cards.
+
+## Typography and readability
+
+- Enforce a higher default font-size floor than standard admin dashboards.
+- KPI numbers, panel titles, axis labels, and table text must meet big-screen readability minimums.
+- Reduce information density before shrinking fonts below readable thresholds.
+
+## Chart rules
+
+- Charts must auto-resize with the browser window.
+- Chart containers must have stable usable heights; do not rely on parent auto-stretching that can collapse.
+- In narrow/tall panels where complex ECharts configs become unstable, prefer simpler SVG/CSS visualizations.
+- Legends, labels, radii, and centers must be constrained by container size, never default values.
+
+## Lists and tables
+
+- Long lists default to auto-rotating scroll with hidden native scrollbars.
+- Auto-rotate areas must support hover pause.
+- Tables should use fixed headers with independently scrolling bodies.
+- Column widths should follow field semantics, not equal widths.
+- Bottom tables typically deserve more height; avoid showing only one or two visible rows.
+
+## Responsive strategy
+
+- Avoid triggering narrow breakpoints too early; do not misclassify desktop widths as mobile.
+- Optimize for readability and above-the-fold completeness, not just switching to single-column.
+- Provide a short-height strategy: compress spacing/decoration and increase bottom-block weight instead of scaling everything down.
 
 ## Code generation rules
 
@@ -57,6 +107,9 @@ sections:
 - Put transport stubs in `src/api/`.
 - Put tokens in `src/theme/`.
 - Put generated page rationale in `docs/screen-specs/`.
+- Default-enable: chart auto resize, long list auto-rotate, fixed table header, hidden native scrollbars, font-size floor.
+- For each section, record: priority, height strategy, and whether it is fixed/min/flex/scroll/auto-rotate.
+- Explicitly block: even area splitting, multiple charts in tiny panels, summary panels more complex than primary visuals, and admin-style dense typography.
 
 ## Reference usage rules
 

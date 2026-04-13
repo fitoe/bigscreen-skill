@@ -31,6 +31,11 @@ Use this interface when the user wants prompt-only generation without executing 
 - Keep chart configuration in chart components.
 - Keep data assembly in `composables/`.
 - Use mock data in `mock/`.
+- Prefer full above-the-fold visibility with no page-level vertical scroll by default.
+- Prioritize layout by title / primary content / auxiliary content, not equal slicing.
+- Enforce big-screen readability floors for KPI, titles, axes, and tables.
+- Auto-resize charts with stable container heights.
+- Default-enable list auto-rotate and fixed table headers with hidden native scrollbars.
 
 ## 中文简化示例
 
