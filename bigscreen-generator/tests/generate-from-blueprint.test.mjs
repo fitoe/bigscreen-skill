@@ -146,3 +146,49 @@ test('generated starter components include fixed header and carousel-ready behav
   assert.match(alarmSource, /pauseOnHover/);
   assert.match(rankingSource, /pauseOnHover/);
 });
+
+test('generated mock data follows semantic profile instead of fixed industry labels', () => {
+  const tempDir = makeTempDir();
+  const blueprint = {
+    pageName: 'ServiceOverview',
+    goal: 'Support generic service dashboards.',
+    layoutPattern: 'overview-home',
+    themeDirection: 'cold blue operations center',
+    blockPriority: ['trend', 'table'],
+    heightStrategy: { overall: 'Keep service trend and ledger visible.', notes: [] },
+    layoutDirectives: { heroSection: 'trend', avoidEqualSplit: true },
+    semanticProfile: {
+      entity: { singular: 'User', plural: 'Users' },
+      metrics: ['活跃用户', '异常工单', '处理时效', '满意度'],
+      eventLabel: 'User Events',
+      tableLabel: 'Users Ledger',
+      tableColumns: [
+        { key: 'name', label: 'User', width: '1.8fr' },
+        { key: 'status', label: 'Status', width: '1fr' },
+        { key: 'value', label: '异常工单', width: '1fr' },
+      ],
+      stateSet: ['Online', 'Busy', 'Offline'],
+      rankingNames: ['Tier A', 'Tier B', 'Tier C', 'Tier D'],
+      mapRegions: ['North Hub', 'Central Grid', 'South Cluster', 'West Loop'],
+      mapPoints: ['Node A', 'Node B', 'Node C'],
+      stageNames: ['Queue', 'Handling', 'Review', 'Close'],
+    },
+    referenceTemplates: [],
+    sections: [
+      { id: 'StatCard-1', area: 'top', component: 'StatCard', purpose: 'kpi', priority: 70, heightPolicy: { fixed: false, min: 120, flex: 0.8, scroll: false, autoRotate: false }, dataContract: { type: 'metric-list', keys: ['活跃用户'] } },
+      { id: 'LineTrendChart-2', area: 'center', component: 'LineTrendChart', purpose: 'trend', priority: 90, heightPolicy: { fixed: false, min: 240, flex: 1.2, scroll: false, autoRotate: false }, dataContract: { type: 'chart-series', keys: ['categories', 'series'] } },
+      { id: 'ScrollTable-3', area: 'bottom', component: 'ScrollTable', purpose: 'table', priority: 92, heightPolicy: { fixed: false, min: 260, flex: 1.35, scroll: true, autoRotate: true }, dataContract: { type: 'row-list', keys: ['id', 'name', 'status', 'value'] } },
+    ],
+  };
+
+  generateProjectFromBlueprint(blueprint, {
+    target: tempDir,
+    projectName: 'ServiceOverview',
+  });
+
+  const mockSource = fs.readFileSync(path.join(tempDir, 'src', 'mock', 'service-overview.ts'), 'utf8');
+  assert.match(mockSource, /活跃用户/);
+  assert.match(mockSource, /User 01/);
+  assert.match(mockSource, /异常工单/);
+  assert.doesNotMatch(mockSource, /Cooling station temperature spike/);
+});

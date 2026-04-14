@@ -82,6 +82,24 @@ const sectionAliases = new Map([
   ['pie', 'composition'],
 ]);
 
+const genericNameMap = [
+  { pattern: /设备|device/i, singular: 'Device', plural: 'Devices' },
+  { pattern: /用户|user|member|account/i, singular: 'User', plural: 'Users' },
+  { pattern: /订单|order|工单|ticket/i, singular: 'Work Order', plural: 'Work Orders' },
+  { pattern: /车辆|vehicle|car/i, singular: 'Vehicle', plural: 'Vehicles' },
+  { pattern: /任务|task|job/i, singular: 'Task', plural: 'Tasks' },
+  { pattern: /资源|resource|asset/i, singular: 'Asset', plural: 'Assets' },
+  { pattern: /项目|project/i, singular: 'Project', plural: 'Projects' },
+  { pattern: /站点|site|station/i, singular: 'Site', plural: 'Sites' },
+  { pattern: /产线|line|batch/i, singular: 'Line', plural: 'Lines' },
+];
+
+const genericStateSets = {
+  default: ['Healthy', 'Warning', 'Critical'],
+  process: ['Stable', 'Queued', 'Delayed'],
+  service: ['Online', 'Busy', 'Offline'],
+};
+
 function parseArgs(argv) {
   const args = {};
   for (let i = 2; i < argv.length; i += 1) {
@@ -100,6 +118,10 @@ function normalizeArray(value) {
     .split(/[,，、/]/)
     .map((item) => item.trim())
     .filter(Boolean);
+}
+
+function firstNonEmpty(values) {
+  return values.find((value) => String(value || '').trim()) || '';
 }
 
 function normalizeDensity(value) {
@@ -268,6 +290,53 @@ function buildDataContract(sectionName, request) {
   if (/alert|alarm|event/.test(normalized)) return { type: 'event-stream', keys: ['time', 'level', 'message'] };
   if (/table|list/.test(normalized)) return { type: 'row-list', keys: ['id', 'name', 'status', 'value'] };
   return { type: 'chart-series', keys: ['categories', 'series'] };
+}
+
+function inferEntityNames(request) {
+  const source = firstNonEmpty([request.keyMetrics[0], request.domain, request.originalPrompt]);
+  for (const entry of genericNameMap) {
+    if (entry.pattern.test(source)) return entry;
+  }
+  return { singular: 'Asset', plural: 'Assets' };
+}
+
+function inferStateSet(request) {
+  const text = `${request.domain} ${request.originalPrompt}`.toLowerCase();
+  if (/流程|工单|任务|order|task|process/.test(text)) return genericStateSets.process;
+  if (/服务|在线|user|service/.test(text)) return genericStateSets.service;
+  return genericStateSets.default;
+}
+
+function inferSemanticProfile(request, sections) {
+  const entity = inferEntityNames(request);
+  const metrics = request.keyMetrics.length
+    ? request.keyMetrics
+    : [`Active ${entity.plural}`, 'Alerts', 'Load', 'Completion Rate'];
+  const hasMap = sections.some((section) => section.purpose === 'map');
+  const hasTable = sections.some((section) => section.purpose === 'table');
+  const hasAlerts = sections.some((section) => section.purpose === 'alerts');
+
+  return {
+    entity,
+    stateSet: inferStateSet(request),
+    metrics,
+    mapLabel: hasMap ? `${entity.plural} Distribution` : '',
+    trendLabel: `${metrics[0]} Trend`,
+    compareLabel: `${entity.plural} Comparison`,
+    compositionLabel: `${entity.plural} Status Mix`,
+    rankingLabel: `${entity.plural} Ranking`,
+    eventLabel: hasAlerts ? `${entity.singular} Events` : 'Events',
+    tableLabel: hasTable ? `${entity.plural} Ledger` : 'Ledger',
+    tableColumns: [
+      { key: 'name', label: entity.singular, width: '1.8fr' },
+      { key: 'status', label: 'Status', width: '1fr' },
+      { key: 'value', label: metrics[1] || 'Value', width: '1fr' },
+    ],
+    mapRegions: ['North Hub', 'Central Grid', 'South Cluster', 'West Loop'],
+    mapPoints: ['Node A', 'Node B', 'Node C'],
+    rankingNames: ['Segment A', 'Segment B', 'Segment C', 'Segment D'],
+    stageNames: ['Intake', 'Processing', 'Review', 'Delivery'],
+  };
 }
 
 function deriveSectionPriority(section) {
@@ -473,6 +542,7 @@ export function generateBlueprint(requestInput, options = {}) {
     rightSummaryCount,
     avoidEqualSplit: true,
   };
+  const semanticProfile = inferSemanticProfile(request, sections);
 
   return {
     pageName: request.pageType
@@ -485,6 +555,7 @@ export function generateBlueprint(requestInput, options = {}) {
     blockPriority,
     heightStrategy,
     layoutDirectives,
+    semanticProfile,
     referenceTemplates: templates.map((template) => ({
       id: template.id,
       templateName: template.templateName,
@@ -527,6 +598,13 @@ ${(blueprint.heightStrategy?.notes || []).map((item) => `- ${item}`).join('\n')}
 ${Object.entries(blueprint.layoutDirectives || {})
   .map(([key, value]) => `- ${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
   .join('\n')}
+
+## Semantic Profile
+
+- entity: ${blueprint.semanticProfile?.entity?.plural || ''}
+- metrics: ${(blueprint.semanticProfile?.metrics || []).join(', ')}
+- eventLabel: ${blueprint.semanticProfile?.eventLabel || ''}
+- tableLabel: ${blueprint.semanticProfile?.tableLabel || ''}
 
 ## Reference Templates
 

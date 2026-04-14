@@ -27,6 +27,13 @@ Keep the map and bottom operational table visible above the fold, with the map h
 - Use title / primary content / auxiliary content layering instead of equal slices.
 - Allocate more height to tables and event streams for high-density data.
 
+## Semantic Profile
+
+- entity: Assets
+- metrics: Active Assets, Alerts, Load, Completion Rate
+- eventLabel: Asset Events
+- tableLabel: Assets Ledger
+
 ## Reference Templates
 
 - 034 晋城高速综合管控大数据: 晋城高速综合管控大数据 | scenes=traffic | charts=line, bar, pie, gauge, scatter

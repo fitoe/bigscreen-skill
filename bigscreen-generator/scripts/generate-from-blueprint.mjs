@@ -531,6 +531,19 @@ const view = use${projectName}();
 function buildMockSource(projectName, blueprint) {
   const mockVar = `${projectName[0].toLowerCase()}${projectName.slice(1)}Mock`;
   const needs = new Set(blueprint.sections.map((section) => section.component));
+  const profile = blueprint.semanticProfile || {};
+  const entity = profile.entity || { singular: 'Asset', plural: 'Assets' };
+  const metrics = Array.isArray(profile.metrics) && profile.metrics.length ? profile.metrics : [`Active ${entity.plural}`, 'Alerts', 'Load', 'Completion Rate'];
+  const states = Array.isArray(profile.stateSet) && profile.stateSet.length ? profile.stateSet : ['Healthy', 'Warning', 'Critical'];
+  const rankingNames = Array.isArray(profile.rankingNames) && profile.rankingNames.length ? profile.rankingNames : ['Segment A', 'Segment B', 'Segment C', 'Segment D'];
+  const mapRegions = Array.isArray(profile.mapRegions) && profile.mapRegions.length ? profile.mapRegions : ['North Hub', 'Central Grid', 'South Cluster', 'West Loop'];
+  const mapPoints = Array.isArray(profile.mapPoints) && profile.mapPoints.length ? profile.mapPoints : ['Node A', 'Node B', 'Node C'];
+  const tableColumns = Array.isArray(profile.tableColumns) && profile.tableColumns.length ? profile.tableColumns : [
+    { key: 'name', label: entity.singular, width: '1.8fr' },
+    { key: 'status', label: 'Status', width: '1fr' },
+    { key: 'value', label: metrics[1] || 'Value', width: '1fr' },
+  ];
+  const stageNames = Array.isArray(profile.stageNames) && profile.stageNames.length ? profile.stageNames : ['Intake', 'Processing', 'Review', 'Delivery'];
 
   return `export const ${mockVar} = {
   title: '${projectName.replace(/([a-z0-9])([A-Z])/g, '$1 $2')}',
@@ -540,10 +553,10 @@ function buildMockSource(projectName, blueprint) {
     { label: 'Mode', value: 'Blueprint' },
   ],
   stats: [
-    { label: 'Total', value: 1284, unit: '', delta: 3.2 },
-    { label: 'Active', value: 912, unit: '', delta: 1.8 },
-    { label: 'Alerts', value: 18, unit: '', delta: -0.6 },
-    { label: 'Closed', value: 94.6, unit: '%', delta: 2.1 },
+    { label: '${metrics[0]}', value: 1284, unit: '', delta: 3.2 },
+    { label: '${metrics[1] || 'Alerts'}', value: 912, unit: '', delta: 1.8 },
+    { label: '${metrics[2] || 'Load'}', value: 18, unit: '', delta: -0.6 },
+    { label: '${metrics[3] || 'Completion Rate'}', value: 94.6, unit: '%', delta: 2.1 },
   ],
   trend: {
     categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -554,55 +567,53 @@ function buildMockSource(projectName, blueprint) {
     series: [90, 96, 98, 120, 110, 108, 130],
   },
   mapRegions: [
-    { name: 'North Zone', value: '128 assets' },
-    { name: 'Core Hub', value: '32 alerts' },
-    { name: 'East Link', value: '84 tasks' },
-    { name: 'South Park', value: '96.4%' },
+    { name: '${mapRegions[0]}', value: '128 ${entity.plural.toLowerCase()}' },
+    { name: '${mapRegions[1]}', value: '32 events' },
+    { name: '${mapRegions[2]}', value: '84 tasks' },
+    { name: '${mapRegions[3]}', value: '96.4%' },
   ],
   mapPoints: [
-    { name: 'Hub A', x: 28, y: 34 },
-    { name: 'Hub B', x: 64, y: 42 },
-    { name: 'Depot C', x: 44, y: 66 },
+    { name: '${mapPoints[0]}', x: 28, y: 34 },
+    { name: '${mapPoints[1]}', x: 64, y: 42 },
+    { name: '${mapPoints[2]}', x: 44, y: 66 },
   ],
   compare: {
-    categories: ['North', 'South', 'East', 'West', 'Central'],
+    categories: ['Alpha', 'Beta', 'Gamma', 'Delta', 'Omega'],
     series: [88, 121, 96, 104, 137],
   },
   composition: [
-    { name: 'Normal', value: 72 },
-    { name: 'Warning', value: 18 },
-    { name: 'Critical', value: 10 },
+    { name: '${states[0]}', value: 72 },
+    { name: '${states[1]}', value: 18 },
+    { name: '${states[2]}', value: 10 },
   ],
   ranking: [
-    { name: 'Area A', value: 98 },
-    { name: 'Area B', value: 91 },
-    { name: 'Area C', value: 84 },
-    { name: 'Area D', value: 78 },
+    { name: '${rankingNames[0]}', value: 98 },
+    { name: '${rankingNames[1]}', value: 91 },
+    { name: '${rankingNames[2]}', value: 84 },
+    { name: '${rankingNames[3]}', value: 78 },
   ],
   alarms: [
-    { time: '09:12', message: 'Cooling station temperature spike', level: 'major' as const },
-    { time: '09:18', message: 'Gate access anomaly', level: 'minor' as const },
-    { time: '09:24', message: 'Power fluctuation in zone 3', level: 'critical' as const },
+    { time: '09:12', message: '${entity.singular} telemetry drift detected', level: 'major' as const },
+    { time: '09:18', message: '${entity.singular} access anomaly detected', level: 'minor' as const },
+    { time: '09:24', message: '${entity.singular} load spike exceeds threshold', level: 'critical' as const },
   ],
   table: {
-    columns: [
-      { key: 'name', label: 'Name', width: '1.8fr' },
-      { key: 'status', label: 'Status', width: '1fr' },
-      { key: 'value', label: 'Value', width: '0.9fr' },
-    ],
+    columns: ${JSON.stringify(tableColumns, null, 4).replace(/\n/g, '\n    ')},
     rows: [
-      { id: 1, name: 'Item 01', status: 'Normal', value: '56.2' },
-      { id: 2, name: 'Item 02', status: 'Warning', value: '83.4' },
-      { id: 3, name: 'Item 03', status: 'Normal', value: 'Online' },
+      { id: 1, name: '${entity.singular} 01', status: '${states[0]}', value: '56.2' },
+      { id: 2, name: '${entity.singular} 02', status: '${states[1]}', value: '83.4' },
+      { id: 3, name: '${entity.singular} 03', status: '${states[0]}', value: 'Online' },
     ],
   },
   pipeline: [
-    { name: 'Stage A', value: 42 },
-    { name: 'Stage B', value: 33 },
-    { name: 'Stage C', value: 21 },
+    { name: '${stageNames[0]}', value: 42 },
+    { name: '${stageNames[1]}', value: 33 },
+    { name: '${stageNames[2]}', value: 21 },
+    { name: '${stageNames[3]}', value: 16 },
   ],
   meta: {
     sections: ${JSON.stringify([...needs], null, 2).replace(/\n/g, '\n    ')},
+    semanticProfile: ${JSON.stringify(profile, null, 2).replace(/\n/g, '\n    ')},
   },
 };
 `;
@@ -643,6 +654,12 @@ ${(blueprint.blockPriority || []).map((item) => `- ${item}`).join('\n')}
 ${blueprint.heightStrategy?.overall || ''}
 
 ${(blueprint.heightStrategy?.notes || []).map((item) => `- ${item}`).join('\n')}
+
+## Semantic Profile
+
+- entity=${blueprint.semanticProfile?.entity?.plural || ''}
+- metrics=${(blueprint.semanticProfile?.metrics || []).join(', ')}
+- eventLabel=${blueprint.semanticProfile?.eventLabel || ''}
 
 ## Reference Templates
 

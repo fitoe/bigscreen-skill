@@ -34,6 +34,14 @@ block_priority: []
 height_strategy:
   overall:
   notes:
+semantic_profile:
+  entity:
+    singular:
+    plural:
+  metrics: []
+  event_label:
+  table_label:
+  table_columns: []
 sections:
   - id:
     area:
@@ -109,6 +117,7 @@ sections:
 - Put generated page rationale in `docs/screen-specs/`.
 - Default-enable: chart auto resize, long list auto-rotate, fixed table header, hidden native scrollbars, font-size floor.
 - For each section, record: priority, height strategy, and whether it is fixed/min/flex/scroll/auto-rotate.
+- Generate mock data from a domain-agnostic semantic profile instead of industry-specific hardcoded labels.
 - Explicitly block: even area splitting, multiple charts in tiny panels, summary panels more complex than primary visuals, and admin-style dense typography.
 - For revision prompts, update the existing blueprint first, then regenerate from the revised blueprint.
 - Preserve page type and first-screen narrative unless the revision explicitly requests a different page intent.

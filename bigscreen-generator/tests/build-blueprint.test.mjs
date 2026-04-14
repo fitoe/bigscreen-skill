@@ -92,3 +92,24 @@ Data density: high`,
   assert.ok(blueprint.sections.some((section) => section.heightPolicy.autoRotate === true));
   assert.ok(blueprint.sections.some((section) => section.heightPolicy.scroll === true));
 });
+
+test('generateBlueprint emits domain-agnostic semantic profile metadata', () => {
+  const blueprint = generateBlueprint(
+    `生成一个可运行的大屏首页（Vue3 + ECharts）。
+主题：客户服务运营
+关键指标：活跃用户、异常工单、处理时效、满意度
+风格：冷蓝运营中台
+必须模块：kpi、趋势、排行、告警、表格
+数据密度：高`,
+    {
+      templateFeaturesPath,
+      maxReferences: 3,
+    },
+  );
+
+  assert.ok(blueprint.semanticProfile);
+  assert.equal(blueprint.semanticProfile.entity.singular, 'User');
+  assert.ok(blueprint.semanticProfile.metrics.includes('活跃用户'));
+  assert.equal(blueprint.semanticProfile.tableColumns[0].label, 'User');
+  assert.equal(typeof blueprint.semanticProfile.eventLabel, 'string');
+});

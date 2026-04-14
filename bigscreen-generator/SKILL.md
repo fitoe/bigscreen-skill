@@ -9,6 +9,8 @@ Generate componentized `Vue 3 + TypeScript + Vite + ECharts` big-screen projects
 
 Treat template libraries such as `BigDataView` as reference corpora only. Do not copy full-page source code, preserve original template structure, or optimize for visual imitation over maintainability.
 
+Treat business requests through a generic semantic profile layer. Infer entities, metrics, events, ledgers, and narrative roles from the prompt instead of hardcoding industry-specific page presets.
+
 ## Workflow
 
 1. Parse the request into:
@@ -32,6 +34,7 @@ Treat template libraries such as `BigDataView` as reference corpora only. Do not
    - block priority
    - height strategy
    - per-section height policy
+   - semantic profile
 8. Stop and ask the user to confirm the blueprint before generating code.
 9. After approval, generate the screen directly from the prompt response:
    - If scripts are available, you may use them, but prompt-only generation is valid and expected.
@@ -79,6 +82,7 @@ Use this when the user wants a prompt-only flow, without running scripts.
 - `docs/screen-specs/<page-name>.blueprint.md`
 - `docs/screen-specs/<page-name>.blueprint.json`
 - Blueprint metadata with `blockPriority`, `heightStrategy`, and per-section height policies
+- Semantic profile metadata describing entities, metric labels, event labels, and ledger columns
 
 ### 中文简化示例
 
