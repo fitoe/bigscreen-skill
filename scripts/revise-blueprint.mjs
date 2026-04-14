@@ -3,7 +3,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { formatBlueprintMarkdown, generateBlueprint, parseRequestInput } from './build-blueprint.mjs';
+import { normalizeRequest } from '../core/request/normalize-request.mjs';
+import { buildBlueprint } from '../core/blueprint/build-blueprint.mjs';
+import { formatBlueprintMarkdown } from './build-blueprint.mjs';
 
 function parseArgs(argv) {
   const args = {};
@@ -25,14 +27,14 @@ function inferRevisionFields(revisionText) {
   const lower = prompt.toLowerCase();
   const patch = {
     originalPrompt: prompt,
-    mustHaveSections: [],
+    requiredModules: [],
   };
 
-  if (/排行|ranking/.test(prompt)) patch.mustHaveSections.push('ranking');
-  if (/构成|composition|占比/.test(prompt)) patch.mustHaveSections.push('composition');
-  if (/底部表格|表格加高|table/.test(prompt)) patch.mustHaveSections.push('table');
-  if (/地图|map/.test(prompt)) patch.mustHaveSections.push('map');
-  if (/告警|alert|alarm/.test(prompt)) patch.mustHaveSections.push('alerts');
+  if (/排行|ranking/.test(prompt)) patch.requiredModules.push('ranking-list');
+  if (/构成|composition|占比/.test(prompt)) patch.requiredModules.push('composition-chart');
+  if (/底部表格|表格加高|table/.test(prompt)) patch.requiredModules.push('data-table');
+  if (/地图|map/.test(prompt)) patch.requiredModules.push('geo-focus');
+  if (/告警|alert|alarm/.test(prompt)) patch.requiredModules.push('alert-stream');
 
   if (/保留首页|首页|overview-home/.test(prompt)) patch.pageType = 'overview-home';
   if (/不要切换成专题页/.test(prompt) && !patch.pageType) patch.pageType = 'overview-home';
@@ -46,30 +48,26 @@ export function reviseBlueprint(baseBlueprintInput, revisionInput, options = {})
   const baseBlueprint = typeof baseBlueprintInput === 'string' ? JSON.parse(baseBlueprintInput) : baseBlueprintInput;
   const revisionPatch =
     typeof revisionInput === 'string' && revisionInput.trim().startsWith('{')
-      ? parseRequestInput(JSON.parse(revisionInput))
+      ? JSON.parse(revisionInput)
       : inferRevisionFields(revisionInput);
 
   const baseRequest = {
-    domain: baseBlueprint.goal?.match(/Support (.+?) dashboards/i)?.[1] || 'general',
-    pageType: baseBlueprint.layoutPattern,
-    audience: baseBlueprint.layoutDirectives?.leadershipMode ? 'leadership' : 'operations',
-    mustHaveSections: baseBlueprint.sections.map((section) => section.purpose),
-    keyMetrics: [],
-    preferredStyle: baseBlueprint.themeDirection,
-    dataDensity: 'high',
-    mapRequired: baseBlueprint.sections.some((section) => section.purpose === 'map'),
-    refreshExpectation: 'realtime',
+    sourceMode: 'revision',
+    pageIntent: baseBlueprint.layoutPattern || 'overview',
+    styleDirection: baseBlueprint.themeDirection || 'deep blue',
+    requiredModules: baseBlueprint.sections?.map((section) => section.semanticSlot).filter(Boolean) || [],
     originalPrompt: '',
   };
 
   const nextRequest = {
     ...baseRequest,
-    ...revisionPatch,
-    mustHaveSections: mergeUnique(baseRequest.mustHaveSections, revisionPatch.mustHaveSections),
+    pageIntent: revisionPatch.pageType || revisionPatch.pageIntent || baseRequest.pageIntent,
+    styleDirection: revisionPatch.styleDirection || baseRequest.styleDirection,
+    requiredModules: mergeUnique(baseRequest.requiredModules, revisionPatch.requiredModules),
     originalPrompt: [baseRequest.originalPrompt, revisionPatch.originalPrompt].filter(Boolean).join('\n'),
   };
 
-  return generateBlueprint(nextRequest, options);
+  return buildBlueprint(normalizeRequest(nextRequest), options);
 }
 
 const args = parseArgs(process.argv);

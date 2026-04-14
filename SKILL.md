@@ -68,6 +68,18 @@ Generate a runnable project:
 node scripts/generate-screen.mjs --request-file request.json --target ./out/overview --name Overview
 ```
 
+Generate from an image spec:
+
+```bash
+node scripts/generate-screen-from-image-spec.mjs --input-file image-spec.json --target ./out/overview --name Overview
+```
+
+Revise an existing blueprint:
+
+```bash
+node scripts/revise-screen.mjs --blueprint-file docs/screen-specs/overview.blueprint.json --revision-file revision.txt --target ./out/overview --name Overview
+```
+
 Optional build validation:
 
 ```bash

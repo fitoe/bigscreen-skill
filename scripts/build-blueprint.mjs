@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { normalizeRequest } from '../core/request/normalize-request.mjs';
 import { buildBlueprint } from '../core/blueprint/build-blueprint.mjs';
@@ -57,24 +58,28 @@ export function generateBlueprint(rawRequest) {
   return buildBlueprint(request);
 }
 
-const args = parseArgs(process.argv);
-const rawRequest = args['request-file']
-  ? fs.readFileSync(path.resolve(args['request-file']), 'utf8')
-  : args.request;
+const isMainModule = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 
-if (!rawRequest) {
-  console.error('Usage: node scripts/build-blueprint.mjs --request <json> [--output file] [--format json|md]');
-  process.exit(1);
-}
+if (isMainModule) {
+  const args = parseArgs(process.argv);
+  const rawRequest = args['request-file']
+    ? fs.readFileSync(path.resolve(args['request-file']), 'utf8')
+    : args.request;
 
-const blueprint = generateBlueprint(rawRequest);
-const outputText = args.format === 'json' ? JSON.stringify(blueprint, null, 2) : formatBlueprintMarkdown(blueprint);
+  if (!rawRequest) {
+    console.error('Usage: node scripts/build-blueprint.mjs --request <json> [--output file] [--format json|md]');
+    process.exit(1);
+  }
 
-if (args.output) {
-  const outputPath = path.resolve(args.output);
-  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  fs.writeFileSync(outputPath, outputText, 'utf8');
-  console.log(`Wrote blueprint to ${outputPath}`);
-} else {
-  console.log(outputText);
+  const blueprint = generateBlueprint(rawRequest);
+  const outputText = args.format === 'json' ? JSON.stringify(blueprint, null, 2) : formatBlueprintMarkdown(blueprint);
+
+  if (args.output) {
+    const outputPath = path.resolve(args.output);
+    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+    fs.writeFileSync(outputPath, outputText, 'utf8');
+    console.log(`Wrote blueprint to ${outputPath}`);
+  } else {
+    console.log(outputText);
+  }
 }

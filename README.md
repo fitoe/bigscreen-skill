@@ -42,6 +42,18 @@ node scripts/build-project-manifest.mjs --blueprint-file docs/screen-specs/overv
 node scripts/generate-screen.mjs --request-file request.json --target ./out/overview --name Overview
 ```
 
+Image-driven generation:
+
+```bash
+node scripts/generate-screen-from-image-spec.mjs --input-file image-spec.json --target ./out/overview --name Overview
+```
+
+Revision from an existing blueprint:
+
+```bash
+node scripts/revise-screen.mjs --blueprint-file docs/screen-specs/overview.blueprint.json --revision-file revision.txt --target ./out/overview --name Overview
+```
+
 ## Tests
 
 ```bash
