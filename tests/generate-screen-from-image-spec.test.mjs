@@ -15,9 +15,9 @@ test('generate-screen-from-image-spec creates project and prompt package artifac
   execFileSync(
     process.execPath,
     [
-      path.resolve('bigscreen-generator/scripts/generate-screen-from-image-spec.mjs'),
+      path.resolve('scripts/generate-screen-from-image-spec.mjs'),
       '--input-file',
-      path.resolve('bigscreen-generator/tests/fixtures/inclusive-finance-image-spec.json'),
+      path.resolve('tests/fixtures/inclusive-finance-image-spec.json'),
       '--target',
       tempDir,
       '--name',

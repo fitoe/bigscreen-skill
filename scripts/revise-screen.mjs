@@ -3,8 +3,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 
-import { generateBlueprint, formatBlueprintMarkdown } from './build-blueprint.mjs';
+import { formatBlueprintMarkdown } from './build-blueprint.mjs';
 import { generateProjectFromBlueprint } from './generate-from-blueprint.mjs';
+import { reviseBlueprint } from './revise-blueprint.mjs';
 
 function parseArgs(argv) {
   const args = {};
@@ -17,36 +18,44 @@ function parseArgs(argv) {
   return args;
 }
 
+function toSlug(value) {
+  return value
+    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+    .replace(/\s+/g, '-')
+    .toLowerCase();
+}
+
 const args = parseArgs(process.argv);
-const requestFile = args['request-file'] ? path.resolve(args['request-file']) : null;
+const blueprintFile = args['blueprint-file'] ? path.resolve(args['blueprint-file']) : null;
+const revisionFile = args['revision-file'] ? path.resolve(args['revision-file']) : null;
 const target = args.target ? path.resolve(args.target) : null;
 
-if (!requestFile || !target) {
-  console.error('Usage: node scripts/generate-screen.mjs --request-file <file> --target <dir> [--name Name]');
+if (!blueprintFile || !revisionFile || !target) {
+  console.error('Usage: node scripts/revise-screen.mjs --blueprint-file <file> --revision-file <file> --target <dir> [--name Name]');
   process.exit(1);
 }
 
-const request = fs.readFileSync(requestFile, 'utf8');
-const blueprint = generateBlueprint(request, {
+const revised = reviseBlueprint(fs.readFileSync(blueprintFile, 'utf8'), fs.readFileSync(revisionFile, 'utf8'), {
   templateFeaturesPath: args['template-features'] ? path.resolve(args['template-features']) : undefined,
   maxReferences: args.limit ? Number(args.limit) : undefined,
 });
 
-const result = await generateProjectFromBlueprint(blueprint, {
+const projectName = args.name || revised.pageName;
+const result = await generateProjectFromBlueprint(revised, {
   target,
-  projectName: args.name || blueprint.pageName,
+  projectName,
 });
 
 const docsDir = path.join(target, 'docs', 'screen-specs');
 fs.mkdirSync(docsDir, { recursive: true });
-fs.writeFileSync(path.join(docsDir, `${result.slug}.blueprint.json`), JSON.stringify(blueprint, null, 2), 'utf8');
-fs.writeFileSync(path.join(docsDir, `${result.slug}.blueprint.md`), formatBlueprintMarkdown(blueprint), 'utf8');
+fs.writeFileSync(path.join(docsDir, `${result.slug}.blueprint.json`), JSON.stringify(revised, null, 2), 'utf8');
+fs.writeFileSync(path.join(docsDir, `${result.slug}.blueprint.md`), formatBlueprintMarkdown(revised), 'utf8');
 
-console.log(`Generated screen project at ${result.target}`);
+console.log(`Revised screen project at ${target} (${toSlug(projectName)})`);
 
 if (args.playwright) {
   const validatorArgs = [
-    path.resolve('bigscreen-generator/scripts/playwright-validate-screen.mjs'),
+    path.resolve('scripts/playwright-validate-screen.mjs'),
     '--target',
     result.target,
   ];

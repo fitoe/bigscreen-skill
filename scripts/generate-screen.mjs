@@ -3,8 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 
-import { buildPromptFromImageSpec } from './build-prompt-from-image-spec.mjs';
-import { formatBlueprintMarkdown, generateBlueprint } from './build-blueprint.mjs';
+import { generateBlueprint, formatBlueprintMarkdown } from './build-blueprint.mjs';
 import { generateProjectFromBlueprint } from './generate-from-blueprint.mjs';
 
 function parseArgs(argv) {
@@ -19,17 +18,16 @@ function parseArgs(argv) {
 }
 
 const args = parseArgs(process.argv);
-const inputFile = args['input-file'] ? path.resolve(args['input-file']) : null;
+const requestFile = args['request-file'] ? path.resolve(args['request-file']) : null;
 const target = args.target ? path.resolve(args.target) : null;
 
-if (!inputFile || !target) {
-  console.error('Usage: node scripts/generate-screen-from-image-spec.mjs --input-file <image-spec.json> --target <dir> [--name Name]');
+if (!requestFile || !target) {
+  console.error('Usage: node scripts/generate-screen.mjs --request-file <file> --target <dir> [--name Name]');
   process.exit(1);
 }
 
-const input = JSON.parse(fs.readFileSync(inputFile, 'utf8'));
-const promptPackage = buildPromptFromImageSpec(input);
-const blueprint = generateBlueprint(promptPackage.naturalPrompt, {
+const request = fs.readFileSync(requestFile, 'utf8');
+const blueprint = generateBlueprint(request, {
   templateFeaturesPath: args['template-features'] ? path.resolve(args['template-features']) : undefined,
   maxReferences: args.limit ? Number(args.limit) : undefined,
 });
@@ -43,19 +41,17 @@ const docsDir = path.join(target, 'docs', 'screen-specs');
 fs.mkdirSync(docsDir, { recursive: true });
 fs.writeFileSync(path.join(docsDir, `${result.slug}.blueprint.json`), JSON.stringify(blueprint, null, 2), 'utf8');
 fs.writeFileSync(path.join(docsDir, `${result.slug}.blueprint.md`), formatBlueprintMarkdown(blueprint), 'utf8');
-fs.writeFileSync(path.join(docsDir, `${result.slug}.image-prompt.json`), JSON.stringify(promptPackage, null, 2), 'utf8');
 
-console.log(`Generated screen project from image spec at ${result.target}`);
+console.log(`Generated screen project at ${result.target}`);
 
 if (args.playwright) {
   const validatorArgs = [
-    path.resolve('bigscreen-generator/scripts/playwright-validate-screen.mjs'),
+    path.resolve('scripts/playwright-validate-screen.mjs'),
     '--target',
     result.target,
-    '--reference-spec-file',
-    inputFile,
   ];
   if (args['install-deps']) validatorArgs.push('--install-deps');
+  if (args['reference-spec-file']) validatorArgs.push('--reference-spec-file', path.resolve(args['reference-spec-file']));
   if (args['reference-image']) validatorArgs.push('--reference-image', path.resolve(args['reference-image']));
   execFileSync(process.execPath, validatorArgs, { stdio: 'inherit' });
 }

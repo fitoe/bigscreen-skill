@@ -7,7 +7,7 @@ import { buildPromptFromImageSpec } from '../scripts/build-prompt-from-image-spe
 
 test('buildPromptFromImageSpec creates stable prompt package from image spec', () => {
   const input = JSON.parse(
-    fs.readFileSync(path.resolve('bigscreen-generator/tests/fixtures/inclusive-finance-image-spec.json'), 'utf8'),
+    fs.readFileSync(path.resolve('tests/fixtures/inclusive-finance-image-spec.json'), 'utf8'),
   );
 
   const result = buildPromptFromImageSpec(input);

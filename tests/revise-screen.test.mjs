@@ -28,7 +28,7 @@ test('revise-screen script updates blueprint from revision prompt', () => {
   execFileSync(
     process.execPath,
     [
-      path.resolve('bigscreen-generator/scripts/generate-screen.mjs'),
+      path.resolve('scripts/generate-screen.mjs'),
       '--request-file',
       requestFile,
       '--target',
@@ -50,7 +50,7 @@ test('revise-screen script updates blueprint from revision prompt', () => {
   execFileSync(
     process.execPath,
     [
-      path.resolve('bigscreen-generator/scripts/revise-screen.mjs'),
+      path.resolve('scripts/revise-screen.mjs'),
       '--blueprint-file',
       path.join(tempDir, 'docs', 'screen-specs', 'traffic-home.blueprint.json'),
       '--revision-file',

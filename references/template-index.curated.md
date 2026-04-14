@@ -1,6 +1,6 @@
 # Curated Template Catalog
 
-Top 30 templates for first-pass retrieval. Generated from `bigscreen-generator/references/template-features.json`.
+Top 30 templates for first-pass retrieval. Generated from `references/template-features.json`.
 
 ```yaml
 - id: 008 兰州智慧消防大数据平台

@@ -14,9 +14,9 @@ test('generate-screen script writes project and blueprint artifacts', () => {
   execFileSync(
     process.execPath,
     [
-      path.resolve('bigscreen-generator/scripts/generate-screen.mjs'),
+      path.resolve('scripts/generate-screen.mjs'),
       '--request-file',
-      path.resolve('bigscreen-generator/tests/fixtures/traffic-map-command.request.json'),
+      path.resolve('tests/fixtures/traffic-map-command.request.json'),
       '--target',
       tempDir,
       '--name',
@@ -51,7 +51,7 @@ test('generate-screen script accepts plain prompt request files', () => {
   execFileSync(
     process.execPath,
     [
-      path.resolve('bigscreen-generator/scripts/generate-screen.mjs'),
+      path.resolve('scripts/generate-screen.mjs'),
       '--request-file',
       promptFile,
       '--target',

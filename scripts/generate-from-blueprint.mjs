@@ -44,21 +44,25 @@ async function materializeMapGeoJson(blueprint, target, fetchImpl = fetch) {
   const hasMapSection = blueprint.sections.some((section) => section.component === 'MapPanel');
   if (!hasMapSection || !blueprint.mapTarget) return null;
 
-  const resolved = await resolveDatavMapTarget(blueprint.mapTarget, fetchImpl);
-  if (!resolved) return null;
+  try {
+    const resolved = await resolveDatavMapTarget(blueprint.mapTarget, fetchImpl);
+    if (!resolved) return null;
 
-  const mapsDir = path.join(target, 'src', 'mock', 'maps');
-  ensureDir(mapsDir);
-  const filePath = path.join(mapsDir, resolved.assetFileName);
-  const asset = await downloadDatavGeoJson(filePath, resolved, fetchImpl);
-  if (!asset) return null;
-  fs.writeFileSync(filePath, JSON.stringify(asset.json, null, 2), 'utf8');
+    const mapsDir = path.join(target, 'src', 'mock', 'maps');
+    ensureDir(mapsDir);
+    const filePath = path.join(mapsDir, resolved.assetFileName);
+    const asset = await downloadDatavGeoJson(filePath, resolved, fetchImpl);
+    if (!asset) return null;
+    fs.writeFileSync(filePath, JSON.stringify(asset.json, null, 2), 'utf8');
 
-  return {
-    ...resolved,
-    filePath,
-    importPath: `@/mock/maps/${resolved.assetFileName}`,
-  };
+    return {
+      ...resolved,
+      filePath,
+      importPath: `@/mock/maps/${resolved.assetFileName}`,
+    };
+  } catch {
+    return null;
+  }
 }
 
 function componentImportPath(component) {

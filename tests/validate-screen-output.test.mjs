@@ -45,7 +45,7 @@ test('validate-screen-output warns when blueprint quality rules are weak', () =>
 
   const output = execFileSync(
     process.execPath,
-    [path.resolve('bigscreen-generator/scripts/validate-screen-output.mjs'), '--target', tempDir],
+    [path.resolve('scripts/validate-screen-output.mjs'), '--target', tempDir],
     { stdio: 'pipe', encoding: 'utf8' },
   );
 

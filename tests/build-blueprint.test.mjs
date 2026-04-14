@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { generateBlueprint, parseRequestInput } from '../scripts/build-blueprint.mjs';
 
-const templateFeaturesPath = path.resolve('bigscreen-generator/references/template-features.json');
+const templateFeaturesPath = path.resolve('references/template-features.json');
 
 test('parseRequestInput normalizes json requests', () => {
   const request = parseRequestInput(
