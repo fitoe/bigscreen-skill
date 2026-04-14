@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { generateBlueprint } from './build-blueprint.mjs';
+import { downloadDatavGeoJson, resolveDatavMapTarget } from './datav-geojson.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -37,6 +38,27 @@ function copyDir(source, target) {
     if (entry.isDirectory()) copyDir(from, to);
     else fs.copyFileSync(from, to);
   }
+}
+
+async function materializeMapGeoJson(blueprint, target, fetchImpl = fetch) {
+  const hasMapSection = blueprint.sections.some((section) => section.component === 'MapPanel');
+  if (!hasMapSection || !blueprint.mapTarget) return null;
+
+  const resolved = await resolveDatavMapTarget(blueprint.mapTarget, fetchImpl);
+  if (!resolved) return null;
+
+  const mapsDir = path.join(target, 'src', 'mock', 'maps');
+  ensureDir(mapsDir);
+  const filePath = path.join(mapsDir, resolved.assetFileName);
+  const asset = await downloadDatavGeoJson(filePath, resolved, fetchImpl);
+  if (!asset) return null;
+  fs.writeFileSync(filePath, JSON.stringify(asset.json, null, 2), 'utf8');
+
+  return {
+    ...resolved,
+    filePath,
+    importPath: `@/mock/maps/${resolved.assetFileName}`,
+  };
 }
 
 function componentImportPath(component) {
@@ -81,7 +103,7 @@ function dataBindingForSection(section) {
     case 'StatCard':
       return `v-for="item in view.stats"\n          :key="item.label"\n          :label="item.label"\n          :value="item.value"\n          :unit="item.unit"\n          :delta="item.delta"`;
     case 'MapPanel':
-      return `title="${title}"\n          :regions="view.mapRegions"\n          :points="view.mapPoints"`;
+      return `title="${title}"\n          :regions="view.mapRegions"\n          :points="view.mapPoints"\n          :geo-json="view.mapGeoJson"\n          :map-meta="view.mapMeta"`;
     case 'AlarmTicker':
       return `title="${title}"\n          :items="view.alarms"`;
     case 'RankingList':
@@ -106,7 +128,7 @@ function dataBindingForGeneratedSection(section) {
     return `title="${title}"\n          :items="view.stats"`;
   }
   if (type === 'map-payload') {
-    return `title="${title}"\n          :regions="view.mapRegions"\n          :points="view.mapPoints"`;
+    return `title="${title}"\n          :regions="view.mapRegions"\n          :points="view.mapPoints"\n          :geo-json="view.mapGeoJson"\n          :map-meta="view.mapMeta"`;
   }
   if (type === 'event-stream') {
     return `title="${title}"\n          :items="view.alarms"`;
@@ -136,17 +158,17 @@ function buildSectionComponentSource(componentName, section, layoutPattern) {
   if (contractType === 'metric-list') {
     imports.push(`import PanelCard from '@/components/bigscreen/PanelCard.vue';`);
     propsSource = `defineProps<{ title: string; items: Array<{ label: string; value: string | number; unit?: string; delta: number }> }>();`;
-    templateBody = `<ul class="metric-list">
-      <li v-for="item in items" :key="item.label">
-        <span>{{ item.label }}</span>
-        <strong>{{ item.value }}</strong>
+    templateBody = `<ul class="grid list-none gap-3 p-0">
+      <li v-for="item in items" :key="item.label" class="grid gap-1 rounded-xl border border-cyan-300/10 bg-slate-950/22 px-4 py-3">
+        <span class="text-sm text-slate-300/72">{{ item.label }}</span>
+        <strong class="text-2xl font-semibold text-slate-50">{{ item.value }}</strong>
       </li>
     </ul>`;
   } else if (contractType === 'map-payload') {
     useWrapper = false;
     imports.push(`import MapPanel from '@/components/bigscreen/MapPanel.vue';`);
-    propsSource = `defineProps<{ title: string; regions: unknown[]; points: unknown[] }>();`;
-    templateBody = `<MapPanel :title="title" :regions="regions" :points="points" />`;
+    propsSource = `defineProps<{ title: string; regions: unknown[]; points: unknown[]; geoJson?: Record<string, unknown> | null; mapMeta?: Record<string, unknown> | null }>();`;
+    templateBody = `<MapPanel :title="title" :regions="regions" :points="points" :geo-json="geoJson" :map-meta="mapMeta" />`;
   } else if (contractType === 'event-stream') {
     useWrapper = false;
     imports.push(`import AlarmTicker from '@/components/bigscreen/AlarmTicker.vue';`);
@@ -194,74 +216,12 @@ function buildSectionComponentSource(componentName, section, layoutPattern) {
 ${imports.join('\n')}
 ${propsSource}
 </script>
-
-<style scoped lang="scss">
-.placeholder,
-.map-placeholder,
-.chart-placeholder {
-  color: var(--text-secondary);
-}
-
-.map-placeholder {
-  position: relative;
-  min-height: 220px;
-  border-radius: var(--radius-md);
-  background: radial-gradient(circle at 30% 30%, rgba(46, 240, 197, 0.2), rgba(7, 17, 31, 0.6));
-}
-
-.glow-ring {
-  position: absolute;
-  top: 12%;
-  left: 12%;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  border: 1px solid rgba(83, 213, 255, 0.4);
-}
-
-.event-list--alert .level {
-  text-transform: uppercase;
-  color: var(--danger);
-}
-
-.chart-placeholder--monitoring {
-  border-left: 2px solid rgba(83, 213, 255, 0.35);
-  padding-left: 16px;
-}
-
-.chart-placeholder--thematic {
-  border: 1px dashed rgba(83, 213, 255, 0.35);
-  padding: 12px;
-}
-
-.metric-list,
-.event-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: var(--space-2);
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  color: var(--text-secondary);
-}
-
-th,
-td {
-  padding: 8px 6px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  text-align: left;
-}
-</style>
 `;
 }
 
 function sectionMarkup(section) {
   if (section.component === 'StatCard') {
-    return `<section class="stats-grid">
+    return `<section class="grid gap-4 xl:grid-cols-4">
   <StatCard
     ${dataBindingForSection(section)}
   />
@@ -276,8 +236,8 @@ function sectionMarkup(section) {
 
 function buildPanelSlot(section) {
   const minHeight = section.heightPolicy?.min ?? 0;
-  const scrollClass = section.heightPolicy?.scroll ? ' panel-slot--scroll' : '';
-  return `<div class="panel-slot panel-slot--${section.area}${scrollClass}" style="--section-min-height: ${minHeight}px">
+  const minValue = section.heightPolicy?.scroll ? Math.max(minHeight, 220) : minHeight;
+  return `<div class="min-w-0" style="min-height: ${minValue}px">
 ${indentBlock(sectionMarkup(section), 2)}
 </div>`;
 }
@@ -304,14 +264,14 @@ function renderOverviewLayout(groups) {
   const centerSections = [...groups.center];
   const rightSections = [...groups.right, ...groups.side.slice(1)];
   return `
-      <section class="hero-grid hero-grid--overview-home">
-        <div class="hero-column hero-column--left">
+      <section class="grid items-stretch gap-5 xl:grid-cols-[320px_minmax(0,1.2fr)_320px] max-[1280px]:grid-cols-1 max-[900px]:gap-4">
+        <div class="grid gap-5 max-[900px]:gap-4">
 ${leftSections.map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
-        <div class="hero-column hero-column--center">
+        <div class="grid gap-5 max-[900px]:gap-4">
 ${centerSections.map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
-        <div class="hero-column hero-column--right">
+        <div class="grid gap-5 max-[900px]:gap-4">
 ${rightSections.map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
       </section>`;
@@ -321,11 +281,11 @@ function renderMonitoringLayout(groups) {
   const mainSections = [...groups.left, ...groups.main, ...groups.right];
   const sideSections = [...groups.side];
   return `
-      <section class="hero-grid hero-grid--monitoring-analysis">
-        <div class="hero-column hero-column--main">
+      <section class="grid gap-5 xl:grid-cols-[minmax(0,1.45fr)_360px] max-[1280px]:grid-cols-1 max-[900px]:gap-4">
+        <div class="grid gap-5 max-[900px]:gap-4">
 ${mainSections.map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
-        <div class="hero-column hero-column--side">
+        <div class="grid gap-5 max-[900px]:gap-4">
 ${sideSections.map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
       </section>`;
@@ -333,14 +293,14 @@ ${sideSections.map((section) => `          ${buildPanelSlot(section)}`).join('\n
 
 function renderAlarmLayout(groups) {
   return `
-      <section class="hero-grid hero-grid--alarm-center">
-        <div class="hero-column hero-column--left">
+      <section class="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)_minmax(0,1fr)] max-[1280px]:grid-cols-1 max-[900px]:gap-4">
+        <div class="grid gap-5 max-[900px]:gap-4">
 ${groups.left.map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
-        <div class="hero-column hero-column--center">
+        <div class="grid gap-5 max-[900px]:gap-4">
 ${groups.center.map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
-        <div class="hero-column hero-column--right">
+        <div class="grid gap-5 max-[900px]:gap-4">
 ${[...groups.right, ...groups.side].map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
       </section>`;
@@ -348,14 +308,14 @@ ${[...groups.right, ...groups.side].map((section) => `          ${buildPanelSlot
 
 function renderMapCommandLayout(groups) {
   return `
-      <section class="hero-grid hero-grid--map-command-page">
-        <div class="hero-column hero-column--left">
+      <section class="grid gap-5 xl:grid-cols-[320px_minmax(0,1.4fr)_320px] max-[1280px]:grid-cols-1 max-[900px]:gap-4">
+        <div class="grid gap-5 max-[900px]:gap-4">
 ${[...groups.left, ...groups.side].map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
-        <div class="hero-column hero-column--center">
+        <div class="grid gap-5 max-[900px]:gap-4">
 ${groups.center.map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
-        <div class="hero-column hero-column--right">
+        <div class="grid gap-5 max-[900px]:gap-4">
 ${groups.right.map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
       </section>`;
@@ -365,10 +325,10 @@ function renderThematicLayout(groups) {
   const heroSection = groups.center[0] || groups.main[0] || groups.left[0] || groups.right[0] || groups.side[0] || null;
   const supportSections = [...groups.left, ...groups.right, ...groups.side, ...groups.main].filter((section) => section !== heroSection);
   return `
-      ${heroSection ? `<section class="hero-banner">
+      ${heroSection ? `<section class="grid">
 ${indentBlock(sectionMarkup(heroSection), 8)}
       </section>` : ''}
-      <section class="support-grid support-grid--thematic-cockpit">
+      <section class="grid gap-5 xl:grid-cols-2 max-[1280px]:grid-cols-1 max-[900px]:gap-4">
 ${supportSections.map((section) => `        ${buildPanelSlot(section)}`).join('\n')}
       </section>`;
 }
@@ -376,7 +336,7 @@ ${supportSections.map((section) => `        ${buildPanelSlot(section)}`).join('\
 function renderBottomSections(groups) {
   if (!groups.bottom.length) return '';
   return `
-      <section class="bottom-grid">
+      <section class="grid gap-5 xl:grid-cols-2 max-[1280px]:grid-cols-1 max-[900px]:gap-4">
 ${groups.bottom.map((section) => `        ${buildPanelSlot(section)}`).join('\n')}
       </section>`;
 }
@@ -419,7 +379,7 @@ function buildViewSource(projectName, blueprint) {
 
   return `<template>
   <BigscreenLayout>
-    <ScreenShell class="screen-shell--${chromeVariant}">
+    <ScreenShell variant="${chromeVariant}">
       <HeaderBar :title="view.title" :subtitle="view.subtitle" :status-items="view.statusItems" />
 
 ${renderedTop}
@@ -436,100 +396,10 @@ import { use${projectName} } from '@/composables/use${projectName}';
 
 const view = use${projectName}();
 </script>
-
-<style scoped lang="scss">
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-4);
-}
-
-.hero-grid,
-.bottom-grid {
-  display: grid;
-  gap: var(--space-5);
-}
-
-.hero-grid {
-  display: grid;
-  gap: var(--space-5);
-  align-items: stretch;
-}
-
-.hero-column,
-.support-grid,
-.bottom-grid {
-  display: grid;
-  gap: var(--space-5);
-}
-
-.hero-grid--overview-home {
-  grid-template-columns: 320px minmax(0, 1.2fr) 320px;
-}
-
-.hero-grid--monitoring-analysis {
-  grid-template-columns: minmax(0, 1.45fr) 360px;
-}
-
-.hero-grid--alarm-center {
-  grid-template-columns: 1fr 1.2fr 1fr;
-}
-
-.hero-grid--map-command-page {
-  grid-template-columns: 320px minmax(0, 1.4fr) 320px;
-}
-
-.hero-banner {
-  display: grid;
-}
-
-.support-grid--thematic-cockpit {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.bottom-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.panel-slot {
-  min-width: 0;
-  min-height: var(--section-min-height, 0px);
-}
-
-.panel-slot > * {
-  height: 100%;
-}
-
-.panel-slot--scroll {
-  min-height: max(var(--section-min-height, 0px), 220px);
-}
-
-@media (max-height: 900px) {
-  .hero-grid,
-  .bottom-grid,
-  .hero-column,
-  .support-grid {
-    gap: var(--space-4);
-  }
-
-  .panel-slot {
-    min-height: max(calc(var(--section-min-height, 0px) - 20px), 160px);
-  }
-}
-
-@media (max-width: 1280px) {
-  .stats-grid,
-  .hero-grid,
-  .support-grid--thematic-cockpit,
-  .bottom-grid {
-    grid-template-columns: 1fr;
-  }
-}
-</style>
 `;
 }
 
-function buildMockSource(projectName, blueprint) {
+function buildMockSource(projectName, blueprint, mapAsset = null) {
   const mockVar = `${projectName[0].toLowerCase()}${projectName.slice(1)}Mock`;
   const needs = new Set(blueprint.sections.map((section) => section.component));
   const profile = blueprint.semanticProfile || {};
@@ -545,8 +415,9 @@ function buildMockSource(projectName, blueprint) {
     { key: 'value', label: metrics[1] || 'Value', width: '1fr' },
   ];
   const stageNames = Array.isArray(profile.stageNames) && profile.stageNames.length ? profile.stageNames : ['Intake', 'Processing', 'Review', 'Delivery'];
+  const mapImport = mapAsset ? `import mapGeoJson from './maps/${mapAsset.assetFileName}';\n\n` : '';
 
-  return `export const ${mockVar} = {
+  return `${mapImport}export const ${mockVar} = {
   title: '${projectName.replace(/([a-z0-9])([A-Z])/g, '$1 $2')}',
   subtitle: '${blueprint.themeDirection}',
   statusItems: [
@@ -578,6 +449,19 @@ function buildMockSource(projectName, blueprint) {
     { name: '${mapPoints[1]}', x: 64, y: 42 },
     { name: '${mapPoints[2]}', x: 44, y: 66 },
   ],
+  mapGeoJson: ${mapAsset ? 'mapGeoJson' : 'null'},
+  mapMeta: ${JSON.stringify(
+    mapAsset
+      ? {
+          adcode: mapAsset.adcode,
+          level: mapAsset.level,
+          name: mapAsset.name,
+          sourceUrl: mapAsset.sourceUrl,
+        }
+      : null,
+    null,
+    2,
+  ).replace(/\n/g, '\n  ')},
   compare: {
     categories: ['Alpha', 'Beta', 'Gamma', 'Delta', 'Omega'],
     series: [88, 121, 96, 104, 137],
@@ -696,7 +580,7 @@ export default createRouter({
 `;
 }
 
-export function generateProjectFromBlueprint(blueprint, options = {}) {
+export async function generateProjectFromBlueprint(blueprint, options = {}) {
   const target = path.resolve(options.target);
   const projectName = options.projectName || blueprint.pageName;
   const starter = path.resolve(__dirname, '..', 'assets', 'starter');
@@ -707,6 +591,7 @@ export function generateProjectFromBlueprint(blueprint, options = {}) {
   }
 
   copyDir(starter, target);
+  const mapAsset = await materializeMapGeoJson(blueprint, target, options.fetchImpl || fetch);
 
   const filesToRemove = [
     path.join(target, 'src', 'views', 'GeneratedOverview.vue'),
@@ -722,7 +607,7 @@ export function generateProjectFromBlueprint(blueprint, options = {}) {
   const viewSource = buildViewSource(projectName, blueprint);
   fs.writeFileSync(path.join(target, 'src', 'views', `${projectName}.vue`), viewSource, 'utf8');
   fs.writeFileSync(path.join(target, 'src', 'composables', `use${projectName}.ts`), buildComposableSource(projectName), 'utf8');
-  fs.writeFileSync(path.join(target, 'src', 'mock', `${slug}.ts`), buildMockSource(projectName, blueprint), 'utf8');
+  fs.writeFileSync(path.join(target, 'src', 'mock', `${slug}.ts`), buildMockSource(projectName, blueprint, mapAsset), 'utf8');
   fs.writeFileSync(path.join(target, 'docs', 'screen-specs', `${slug}.md`), buildDocSource(projectName, blueprint), 'utf8');
 
   const sectionDir = path.join(target, 'src', 'components', 'bigscreen', 'sections');
@@ -776,10 +661,9 @@ if (isMainModule) {
     process.exit(1);
   }
 
-  const result = generateProjectFromBlueprint(blueprint, {
+  const result = await generateProjectFromBlueprint(blueprint, {
     target,
     projectName: args.name || blueprint.pageName,
   });
-
   console.log(`Generated ${result.projectName} at ${result.target}`);
 }

@@ -1,16 +1,20 @@
 <template>
   <PanelCard :title="title">
     <div
-      class="ticker"
-      :style="{ '--visible-rows': String(visibleRows) }"
+      class="overflow-hidden"
+      :style="{ height: `calc(72px * ${visibleRows})` }"
       @mouseenter="handleEnter"
       @mouseleave="handleLeave"
     >
-      <ul class="alarm-list" :style="listStyle">
-        <li v-for="(item, index) in displayItems" :key="`${item.time}-${item.message}-${index}`">
-          <span class="time">{{ item.time }}</span>
-          <span class="message">{{ item.message }}</span>
-          <span class="level" :class="item.level">{{ item.level }}</span>
+      <ul class="grid list-none gap-3 p-0 transition-transform duration-[450ms] ease-out" :style="listStyle">
+        <li
+          v-for="(item, index) in displayItems"
+          :key="`${item.time}-${item.message}-${index}`"
+          class="grid min-h-[60px] grid-cols-[88px_minmax(0,1fr)_auto] items-center gap-3 py-1.5"
+        >
+          <span class="text-sm text-slate-300/72">{{ item.time }}</span>
+          <span class="min-w-0 text-[15px] text-slate-100">{{ item.message }}</span>
+          <span :class="levelClass(item.level)">{{ item.level }}</span>
         </li>
       </ul>
     </div>
@@ -48,6 +52,17 @@ const listStyle = computed(() => ({
   transform: `translateY(-${currentIndex.value * 72}px)`,
 }));
 
+function levelClass(level: 'critical' | 'major' | 'minor') {
+  return [
+    'rounded-full px-2.5 py-1 text-[13px] uppercase',
+    level === 'critical'
+      ? 'bg-rose-400/16 text-rose-300'
+      : level === 'major'
+        ? 'bg-amber-300/16 text-amber-200'
+        : 'bg-emerald-400/16 text-emerald-300',
+  ].join(' ');
+}
+
 function stopTicker() {
   if (timer) clearInterval(timer);
   timer = null;
@@ -82,60 +97,3 @@ watch(
 onMounted(startTicker);
 onBeforeUnmount(stopTicker);
 </script>
-
-<style scoped lang="scss">
-.ticker {
-  height: calc(72px * var(--visible-rows));
-  overflow: hidden;
-}
-
-.alarm-list {
-  display: grid;
-  gap: var(--space-3);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  transition: transform 0.45s ease;
-}
-
-li {
-  display: grid;
-  grid-template-columns: 88px minmax(0, 1fr) auto;
-  gap: var(--space-3);
-  align-items: center;
-  min-height: 60px;
-  padding: 6px 0;
-}
-
-.time {
-  color: var(--text-secondary);
-  font-size: 14px;
-}
-
-.message {
-  min-width: 0;
-  font-size: 15px;
-}
-
-.level {
-  padding: 4px 10px;
-  border-radius: 999px;
-  text-transform: uppercase;
-  font-size: 13px;
-}
-
-.critical {
-  background: rgba(255, 107, 122, 0.16);
-  color: var(--danger);
-}
-
-.major {
-  background: rgba(255, 200, 87, 0.16);
-  color: var(--warning);
-}
-
-.minor {
-  background: rgba(49, 209, 155, 0.16);
-  color: var(--success);
-}
-</style>

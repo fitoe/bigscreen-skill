@@ -1,16 +1,22 @@
 <template>
   <PanelCard :title="title">
     <div
-      class="ranking-viewport"
-      :style="{ '--visible-rows': String(visibleRows) }"
+      class="overflow-hidden"
+      :style="{ height: `calc(56px * ${visibleRows})` }"
       @mouseenter="handleEnter"
       @mouseleave="handleLeave"
     >
-      <ol class="ranking-list" :style="listStyle">
-        <li v-for="(item, index) in displayItems" :key="`${item.name}-${index}`">
-          <span class="index">{{ (index % items.length) + 1 }}</span>
-          <span class="name">{{ item.name }}</span>
-          <strong>{{ item.value }}</strong>
+      <ol class="grid list-none gap-3 p-0 transition-transform duration-[450ms] ease-out" :style="listStyle">
+        <li
+          v-for="(item, index) in displayItems"
+          :key="`${item.name}-${index}`"
+          class="grid min-h-11 grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-3 text-slate-300/78"
+        >
+          <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-cyan-300/16 text-[13px] text-cyan-300">
+            {{ (index % items.length) + 1 }}
+          </span>
+          <span class="min-w-0 text-[15px] text-slate-100">{{ item.name }}</span>
+          <strong class="text-lg font-semibold text-slate-50">{{ item.value }}</strong>
         </li>
       </ol>
     </div>
@@ -82,50 +88,3 @@ watch(
 onMounted(startTicker);
 onBeforeUnmount(stopTicker);
 </script>
-
-<style scoped lang="scss">
-.ranking-viewport {
-  height: calc(56px * var(--visible-rows));
-  overflow: hidden;
-}
-
-.ranking-list {
-  display: grid;
-  gap: var(--space-3);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  transition: transform 0.45s ease;
-}
-
-li {
-  display: grid;
-  grid-template-columns: 32px minmax(0, 1fr) auto;
-  gap: var(--space-3);
-  align-items: center;
-  min-height: 44px;
-  color: var(--text-secondary);
-}
-
-.index {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: rgba(83, 213, 255, 0.16);
-  color: var(--accent-primary);
-  font-size: 13px;
-}
-
-.name {
-  min-width: 0;
-  font-size: 15px;
-}
-
-strong {
-  color: var(--text-primary);
-  font-size: 18px;
-}
-</style>

@@ -29,4 +29,10 @@ test('generate-screen-from-image-spec creates project and prompt package artifac
   assert.ok(fs.existsSync(path.join(tempDir, 'src', 'views', 'InclusiveFinanceOverview.vue')));
   assert.ok(fs.existsSync(path.join(tempDir, 'docs', 'screen-specs', 'inclusive-finance-overview.image-prompt.json')));
   assert.ok(fs.existsSync(path.join(tempDir, 'docs', 'screen-specs', 'inclusive-finance-overview.blueprint.json')));
+
+  const promptArtifact = JSON.parse(
+    fs.readFileSync(path.join(tempDir, 'docs', 'screen-specs', 'inclusive-finance-overview.image-prompt.json'), 'utf8'),
+  );
+  assert.ok(Array.isArray(promptArtifact.imageAnalysisSummary));
+  assert.match(promptArtifact.imageAnalysisSummary.join('\n'), /生成策略：保留布局节奏与模块外壳/);
 });

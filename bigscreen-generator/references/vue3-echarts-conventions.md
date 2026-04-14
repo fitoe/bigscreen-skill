@@ -6,7 +6,7 @@
 - `<script setup lang="ts">`
 - Composition API
 - Vite
-- SCSS + CSS variables
+- Tailwind CSS utilities
 - ECharts
 
 ## File boundaries
@@ -17,14 +17,14 @@
 - `composables/`: assemble page-facing view models
 - `mock/`: demo fixtures
 - `api/`: adapter stubs
-- `theme/`: reusable tokens and theme helpers
+- `theme/`: Tailwind entry and reusable chrome class helpers
 
 ## Rules
 
 - Keep page files slim. They should compose sections, not implement every detail.
 - Pass data into chart components via typed props.
 - Keep ECharts option creation inside chart components or dedicated helpers.
-- Use CSS variables or exported tokens instead of repeating literal colors.
+- Use Tailwind utilities and exported class maps instead of page-local style blocks.
 - Prefer semantic prop names such as `statusItems`, `metricItems`, `alarmItems`.
 - If a section differs only by content, reuse a catalog component.
 

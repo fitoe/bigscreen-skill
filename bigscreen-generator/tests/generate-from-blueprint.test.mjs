@@ -10,7 +10,7 @@ function makeTempDir() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'bigscreen-gen-'));
 }
 
-test('generateProjectFromBlueprint scaffolds files from blueprint', () => {
+test('generateProjectFromBlueprint scaffolds files from blueprint', async () => {
   const tempDir = makeTempDir();
   const blueprint = {
     pageName: 'MapCommandPage',
@@ -45,7 +45,7 @@ test('generateProjectFromBlueprint scaffolds files from blueprint', () => {
     ],
   };
 
-  generateProjectFromBlueprint(blueprint, {
+  await generateProjectFromBlueprint(blueprint, {
     target: tempDir,
     projectName: 'TrafficCommandCenter',
   });
@@ -59,7 +59,8 @@ test('generateProjectFromBlueprint scaffolds files from blueprint', () => {
   assert.match(viewSource, /MapPanel/);
   assert.match(viewSource, /AlarmTicker/);
   assert.match(viewSource, /ScrollTable/);
-  assert.match(viewSource, /screen-shell--command-angled/);
+  assert.match(viewSource, /variant="command-angled"/);
+  assert.doesNotMatch(viewSource, /<style scoped/);
 
   const docSource = fs.readFileSync(path.join(tempDir, 'docs', 'screen-specs', 'traffic-command-center.md'), 'utf8');
   assert.match(docSource, /Reference Templates/);
@@ -69,7 +70,7 @@ test('generateProjectFromBlueprint scaffolds files from blueprint', () => {
   assert.match(docSource, /Panel Chrome/);
 });
 
-test('generateProjectFromBlueprint uses grouped layout wrappers for alarm center pages', () => {
+test('generateProjectFromBlueprint uses grouped layout wrappers for alarm center pages', async () => {
   const tempDir = makeTempDir();
   const blueprint = {
     pageName: 'AlarmCenterPage',
@@ -86,21 +87,18 @@ test('generateProjectFromBlueprint uses grouped layout wrappers for alarm center
     ],
   };
 
-  generateProjectFromBlueprint(blueprint, {
+  await generateProjectFromBlueprint(blueprint, {
     target: tempDir,
     projectName: 'AlarmCenterPage',
   });
 
   const viewSource = fs.readFileSync(path.join(tempDir, 'src', 'views', 'AlarmCenterPage.vue'), 'utf8');
-  assert.match(viewSource, /class="hero-grid hero-grid--alarm-center"/);
-  assert.match(viewSource, /class="hero-column hero-column--left"/);
-  assert.match(viewSource, /class="hero-column hero-column--center"/);
-  assert.match(viewSource, /class="hero-column hero-column--right"/);
+  assert.match(viewSource, /xl:grid-cols-\[minmax\(0,1fr\)_minmax\(0,1.2fr\)_minmax\(0,1fr\)\]/);
   assert.match(viewSource, /title="Alarm Trend"/);
   assert.match(viewSource, /title="Alarm Composition"/);
 });
 
-test('generateProjectFromBlueprint creates section components for PanelCard sections', () => {
+test('generateProjectFromBlueprint creates section components for PanelCard sections', async () => {
   const tempDir = makeTempDir();
   const blueprint = {
     pageName: 'OverviewHome',
@@ -114,7 +112,7 @@ test('generateProjectFromBlueprint creates section components for PanelCard sect
     ],
   };
 
-  generateProjectFromBlueprint(blueprint, {
+  await generateProjectFromBlueprint(blueprint, {
     target: tempDir,
     projectName: 'OverviewHome',
   });
@@ -123,7 +121,7 @@ test('generateProjectFromBlueprint creates section components for PanelCard sect
   assert.ok(fs.existsSync(componentPath));
 });
 
-test('generated starter components include fixed header and carousel-ready behaviors', () => {
+test('generated starter components include fixed header and carousel-ready behaviors', async () => {
   const tempDir = makeTempDir();
   const blueprint = {
     pageName: 'OverviewHome',
@@ -138,7 +136,7 @@ test('generated starter components include fixed header and carousel-ready behav
     ],
   };
 
-  generateProjectFromBlueprint(blueprint, {
+  await generateProjectFromBlueprint(blueprint, {
     target: tempDir,
     projectName: 'OverviewHome',
   });
@@ -147,14 +145,14 @@ test('generated starter components include fixed header and carousel-ready behav
   const alarmSource = fs.readFileSync(path.join(tempDir, 'src', 'components', 'bigscreen', 'AlarmTicker.vue'), 'utf8');
   const rankingSource = fs.readFileSync(path.join(tempDir, 'src', 'components', 'bigscreen', 'RankingList.vue'), 'utf8');
 
-  assert.match(tableSource, /table-head/);
-  assert.match(tableSource, /body-viewport/);
+  assert.match(tableSource, /scrollbar-width:none/);
+  assert.doesNotMatch(tableSource, /<style scoped/);
   assert.match(tableSource, /pauseOnHover/);
   assert.match(alarmSource, /pauseOnHover/);
   assert.match(rankingSource, /pauseOnHover/);
 });
 
-test('generated mock data follows semantic profile instead of fixed industry labels', () => {
+test('generated mock data follows semantic profile instead of fixed industry labels', async () => {
   const tempDir = makeTempDir();
   const blueprint = {
     pageName: 'ServiceOverview',
@@ -188,7 +186,7 @@ test('generated mock data follows semantic profile instead of fixed industry lab
     ],
   };
 
-  generateProjectFromBlueprint(blueprint, {
+  await generateProjectFromBlueprint(blueprint, {
     target: tempDir,
     projectName: 'ServiceOverview',
   });
@@ -198,4 +196,32 @@ test('generated mock data follows semantic profile instead of fixed industry lab
   assert.match(mockSource, /User 01/);
   assert.match(mockSource, /异常工单/);
   assert.doesNotMatch(mockSource, /Cooling station temperature spike/);
+});
+
+test('generateProjectFromBlueprint downloads Datav geojson when map target is provided', async () => {
+  const tempDir = makeTempDir();
+  const blueprint = {
+    pageName: 'LinyiMap',
+    goal: 'Support regional dashboard.',
+    layoutPattern: 'map-command-page',
+    themeDirection: 'deep blue command center',
+    mapTarget: { adcode: '371300', level: 'city', displayName: '临沂市' },
+    referenceTemplates: [],
+    sections: [
+      { id: 'MapPanel-1', area: 'center', component: 'MapPanel', purpose: 'map', dataContract: { type: 'map-payload', keys: ['regions', 'points'] } },
+    ],
+  };
+
+  await generateProjectFromBlueprint(blueprint, {
+    target: tempDir,
+    projectName: 'LinyiMap',
+    fetchImpl: async () => ({
+      ok: true,
+      json: async () => ({ type: 'FeatureCollection', features: [{ properties: { name: '兰山区', adcode: 371302 } }] }),
+    }),
+  });
+
+  const mockSource = fs.readFileSync(path.join(tempDir, 'src', 'mock', 'linyi-map.ts'), 'utf8');
+  assert.match(mockSource, /import mapGeoJson from '.\/maps\/371300_full\.geojson\.json'/);
+  assert.ok(fs.existsSync(path.join(tempDir, 'src', 'mock', 'maps', '371300_full.geojson.json')));
 });

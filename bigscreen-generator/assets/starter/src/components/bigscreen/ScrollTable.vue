@@ -1,19 +1,23 @@
 <template>
   <PanelCard :title="title">
-    <div class="table-shell">
-      <div class="table-head" :style="gridStyle">
-        <span v-for="column in normalizedColumns" :key="column.key">{{ column.label }}</span>
+    <div class="grid gap-3">
+      <div class="grid items-center pr-2 text-[15px] text-slate-100" :style="gridStyle">
+        <span v-for="column in normalizedColumns" :key="column.key" class="min-w-0 px-2.5 py-3">{{ column.label }}</span>
       </div>
 
       <div
-        class="body-viewport"
-        :style="{ '--visible-rows': String(visibleRows) }"
+        class="overflow-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        :style="{ height: `calc(48px * ${visibleRows})` }"
         @mouseenter="handleEnter"
         @mouseleave="handleLeave"
       >
-        <div class="table-body" :style="[gridStyle, bodyStyle]">
+        <div class="grid items-center text-sm text-slate-300/78 transition-transform duration-[450ms] ease-out" :style="[gridStyle, bodyStyle]">
           <template v-for="(row, rowIndex) in displayRows" :key="rowKey(row, rowIndex)">
-            <span v-for="column in normalizedColumns" :key="`${rowKey(row, rowIndex)}-${column.key}`">
+            <span
+              v-for="column in normalizedColumns"
+              :key="`${rowKey(row, rowIndex)}-${column.key}`"
+              class="min-w-0 border-b border-white/6 px-2.5 py-3 leading-6"
+            >
               {{ row[column.key] ?? '-' }}
             </span>
           </template>
@@ -113,51 +117,3 @@ watch(
 onMounted(startTicker);
 onBeforeUnmount(stopTicker);
 </script>
-
-<style scoped lang="scss">
-.table-shell {
-  display: grid;
-  gap: var(--space-3);
-}
-
-.table-head,
-.table-body {
-  display: grid;
-  gap: 0;
-  align-items: center;
-}
-
-.table-head {
-  padding-right: 8px;
-  color: var(--text-primary);
-  font-size: 15px;
-}
-
-.table-head > span,
-.table-body > span {
-  min-width: 0;
-  padding: 12px 10px;
-}
-
-.body-viewport {
-  height: calc(48px * var(--visible-rows));
-  overflow: hidden;
-  position: relative;
-  scrollbar-width: none;
-}
-
-.body-viewport::-webkit-scrollbar {
-  display: none;
-}
-
-.table-body {
-  color: var(--text-secondary);
-  font-size: 14px;
-  transition: transform 0.45s ease;
-}
-
-.table-body > span {
-  min-height: 48px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-</style>

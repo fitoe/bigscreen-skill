@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { extractMapTargetHint } from './datav-geojson.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -194,6 +195,7 @@ function parsePromptInput(raw) {
     preferredStyle,
     dataDensity: normalizeDensity(densityValue),
     mapRequired: normalizedSections.includes('map') || /地图|map|geo/i.test(text),
+    mapTarget: extractMapTargetHint(text),
     refreshExpectation,
     originalPrompt: text,
   };
@@ -220,6 +222,7 @@ export function parseRequestInput(raw) {
     preferredStyle: parsed.preferredStyle || 'deep blue glow',
     dataDensity: normalizeDensity(parsed.dataDensity || 'medium'),
     mapRequired: Boolean(parsed.mapRequired) || normalizeArray(parsed.mustHaveSections).some((item) => canonicalizeSectionToken(item) === 'map'),
+    mapTarget: parsed.mapTarget || extractMapTargetHint(parsed),
     refreshExpectation: parsed.refreshExpectation || 'realtime',
     originalPrompt: parsed.originalPrompt || '',
   };
@@ -318,6 +321,7 @@ function inferSemanticProfile(request, sections) {
 
   return {
     entity,
+    mapTarget: request.mapTarget || null,
     stateSet: inferStateSet(request),
     metrics,
     mapLabel: hasMap ? `${entity.plural} Distribution` : '',
@@ -593,6 +597,7 @@ export function generateBlueprint(requestInput, options = {}) {
     heightStrategy,
     layoutDirectives,
     semanticProfile,
+    mapTarget: request.mapTarget || null,
     panelChrome,
     referenceTemplates: templates.map((template) => ({
       id: template.id,

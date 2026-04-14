@@ -1,11 +1,15 @@
 <template>
-  <header class="header-bar">
+  <header class="flex items-end justify-between gap-4">
     <div>
-      <p class="subtitle">{{ subtitle }}</p>
-      <h1>{{ title }}</h1>
+      <p class="mb-1.5 text-xs uppercase tracking-[0.28em] text-slate-300/72">{{ subtitle }}</p>
+      <h1 class="m-0 text-[clamp(2rem,3vw,2.75rem)] font-semibold tracking-[0.04em] text-slate-50">{{ title }}</h1>
     </div>
-    <div class="status-list">
-      <span v-for="item in statusItems" :key="item.label" class="status-item">
+    <div class="flex flex-wrap gap-3">
+      <span
+        v-for="item in statusItems"
+        :key="item.label"
+        class="rounded-full border border-cyan-300/18 bg-slate-950/28 px-3 py-2 text-sm text-slate-300/85 backdrop-blur"
+      >
         {{ item.label }} {{ item.value }}
       </span>
     </div>
@@ -19,36 +23,3 @@ defineProps<{
   statusItems?: Array<{ label: string; value: string }>;
 }>();
 </script>
-
-<style scoped lang="scss">
-.header-bar {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: var(--space-4);
-}
-
-.subtitle {
-  margin: 0 0 6px;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-}
-
-h1 {
-  margin: 0;
-  font-size: 36px;
-}
-
-.status-list {
-  display: flex;
-  gap: var(--space-3);
-}
-
-.status-item {
-  padding: 8px 12px;
-  border: 1px solid var(--panel-border);
-  border-radius: 999px;
-  color: var(--text-secondary);
-}
-</style>

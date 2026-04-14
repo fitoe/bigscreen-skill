@@ -19,6 +19,8 @@ export const generatedOverviewMock = {
     categories: ['North', 'South', 'East', 'West', 'Central'],
     series: [88, 121, 96, 104, 137],
   },
+  mapGeoJson: null,
+  mapMeta: null,
   composition: [
     { name: 'Normal', value: 72 },
     { name: 'Warning', value: 18 },

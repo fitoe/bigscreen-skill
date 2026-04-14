@@ -31,7 +31,7 @@ const blueprint = generateBlueprint(request, {
   maxReferences: args.limit ? Number(args.limit) : undefined,
 });
 
-const result = generateProjectFromBlueprint(blueprint, {
+const result = await generateProjectFromBlueprint(blueprint, {
   target,
   projectName: args.name || blueprint.pageName,
 });

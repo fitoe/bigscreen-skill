@@ -6,7 +6,7 @@ Prefer these standard components before creating new ones.
 
 ### `ScreenShell`
 - Responsibility: Root viewport, background, grid framing, responsive scale container.
-- Inputs: `title`, `subtitle`, `themeClass`
+- Inputs: `variant`
 - Use for: Every full-screen dashboard page.
 
 ### `HeaderBar`
@@ -75,6 +75,6 @@ Prefer these standard components before creating new ones.
 - Create a new component only when:
   - two or more required sections cannot be expressed by existing components, or
   - the section introduces a new interaction or chart family.
-- If only styling differs, derive via props or theme tokens instead of creating a new file.
+- If only styling differs, derive via props or Tailwind class helpers instead of creating a new file.
 - Reuse template-like border, title-bar, corner, and glow treatments through `panelChrome` before creating custom wrappers.
 - Page files should compose these components, not absorb their logic.

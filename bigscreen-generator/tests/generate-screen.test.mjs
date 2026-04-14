@@ -28,6 +28,10 @@ test('generate-screen script writes project and blueprint artifacts', () => {
   assert.ok(fs.existsSync(path.join(tempDir, 'src', 'views', 'TrafficCommandCenter.vue')));
   assert.ok(fs.existsSync(path.join(tempDir, 'docs', 'screen-specs', 'traffic-command-center.blueprint.json')));
   assert.ok(fs.existsSync(path.join(tempDir, 'docs', 'screen-specs', 'traffic-command-center.blueprint.md')));
+
+  const packageSource = JSON.parse(fs.readFileSync(path.join(tempDir, 'package.json'), 'utf8'));
+  assert.ok(packageSource.devDependencies.tailwindcss);
+  assert.ok(packageSource.devDependencies['@tailwindcss/vite']);
 });
 
 test('generate-screen script accepts plain prompt request files', () => {
@@ -61,8 +65,10 @@ test('generate-screen script accepts plain prompt request files', () => {
   const blueprint = JSON.parse(
     fs.readFileSync(path.join(tempDir, 'docs', 'screen-specs', 'traffic-home.blueprint.json'), 'utf8'),
   );
+  const viewSource = fs.readFileSync(path.join(tempDir, 'src', 'views', 'TrafficHome.vue'), 'utf8');
 
   assert.equal(blueprint.layoutPattern, 'overview-home');
   assert.ok(Array.isArray(blueprint.blockPriority));
   assert.ok(blueprint.sections.some((section) => section.component === 'MapPanel'));
+  assert.doesNotMatch(viewSource, /<style scoped/);
 });

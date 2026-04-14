@@ -82,6 +82,33 @@ ${[
   .join('\n')}`;
 }
 
+function buildImageAnalysisSummary(spec, structuredPrompt) {
+  const summary = [];
+  summary.push(`主题判断：${structuredPrompt.topic}`);
+  summary.push(`页面类型：${structuredPrompt.pageType}`);
+
+  if (structuredPrompt.layoutNarrative.length) {
+    summary.push(`布局叙事：${structuredPrompt.layoutNarrative.join('；')}`);
+  }
+
+  if (structuredPrompt.mustModules.length) {
+    summary.push(`核心模块：${structuredPrompt.mustModules.join('、')}`);
+  }
+
+  const panelChrome = structuredPrompt.panelChrome || {};
+  const chromeParts = [panelChrome.variant, panelChrome.titleBar, panelChrome.borderStyle].filter(Boolean);
+  if (chromeParts.length) {
+    summary.push(`视觉外壳：${chromeParts.join(' / ')}`);
+  }
+
+  if (structuredPrompt.constraints.length) {
+    summary.push(`关键约束：${structuredPrompt.constraints.join('；')}`);
+  }
+
+  summary.push('生成策略：保留布局节奏与模块外壳，按可维护的大屏组件重建，不复制原页面源码。');
+  return summary;
+}
+
 export function buildPromptFromImageSpec(input) {
   const spec = typeof input === 'string' ? JSON.parse(input) : input;
   const mustModules = inferModules(spec);
@@ -98,6 +125,7 @@ export function buildPromptFromImageSpec(input) {
   };
 
   return {
+    imageAnalysisSummary: buildImageAnalysisSummary(spec, structuredPrompt),
     naturalPrompt: buildNaturalPrompt({ ...spec, ...structuredPrompt }),
     structuredPrompt,
   };

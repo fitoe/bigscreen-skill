@@ -21,11 +21,17 @@ Summarize each selected reference template by layout type, suitable page type, c
 ## Code Generation Prompt
 
 ```text
-Generate a maintainable Vue 3 + TypeScript + ECharts page from the approved blueprint. Reuse standard components first, keep layout, charts, and data assembly separated, and produce mock data, theme tokens, and a page spec document.
+Generate a maintainable Vue 3 + TypeScript + Tailwind CSS + ECharts page from the approved blueprint. Reuse standard components first, keep layout, charts, and data assembly separated, and produce mock data, Tailwind theme helpers, and a page spec document.
 ```
 
 ## Image To Prompt Prompt
 
 ```text
 Analyze the provided dashboard screenshot and convert it into a generator-ready prompt. Extract page type, layout narrative, required modules, key metrics, panel chrome, module notes, and first-screen constraints. Preserve reusable panel shell traits but do not copy page markup.
+```
+
+## Image Direct Generation Prompt
+
+```text
+The user has uploaded a dashboard design image and wants a runnable Vue 3 + ECharts project. First output an imageAnalysisSummary, then convert the image into a normalized prompt and a short blueprint summary, then generate the project. Preserve layout rhythm, dominant modules, and reusable panel chrome from the image, but rebuild the page with maintainable components instead of copying markup.
 ```

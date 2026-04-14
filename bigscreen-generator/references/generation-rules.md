@@ -18,6 +18,8 @@ refresh_expectation:
 
 If three or more of `page_type`, `must_have_sections`, `key_metrics`, `preferred_style` are missing, ask clarifying questions before drafting a blueprint.
 
+When the request starts from an uploaded dashboard image, treat the image as an upstream requirement source and normalize it into the same fields before clarification.
+
 ## Blueprint generation
 
 Always create the blueprint before writing code.
@@ -117,14 +119,18 @@ sections:
 - Put view-model assembly in `src/composables/`.
 - Put mock fixtures in `src/mock/`.
 - Put transport stubs in `src/api/`.
-- Put tokens in `src/theme/`.
+- Put the Tailwind entry and chrome class helpers in `src/theme/`.
 - Put generated page rationale in `docs/screen-specs/`.
 - Default-enable: chart auto resize, long list auto-rotate, fixed table header, hidden native scrollbars, font-size floor.
+- When the request names a province, city, district, or adcode for a map page, resolve and download the corresponding Datav GeoJSON boundary and wire the map component to that real boundary by default.
 - For each section, record: priority, height strategy, and whether it is fixed/min/flex/scroll/auto-rotate.
 - Generate mock data from a domain-agnostic semantic profile instead of industry-specific hardcoded labels.
 - Explicitly block: even area splitting, multiple charts in tiny panels, summary panels more complex than primary visuals, and admin-style dense typography.
 - For revision prompts, update the existing blueprint first, then regenerate from the revised blueprint.
 - Preserve page type and first-screen narrative unless the revision explicitly requests a different page intent.
+- For image-driven requests, output a short image analysis summary and normalized prompt before code generation.
+- In image-driven mode, preserve layout rhythm, dominant module ordering, and panel chrome, but rebuild with maintainable components.
+- If labels are unreadable in the image, infer stable semantic replacements and avoid placeholder names.
 
 ## Reference usage rules
 

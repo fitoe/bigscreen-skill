@@ -5,7 +5,7 @@ description: Use when generating Vue 3 plus ECharts big-screen dashboard project
 
 # Bigscreen Generator
 
-Generate componentized `Vue 3 + TypeScript + Vite + ECharts` big-screen projects from requirements.
+Generate componentized `Vue 3 + TypeScript + Vite + Tailwind CSS + ECharts` big-screen projects from requirements.
 
 Treat template libraries such as `BigDataView` as reference corpora only. Do not copy full-page source code, preserve original template structure, or optimize for visual imitation over maintainability.
 
@@ -13,7 +13,32 @@ Treat business requests through a generic semantic profile layer. Infer entities
 
 Preserve reusable template panel chrome when it improves the result. Border shapes, title-bar backgrounds, corners, and glow shells may be inherited as reusable visual metadata, but full-page markup and fragile selectors must still be rejected.
 
+When a map page names a province, city, district, county, or explicit adcode, resolve the area through Datav GeoJSON boundaries and use the real boundary file in the generated map component when possible.
+
 ## Workflow
+
+### Image-driven entry
+
+If the user uploads a dashboard design image, screenshot, or mockup in the current multimodal session, treat the image as a first-class requirement source.
+
+Before normal requirement parsing:
+
+1. Read [references/image-to-prompt.md](references/image-to-prompt.md).
+2. Analyze the uploaded image and extract:
+   - layout narrative
+   - primary modules
+   - panel chrome
+   - visible labels and plausible semantic replacements
+   - first-screen constraints
+3. Produce an `image analysis summary` and a `normalized prompt`.
+4. Continue with blueprint generation from the normalized prompt.
+5. If the user explicitly asks to implement directly from the image, you may continue in one response as:
+   - image analysis summary
+   - normalized prompt
+   - blueprint summary
+   - runnable project output
+
+Use the image to preserve composition rhythm, panel borders, title-bar backgrounds, and main visual hierarchy. Do not treat the image as permission to copy markup or page source.
 
 1. Parse the request into:
    - business domain
@@ -38,7 +63,7 @@ Preserve reusable template panel chrome when it improves the result. Border shap
    - per-section height policy
    - semantic profile
    - panel chrome
-8. Stop and ask the user to confirm the blueprint before generating code.
+8. Stop and ask the user to confirm the blueprint before generating code unless the user explicitly requests direct image-to-project generation.
 9. After approval, generate the screen directly from the prompt response:
    - If scripts are available, you may use them, but prompt-only generation is valid and expected.
    - Output a full project structure and key files in the response.
@@ -49,7 +74,7 @@ Preserve reusable template panel chrome when it improves the result. Border shap
     - composables
     - mock data
     - API adapter stub
-    - theme tokens
+    - Tailwind theme entry and chrome helpers
     - page spec doc
     - blueprint json and markdown artifacts
 11. For follow-up change requests, revise the existing blueprint instead of regenerating blindly:
@@ -62,7 +87,7 @@ Preserve reusable template panel chrome when it improves the result. Border shap
 
 Use this when the user wants a prompt-only flow, without running scripts.
 
-If the user provides a dashboard screenshot or mockup image, first convert the image into a generator-ready prompt using [references/image-to-prompt.md](references/image-to-prompt.md), then continue with the normal blueprint workflow.
+If the user provides an uploaded image in the same session, first convert that image into the same normalized prompt shape before generating the project.
 
 ### 中文简化输入格式
 
@@ -78,6 +103,8 @@ If the user provides a dashboard screenshot or mockup image, first convert the i
 ### 输出格式要求
 
 必须输出“可运行项目”，包含：
+- `imageAnalysisSummary` when the request includes an uploaded image
+- `normalizedPrompt` when the request includes an uploaded image
 - 项目树（含 `package.json`、`vite.config.ts`、`src/main.ts`）
 - `src/views/<PageName>.vue`
 - `src/components/bigscreen/*` 及必要的派生区块组件
@@ -88,6 +115,7 @@ If the user provides a dashboard screenshot or mockup image, first convert the i
 - `docs/screen-specs/<page-name>.blueprint.json`
 - Blueprint metadata with `blockPriority`, `heightStrategy`, and per-section height policies
 - Semantic profile metadata describing entities, metric labels, event labels, and ledger columns
+- A short blueprint summary when the request starts from an uploaded image
 
 ### 中文简化示例
 
@@ -115,8 +143,10 @@ If the user provides a dashboard screenshot or mockup image, first convert the i
 - Do not generate a single giant page component when sections should be split.
 - Do not mix layout orchestration, chart options, and business data assembly in one file.
 - Do not hardcode large numbers of colors, borders, or shadows directly in page files.
-- Do not skip the blueprint confirmation gate.
+- Do not skip the blueprint confirmation gate unless the user explicitly requests direct image-to-project generation in the current session.
 - Do not favor visual similarity over maintainability, composition, and data replaceability.
+- Do not claim image-perfect reproduction when the source image lacks readable labels or hidden states; infer stable semantics and say so.
+- Do not copy page markup, DOM structure, or fragile CSS from a screenshot or mockup.
 
 ## Resource Map
 
@@ -136,6 +166,7 @@ If the user provides a dashboard screenshot or mockup image, first convert the i
 - `node scripts/extract-template-features.mjs --source <BigDataView-path> --output references/template-index.generated.md`
 - `node scripts/build-curated-catalog.mjs --input references/template-features.json --output references/template-index.curated.md`
 - `node scripts/build-blueprint.mjs --request-file <request.json|txt> --format json --output docs/screen-specs/<name>.blueprint.json`
+- `node scripts/datav-geojson.mjs` is available as an internal helper for extracting and resolving Datav map targets during generation
 - `node scripts/build-prompt-from-image-spec.mjs --input-file <image-spec.json> --output <prompt-package.json>`
 - `node scripts/generate-screen-from-image-spec.mjs --input-file <image-spec.json> --target <project-path> --name <ScreenName>`
 - `node scripts/scaffold-screen.mjs --name SmartParkOverview --target <project-path>`

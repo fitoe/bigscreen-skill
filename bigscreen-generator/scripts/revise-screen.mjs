@@ -40,7 +40,7 @@ const revised = reviseBlueprint(fs.readFileSync(blueprintFile, 'utf8'), fs.readF
 });
 
 const projectName = args.name || revised.pageName;
-const result = generateProjectFromBlueprint(revised, {
+const result = await generateProjectFromBlueprint(revised, {
   target,
   projectName,
 });

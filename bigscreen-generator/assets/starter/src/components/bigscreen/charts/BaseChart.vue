@@ -1,5 +1,5 @@
 <template>
-  <div ref="container" class="chart"></div>
+  <div ref="container" class="h-full min-h-[240px]"></div>
 </template>
 
 <script setup lang="ts">
@@ -44,10 +44,3 @@ onBeforeUnmount(() => {
   chart?.dispose();
 });
 </script>
-
-<style scoped lang="scss">
-.chart {
-  min-height: 240px;
-  height: 100%;
-}
-</style>

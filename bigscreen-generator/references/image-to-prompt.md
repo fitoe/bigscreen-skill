@@ -1,10 +1,10 @@
-# Image To Prompt
+# Image-Driven Generation
 
-Use this when the user provides a screenshot or mockup and wants a prompt that can reproduce the dashboard with `bigscreen-generator`.
+Use this when the user provides a screenshot, design image, or mockup and wants `bigscreen-generator` to recreate the dashboard as a maintainable project.
 
 ## Goal
 
-Convert a visual dashboard reference into a stable prompt that preserves:
+Convert a visual dashboard reference into a stable prompt and generation brief that preserves:
 
 - information architecture
 - first-screen composition
@@ -13,7 +13,19 @@ Convert a visual dashboard reference into a stable prompt that preserves:
 - chart and table semantics
 - readable big-screen constraints
 
-Do not describe every pixel. Extract only what the generator can act on.
+Do not describe every pixel. Extract only what the generator can act on and turn into maintainable Vue components.
+
+## Direct image workflow
+
+When the current session supports image input, use this sequence:
+
+1. Inspect the uploaded image.
+2. Write a short `imageAnalysisSummary`.
+3. Convert that analysis into a `naturalPrompt` and `structuredPrompt`.
+4. Produce a concise blueprint summary.
+5. Generate the runnable project when the user asks for direct image-to-project output.
+
+If the image is incomplete or labels are unreadable, infer plausible semantics and say so briefly. Do not block unless the page intent is fundamentally ambiguous.
 
 ## What To Extract
 
@@ -64,7 +76,21 @@ Capture reusable panel shell traits:
 
 These should become `panelChrome` hints, not copied markup.
 
-### 5. Big-screen constraints
+### 5. Visible semantic cues
+
+Extract any readable or inferable labels that help generation:
+
+- page title
+- KPI labels
+- table headers
+- map regions
+- ranking categories
+- alert or event naming
+- product or entity names
+
+If labels are partially unreadable, prefer stable semantic replacements over placeholders such as `Item 01`.
+
+### 6. Big-screen constraints
 
 Always infer:
 
@@ -73,10 +99,15 @@ Always infer:
 - right summary should stay lighter than the main view
 - bottom table or ledger should remain readable
 - preserve panel shell style
+- preserve layout rhythm instead of evenly slicing all panels
 
 ## Output Format
 
-Return two outputs:
+Return these outputs:
+
+### `imageAnalysisSummary`
+
+A short bullet list that states what the image is telling the generator about layout, dominant modules, shell style, and likely semantics.
 
 ### `naturalPrompt`
 
@@ -99,6 +130,19 @@ moduleNotes: []
 constraints: []
 ```
 
+### `blueprintHints`
+
+Optional structured hints that make the next stage more stable:
+
+```yaml
+primaryView:
+secondaryZones: []
+preferredTableHeight:
+avoid:
+  - even panel slicing
+  - overloading the right summary column
+```
+
 ## Prompt Construction Rules
 
 - Name modules by semantic role, not just by shape.
@@ -106,16 +150,30 @@ constraints: []
 - If the screenshot shows tables, mention fixed header and scrolling body.
 - If the screenshot shows rankings or alert lists, mention auto-rotate when appropriate.
 - If exact labels are unreadable, infer generic but plausible labels.
+- If the user says "directly reference this image" or "restore this screen", continue through project generation instead of stopping after prompt construction.
 - Prefer stable phrases such as:
   - "保留模板式模块边框与标题栏背景"
   - "中间主视觉是地图"
   - "右侧为摘要与评价区"
   - "底部保留产品分析/台账区"
 
+## Visual restoration boundaries
+
+- Allowed:
+  - preserve layout rhythm
+  - preserve dominant module ordering
+  - preserve panel borders, title bars, corners, glow shells
+  - preserve map-centered or chart-centered visual hierarchy
+- Not allowed:
+  - copy full-page markup
+  - claim pixel-perfect restoration from a single screenshot
+  - reproduce hidden interactions or unreadable labels as facts
+  - inherit fragile selectors from a reference implementation
+
 ## Example Pattern
 
 ```text
-生成一个可运行的大屏首页（Vue3 + ECharts）。
+先根据上传图片提取布局与模块，再生成一个可运行的大屏首页（Vue3 + ECharts）。
 
 主题：<从图片推断的主题>
 页面类型：<推断类型>

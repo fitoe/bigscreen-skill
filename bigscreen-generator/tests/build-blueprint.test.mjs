@@ -36,8 +36,22 @@ test('parseRequestInput supports simplified Chinese prompt input', () => {
   assert.equal(request.pageType, 'overview-home');
   assert.equal(request.preferredStyle, '深蓝指挥中心');
   assert.equal(request.dataDensity, 'high');
+  assert.equal(request.mapTarget, null);
   assert.deepEqual(request.keyMetrics, ['在线设备', '告警数量', '能耗负载']);
   assert.deepEqual(request.mustHaveSections, ['kpi', 'trend', 'map', 'ranking', 'alerts', 'table']);
+});
+
+test('parseRequestInput extracts map target hints from prompt', () => {
+  const request = parseRequestInput(`生成一个可运行的大屏首页（Vue3 + ECharts）。
+主题：临沂金融服务
+关键指标：金融机构、融资需求、放款金额
+风格：深蓝指挥中心
+必须模块：kpi、地图、表格
+地图区域：临沂市兰山区
+数据密度：高`);
+
+  assert.ok(request.mapTarget);
+  assert.deepEqual(request.mapTarget.names.slice(-2), ['临沂市', '兰山区']);
 });
 
 test('generateBlueprint picks references and components for map command pages', () => {
@@ -134,4 +148,24 @@ test('generateBlueprint emits reusable panel chrome metadata from references', (
   assert.equal(typeof blueprint.panelChrome.variant, 'string');
   assert.equal(typeof blueprint.panelChrome.titleBar, 'string');
   assert.equal(typeof blueprint.panelChrome.borderStyle, 'string');
+});
+
+test('generateBlueprint carries map target metadata into the blueprint', () => {
+  const blueprint = generateBlueprint(
+    `生成一个可运行的大屏首页（Vue3 + ECharts）。
+主题：临沂金融服务
+关键指标：金融机构、融资需求、放款金额
+风格：深蓝指挥中心
+必须模块：kpi、地图、表格
+数据密度：高
+请使用临沂市兰山区地图`,
+    {
+      templateFeaturesPath,
+      maxReferences: 3,
+    },
+  );
+
+  assert.ok(blueprint.mapTarget);
+  assert.ok(blueprint.semanticProfile.mapTarget);
+  assert.deepEqual(blueprint.mapTarget.names.slice(-2), ['临沂市', '兰山区']);
 });

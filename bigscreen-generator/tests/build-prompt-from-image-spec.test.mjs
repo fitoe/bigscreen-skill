@@ -12,6 +12,8 @@ test('buildPromptFromImageSpec creates stable prompt package from image spec', (
 
   const result = buildPromptFromImageSpec(input);
 
+  assert.ok(Array.isArray(result.imageAnalysisSummary));
+  assert.match(result.imageAnalysisSummary.join('\n'), /保留布局节奏与模块外壳/);
   assert.equal(result.structuredPrompt.topic, '普惠金融数据可视化大屏');
   assert.equal(result.structuredPrompt.pageType, 'overview-home');
   assert.ok(result.structuredPrompt.mustModules.includes('map'));

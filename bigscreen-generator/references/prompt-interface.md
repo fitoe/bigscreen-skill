@@ -4,6 +4,19 @@ Use this interface when the user wants prompt-only generation without executing 
 
 The same prompt can also be saved as a plain text request file and passed into the Node scripts.
 
+## Image-first workflow
+
+If the user uploads a dashboard design image in the current session, use the image as the primary requirement source.
+
+Standard sequence:
+
+1. Output `imageAnalysisSummary`
+2. Output `normalizedPrompt`
+3. Output `blueprintSummary`
+4. Output the runnable project
+
+This keeps image-driven generation aligned with the same prompt and blueprint contracts as text-only generation.
+
 ## 中文简化输入格式
 
 ```
@@ -29,6 +42,11 @@ The same prompt can also be saved as a plain text request file and passed into t
 - Semantic profile metadata so labels, events, tables, and mock rows follow the prompt instead of fixed industry placeholders
 - Panel chrome metadata so module borders and title-bar backgrounds can inherit the chosen template shell
 - Validation summary or warnings when the generated layout violates big-screen quality rules
+
+When the request starts from an uploaded image, prepend:
+- `imageAnalysisSummary`
+- `normalizedPrompt`
+- `blueprintSummary`
 
 ## 约束
 
@@ -64,4 +82,12 @@ Example:
 风格：深蓝指挥中心
 必须模块：kpi、趋势、地图、排行、告警、表格
 数据密度：高
+```
+
+## 图片驱动示例
+
+```text
+请直接参考我上传的大屏设计图，生成一个可运行的大屏首页（Vue3 + ECharts）。
+要求尽量保留图片里的模块边框、标题栏背景、左右分栏节奏和主视觉布局，但不要复制原模板源码。
+可以使用模拟数据，生成结果要可继续编辑。
 ```
