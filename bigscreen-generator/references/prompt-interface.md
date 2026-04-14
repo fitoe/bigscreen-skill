@@ -27,6 +27,7 @@ The same prompt can also be saved as a plain text request file and passed into t
 - `docs/screen-specs/<page-name>.blueprint.json`
 - Blueprint metadata including `blockPriority`, `heightStrategy`, and per-section height policies
 - Semantic profile metadata so labels, events, tables, and mock rows follow the prompt instead of fixed industry placeholders
+- Panel chrome metadata so module borders and title-bar backgrounds can inherit the chosen template shell
 - Validation summary or warnings when the generated layout violates big-screen quality rules
 
 ## 约束

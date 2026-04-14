@@ -399,6 +399,7 @@ function renderLayoutSections(layoutPattern, groups) {
 
 function buildViewSource(projectName, blueprint) {
   const { sections, layoutPattern } = blueprint;
+  const chromeVariant = blueprint.panelChrome?.variant || 'tech-frame';
   const normalizedSections = sections.map((section, index) => {
     if (section.component !== 'PanelCard') return section;
     const name = section.purpose ? `Section${toPascalCase(section.purpose)}` : `SectionBlock${index + 1}`;
@@ -418,7 +419,7 @@ function buildViewSource(projectName, blueprint) {
 
   return `<template>
   <BigscreenLayout>
-    <ScreenShell>
+    <ScreenShell class="screen-shell--${chromeVariant}">
       <HeaderBar :title="view.title" :subtitle="view.subtitle" :status-items="view.statusItems" />
 
 ${renderedTop}
@@ -660,6 +661,12 @@ ${(blueprint.heightStrategy?.notes || []).map((item) => `- ${item}`).join('\n')}
 - entity=${blueprint.semanticProfile?.entity?.plural || ''}
 - metrics=${(blueprint.semanticProfile?.metrics || []).join(', ')}
 - eventLabel=${blueprint.semanticProfile?.eventLabel || ''}
+
+## Panel Chrome
+
+- variant=${blueprint.panelChrome?.variant || ''}
+- titleBar=${blueprint.panelChrome?.titleBar || ''}
+- borderStyle=${blueprint.panelChrome?.borderStyle || ''}
 
 ## Reference Templates
 

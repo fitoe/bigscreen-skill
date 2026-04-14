@@ -11,6 +11,8 @@ Treat template libraries such as `BigDataView` as reference corpora only. Do not
 
 Treat business requests through a generic semantic profile layer. Infer entities, metrics, events, ledgers, and narrative roles from the prompt instead of hardcoding industry-specific page presets.
 
+Preserve reusable template panel chrome when it improves the result. Border shapes, title-bar backgrounds, corners, and glow shells may be inherited as reusable visual metadata, but full-page markup and fragile selectors must still be rejected.
+
 ## Workflow
 
 1. Parse the request into:
@@ -35,6 +37,7 @@ Treat business requests through a generic semantic profile layer. Infer entities
    - height strategy
    - per-section height policy
    - semantic profile
+   - panel chrome
 8. Stop and ask the user to confirm the blueprint before generating code.
 9. After approval, generate the screen directly from the prompt response:
    - If scripts are available, you may use them, but prompt-only generation is valid and expected.

@@ -339,6 +339,42 @@ function inferSemanticProfile(request, sections) {
   };
 }
 
+function derivePanelChrome(request, references) {
+  const styleText = `${request.preferredStyle} ${request.originalPrompt}`.toLowerCase();
+  const topReference = references[0];
+  const referenceScenes = new Set(references.flatMap((item) => item.sceneTags || []));
+
+  if (/command|指挥|作战|alert|预警/.test(styleText) || referenceScenes.has('security')) {
+    return {
+      variant: 'command-angled',
+      titleBar: 'glow-tab',
+      borderStyle: 'double-frame',
+    };
+  }
+
+  if (/cyan|industrial|network|科技蓝|冷蓝/.test(styleText) || referenceScenes.has('network')) {
+    return {
+      variant: 'cyan-bracket',
+      titleBar: 'split-band',
+      borderStyle: 'bracket-frame',
+    };
+  }
+
+  if (topReference?.features?.darkTone) {
+    return {
+      variant: 'grid-frame',
+      titleBar: 'soft-band',
+      borderStyle: 'grid-outline',
+    };
+  }
+
+  return {
+    variant: 'tech-frame',
+    titleBar: 'soft-band',
+    borderStyle: 'single-frame',
+  };
+}
+
 function deriveSectionPriority(section) {
   const purpose = canonicalizeSectionToken(section.purpose);
   if (purpose === 'map') return 100;
@@ -543,6 +579,7 @@ export function generateBlueprint(requestInput, options = {}) {
     avoidEqualSplit: true,
   };
   const semanticProfile = inferSemanticProfile(request, sections);
+  const panelChrome = derivePanelChrome(request, templates);
 
   return {
     pageName: request.pageType
@@ -556,6 +593,7 @@ export function generateBlueprint(requestInput, options = {}) {
     heightStrategy,
     layoutDirectives,
     semanticProfile,
+    panelChrome,
     referenceTemplates: templates.map((template) => ({
       id: template.id,
       templateName: template.templateName,
@@ -605,6 +643,12 @@ ${Object.entries(blueprint.layoutDirectives || {})
 - metrics: ${(blueprint.semanticProfile?.metrics || []).join(', ')}
 - eventLabel: ${blueprint.semanticProfile?.eventLabel || ''}
 - tableLabel: ${blueprint.semanticProfile?.tableLabel || ''}
+
+## Panel Chrome
+
+- variant: ${blueprint.panelChrome?.variant || ''}
+- titleBar: ${blueprint.panelChrome?.titleBar || ''}
+- borderStyle: ${blueprint.panelChrome?.borderStyle || ''}
 
 ## Reference Templates
 

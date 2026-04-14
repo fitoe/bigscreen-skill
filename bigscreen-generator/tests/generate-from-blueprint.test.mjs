@@ -17,6 +17,11 @@ test('generateProjectFromBlueprint scaffolds files from blueprint', () => {
     goal: 'Support traffic dashboards for map-command-page.',
     layoutPattern: 'map-command-page',
     themeDirection: 'deep blue command center',
+    panelChrome: {
+      variant: 'command-angled',
+      titleBar: 'glow-tab',
+      borderStyle: 'double-frame',
+    },
     blockPriority: ['map', 'alerts', 'table'],
     heightStrategy: {
       overall: 'Keep map and bottom operational rail visible above the fold.',
@@ -54,12 +59,14 @@ test('generateProjectFromBlueprint scaffolds files from blueprint', () => {
   assert.match(viewSource, /MapPanel/);
   assert.match(viewSource, /AlarmTicker/);
   assert.match(viewSource, /ScrollTable/);
+  assert.match(viewSource, /screen-shell--command-angled/);
 
   const docSource = fs.readFileSync(path.join(tempDir, 'docs', 'screen-specs', 'traffic-command-center.md'), 'utf8');
   assert.match(docSource, /Reference Templates/);
   assert.match(docSource, /晋城高速综合管控大数据/);
   assert.match(docSource, /Block Priority/);
   assert.match(docSource, /Height Strategy/);
+  assert.match(docSource, /Panel Chrome/);
 });
 
 test('generateProjectFromBlueprint uses grouped layout wrappers for alarm center pages', () => {

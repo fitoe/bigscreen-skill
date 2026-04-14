@@ -34,6 +34,12 @@ Keep the map and bottom operational table visible above the fold, with the map h
 - eventLabel: Asset Events
 - tableLabel: Assets Ledger
 
+## Panel Chrome
+
+- variant: command-angled
+- titleBar: glow-tab
+- borderStyle: double-frame
+
 ## Reference Templates
 
 - 034 晋城高速综合管控大数据: 晋城高速综合管控大数据 | scenes=traffic | charts=line, bar, pie, gauge, scatter

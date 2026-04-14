@@ -42,6 +42,10 @@ semantic_profile:
   event_label:
   table_label:
   table_columns: []
+panel_chrome:
+  variant:
+  title_bar:
+  border_style:
 sections:
   - id:
     area:
@@ -129,6 +133,7 @@ sections:
   - composition rhythm
   - color and decoration direction
   - chart family selection
+  - panel border, title-bar, corner, and glow treatments
 - Do not use template references for:
   - copying exact markup
   - preserving file structure

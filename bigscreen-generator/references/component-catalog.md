@@ -16,12 +16,12 @@ Prefer these standard components before creating new ones.
 
 ### `SectionTitle`
 - Responsibility: Compact visual title for each panel section.
-- Inputs: `title`, `accent`
+- Inputs: `title`, `accent`, `panelChrome`
 - Use for: Any section that needs internal framing.
 
 ### `PanelCard`
 - Responsibility: Generic panel shell with border, glow, padding, and slot regions.
-- Inputs: `title`, `height`, `tone`
+- Inputs: `title`, `height`, `tone`, `panelChrome`
 - Use for: Standard chart and table containers.
 
 ## KPI and summary
@@ -76,4 +76,5 @@ Prefer these standard components before creating new ones.
   - two or more required sections cannot be expressed by existing components, or
   - the section introduces a new interaction or chart family.
 - If only styling differs, derive via props or theme tokens instead of creating a new file.
+- Reuse template-like border, title-bar, corner, and glow treatments through `panelChrome` before creating custom wrappers.
 - Page files should compose these components, not absorb their logic.

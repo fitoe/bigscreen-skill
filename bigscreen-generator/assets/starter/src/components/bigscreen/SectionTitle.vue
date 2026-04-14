@@ -1,7 +1,9 @@
 <template>
   <div class="section-title">
-    <span class="accent"></span>
-    <span>{{ title }}</span>
+    <span class="bar">
+      <span class="accent"></span>
+      <span>{{ title }}</span>
+    </span>
   </div>
 </template>
 
@@ -13,12 +15,23 @@ defineProps<{ title: string }>();
 .section-title {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
   font-weight: 600;
 }
 
+.bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+  padding: 0 14px 0 12px;
+  border: 1px solid var(--panel-title-border);
+  border-radius: 10px 18px 10px 10px;
+  background: var(--panel-title-bg);
+  color: var(--text-primary);
+}
+
 .accent {
-  width: 18px;
+  width: 20px;
   height: 3px;
   border-radius: 999px;
   background: linear-gradient(90deg, var(--accent-secondary), var(--accent-primary));

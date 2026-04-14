@@ -113,3 +113,25 @@ test('generateBlueprint emits domain-agnostic semantic profile metadata', () => 
   assert.equal(blueprint.semanticProfile.tableColumns[0].label, 'User');
   assert.equal(typeof blueprint.semanticProfile.eventLabel, 'string');
 });
+
+test('generateBlueprint emits reusable panel chrome metadata from references', () => {
+  const blueprint = generateBlueprint(
+    {
+      domain: 'general',
+      pageType: 'overview-home',
+      mustHaveSections: ['kpi', 'trend', 'map', 'alerts', 'table'],
+      preferredStyle: 'deep blue command center',
+      mapRequired: true,
+      dataDensity: 'high',
+    },
+    {
+      templateFeaturesPath,
+      maxReferences: 3,
+    },
+  );
+
+  assert.ok(blueprint.panelChrome);
+  assert.equal(typeof blueprint.panelChrome.variant, 'string');
+  assert.equal(typeof blueprint.panelChrome.titleBar, 'string');
+  assert.equal(typeof blueprint.panelChrome.borderStyle, 'string');
+});
