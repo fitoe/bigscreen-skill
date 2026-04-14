@@ -62,6 +62,8 @@ Preserve reusable template panel chrome when it improves the result. Border shap
 
 Use this when the user wants a prompt-only flow, without running scripts.
 
+If the user provides a dashboard screenshot or mockup image, first convert the image into a generator-ready prompt using [references/image-to-prompt.md](references/image-to-prompt.md), then continue with the normal blueprint workflow.
+
 ### 中文简化输入格式
 
 ```
@@ -126,6 +128,7 @@ Use this when the user wants a prompt-only flow, without running scripts.
 - Generation decision rules: [references/generation-rules.md](references/generation-rules.md)
 - Vue/ECharts code boundaries: [references/vue3-echarts-conventions.md](references/vue3-echarts-conventions.md)
 - Prompt scaffolds for requirement parsing and blueprinting: [references/prompt-templates.md](references/prompt-templates.md)
+- Image-to-prompt extraction guide: [references/image-to-prompt.md](references/image-to-prompt.md)
 
 ## Scripts
 
@@ -133,6 +136,8 @@ Use this when the user wants a prompt-only flow, without running scripts.
 - `node scripts/extract-template-features.mjs --source <BigDataView-path> --output references/template-index.generated.md`
 - `node scripts/build-curated-catalog.mjs --input references/template-features.json --output references/template-index.curated.md`
 - `node scripts/build-blueprint.mjs --request-file <request.json|txt> --format json --output docs/screen-specs/<name>.blueprint.json`
+- `node scripts/build-prompt-from-image-spec.mjs --input-file <image-spec.json> --output <prompt-package.json>`
+- `node scripts/generate-screen-from-image-spec.mjs --input-file <image-spec.json> --target <project-path> --name <ScreenName>`
 - `node scripts/scaffold-screen.mjs --name SmartParkOverview --target <project-path>`
 - `node scripts/generate-screen.mjs --request-file <request.json|txt> --target <project-path> --name <ScreenName>`
 - `node scripts/revise-blueprint.mjs --blueprint-file <existing.blueprint.json> --revision-file <revision.txt> --format json --output docs/screen-specs/<name>.blueprint.json`

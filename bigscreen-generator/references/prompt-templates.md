@@ -23,3 +23,9 @@ Summarize each selected reference template by layout type, suitable page type, c
 ```text
 Generate a maintainable Vue 3 + TypeScript + ECharts page from the approved blueprint. Reuse standard components first, keep layout, charts, and data assembly separated, and produce mock data, theme tokens, and a page spec document.
 ```
+
+## Image To Prompt Prompt
+
+```text
+Analyze the provided dashboard screenshot and convert it into a generator-ready prompt. Extract page type, layout narrative, required modules, key metrics, panel chrome, module notes, and first-screen constraints. Preserve reusable panel shell traits but do not copy page markup.
+```
