@@ -12,9 +12,11 @@ export function buildProjectManifest(blueprint) {
       },
     ],
     files: [
+      { path: 'index.html', kind: 'html' },
       { path: 'package.json', kind: 'config' },
       { path: 'vite.config.ts', kind: 'config' },
       { path: 'src/main.ts', kind: 'entry' },
+      { path: 'src/router/index.ts', kind: 'router' },
       { path: `src/views/${pageName}.vue`, kind: 'view' },
     ],
   };

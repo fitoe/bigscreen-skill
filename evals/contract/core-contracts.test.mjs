@@ -45,9 +45,11 @@ test('request to blueprint to manifest pipeline normalizes the minimal contract'
     },
   ]);
   assert.deepEqual(manifest.files, [
+    { path: 'index.html', kind: 'html' },
     { path: 'package.json', kind: 'config' },
     { path: 'vite.config.ts', kind: 'config' },
     { path: 'src/main.ts', kind: 'entry' },
+    { path: 'src/router/index.ts', kind: 'router' },
     { path: 'src/views/OverviewHome.vue', kind: 'view' },
   ]);
 });
@@ -82,9 +84,11 @@ test('buildProjectManifest falls back to a safe default page name for blank inpu
     },
   ]);
   assert.deepEqual(manifest.files, [
+    { path: 'index.html', kind: 'html' },
     { path: 'package.json', kind: 'config' },
     { path: 'vite.config.ts', kind: 'config' },
     { path: 'src/main.ts', kind: 'entry' },
+    { path: 'src/router/index.ts', kind: 'router' },
     { path: 'src/views/GeneratedPage.vue', kind: 'view' },
   ]);
 });

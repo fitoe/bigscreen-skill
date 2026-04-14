@@ -1,10 +1,15 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
-import { execFileSync } from 'node:child_process';
 
-import { generateBlueprint, formatBlueprintMarkdown } from './build-blueprint.mjs';
-import { generateProjectFromBlueprint } from './generate-from-blueprint.mjs';
+import { normalizeRequest } from '../core/request/normalize-request.mjs';
+import { buildBlueprint } from '../core/blueprint/build-blueprint.mjs';
+import { buildProjectManifest } from '../core/manifest/build-project-manifest.mjs';
+import { applyBlueprintPolicies } from '../core/policies/apply-blueprint-policies.mjs';
+import { applyManifestPolicies } from '../core/policies/apply-manifest-policies.mjs';
+import { generateProject } from '../generators/project/generate-project.mjs';
+import { validateBuild } from '../validators/build/validate-build.mjs';
+import { formatBlueprintMarkdown } from './build-blueprint.mjs';
 
 function parseArgs(argv) {
   const args = {};
@@ -17,6 +22,22 @@ function parseArgs(argv) {
   return args;
 }
 
+function parseRequestInput(raw) {
+  if (typeof raw !== 'string') return raw;
+  const trimmed = raw.trim();
+  if (!trimmed) return {};
+  try {
+    return JSON.parse(trimmed);
+  } catch {
+    return {
+      sourceMode: 'text',
+      pageIntent: 'overview',
+      styleDirection: 'deep blue',
+      requiredModules: [],
+    };
+  }
+}
+
 const args = parseArgs(process.argv);
 const requestFile = args['request-file'] ? path.resolve(args['request-file']) : null;
 const target = args.target ? path.resolve(args.target) : null;
@@ -26,34 +47,22 @@ if (!requestFile || !target) {
   process.exit(1);
 }
 
-const request = fs.readFileSync(requestFile, 'utf8');
-const blueprint = generateBlueprint(request, {
-  templateFeaturesPath: args['template-features'] ? path.resolve(args['template-features']) : undefined,
-  maxReferences: args.limit ? Number(args.limit) : undefined,
-});
+const rawRequest = fs.readFileSync(requestFile, 'utf8');
+const request = normalizeRequest(parseRequestInput(rawRequest));
+const blueprint = applyBlueprintPolicies(buildBlueprint(request));
+const manifest = applyManifestPolicies(buildProjectManifest(blueprint));
 
-const result = await generateProjectFromBlueprint(blueprint, {
-  target,
-  projectName: args.name || blueprint.pageName,
-});
+await generateProject(manifest, { target });
 
 const docsDir = path.join(target, 'docs', 'screen-specs');
 fs.mkdirSync(docsDir, { recursive: true });
-fs.writeFileSync(path.join(docsDir, `${result.slug}.blueprint.json`), JSON.stringify(blueprint, null, 2), 'utf8');
-fs.writeFileSync(path.join(docsDir, `${result.slug}.blueprint.md`), formatBlueprintMarkdown(blueprint), 'utf8');
+fs.writeFileSync(path.join(docsDir, `${manifest.projectName}.blueprint.json`), JSON.stringify(blueprint, null, 2), 'utf8');
+fs.writeFileSync(path.join(docsDir, `${manifest.projectName}.blueprint.md`), formatBlueprintMarkdown(blueprint), 'utf8');
+fs.writeFileSync(path.join(docsDir, `${manifest.projectName}.manifest.json`), JSON.stringify(manifest, null, 2), 'utf8');
 
-console.log(`Generated screen project at ${result.target}`);
-
-if (args.playwright) {
-  const validatorArgs = [
-    path.resolve('scripts/playwright-validate-screen.mjs'),
-    '--target',
-    result.target,
-  ];
-  if (!args['output-dir'] && !args['keep-playwright-artifacts']) validatorArgs.push('--cleanup');
-  if (args['install-deps']) validatorArgs.push('--install-deps');
-  if (args['output-dir']) validatorArgs.push('--output-dir', path.resolve(args['output-dir']));
-  if (args['reference-spec-file']) validatorArgs.push('--reference-spec-file', path.resolve(args['reference-spec-file']));
-  if (args['reference-image']) validatorArgs.push('--reference-image', path.resolve(args['reference-image']));
-  execFileSync(process.execPath, validatorArgs, { stdio: 'inherit' });
+if (args.build) {
+  const report = await validateBuild(target);
+  fs.writeFileSync(path.join(docsDir, `${manifest.projectName}.build.json`), JSON.stringify(report, null, 2), 'utf8');
 }
+
+console.log(`Generated screen project at ${target}`);
