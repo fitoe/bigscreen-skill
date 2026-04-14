@@ -1,0 +1,21 @@
+{
+  "$id": "schemas/blueprint.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["pageName", "layoutPattern", "sections"],
+  "properties": {
+    "pageName": {
+      "type": "string"
+    },
+    "layoutPattern": {
+      "type": "string"
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  }
+}

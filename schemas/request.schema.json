@@ -1,0 +1,19 @@
+{
+  "$id": "schemas/request.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["sourceMode", "pageIntent", "styleDirection"],
+  "properties": {
+    "sourceMode": {
+      "type": "string",
+      "enum": ["text", "image", "revision"]
+    },
+    "pageIntent": {
+      "type": "string"
+    },
+    "styleDirection": {
+      "type": "string"
+    }
+  }
+}

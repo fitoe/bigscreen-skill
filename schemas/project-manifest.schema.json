@@ -1,0 +1,24 @@
+{
+  "$id": "schemas/project-manifest.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["projectName", "routes", "files"],
+  "properties": {
+    "projectName": {
+      "type": "string"
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  }
+}
