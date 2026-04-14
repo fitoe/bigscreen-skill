@@ -8,5 +8,7 @@
 /*.gif
 
 # node
-/node_modules/
+node_modules/
+/assets/starter/src/**/*.js
+/assets/starter/tsconfig.tsbuildinfo
 .DS_Store
