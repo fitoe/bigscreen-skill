@@ -24,6 +24,17 @@ const defaultSectionsByPageType = {
   'map-command-page': ['kpi', 'map', 'trend', 'compare', 'ranking', 'alerts', 'table'],
 };
 
+const complexityByPurpose = {
+  map: 5,
+  trend: 4,
+  alerts: 4,
+  table: 4,
+  compare: 3,
+  composition: 2,
+  ranking: 2,
+  kpi: 1,
+};
+
 const promptLabelMap = {
   domain: ['theme', '主题', 'domain', '行业', '场景'],
   pageType: ['page type', '页面类型', 'page', '页面'],
@@ -162,6 +173,7 @@ function parsePromptInput(raw) {
     dataDensity: normalizeDensity(densityValue),
     mapRequired: normalizedSections.includes('map') || /地图|map|geo/i.test(text),
     refreshExpectation,
+    originalPrompt: text,
   };
 }
 
@@ -187,6 +199,7 @@ export function parseRequestInput(raw) {
     dataDensity: normalizeDensity(parsed.dataDensity || 'medium'),
     mapRequired: Boolean(parsed.mapRequired) || normalizeArray(parsed.mustHaveSections).some((item) => canonicalizeSectionToken(item) === 'map'),
     refreshExpectation: parsed.refreshExpectation || 'realtime',
+    originalPrompt: parsed.originalPrompt || '',
   };
 }
 
@@ -270,10 +283,10 @@ function deriveSectionPriority(section) {
   return 76;
 }
 
-function deriveHeightPolicy(section) {
+function deriveHeightPolicy(section, context = {}) {
   const type = section.dataContract.type;
   if (type === 'metric-list') {
-    return { fixed: false, min: 120, flex: 0.8, scroll: false, autoRotate: false };
+    return { fixed: false, min: 120, flex: context.leadershipMode ? 0.72 : 0.8, scroll: false, autoRotate: false };
   }
   if (type === 'map-payload') {
     return { fixed: false, min: 360, flex: 1.8, scroll: false, autoRotate: false };
@@ -282,7 +295,13 @@ function deriveHeightPolicy(section) {
     return { fixed: false, min: 220, flex: 1.1, scroll: true, autoRotate: true };
   }
   if (type === 'row-list') {
-    return { fixed: false, min: 260, flex: 1.35, scroll: true, autoRotate: true };
+    return {
+      fixed: false,
+      min: context.emphasizeBottomTable ? 320 : 260,
+      flex: context.emphasizeBottomTable ? 1.6 : 1.35,
+      scroll: true,
+      autoRotate: true,
+    };
   }
 
   const purpose = canonicalizeSectionToken(section.purpose);
@@ -299,7 +318,7 @@ function deriveHeightPolicy(section) {
   return { fixed: false, min: 220, flex: 1, scroll: false, autoRotate: false };
 }
 
-function buildHeightStrategy(request, sections) {
+function buildHeightStrategy(request, sections, directives = {}) {
   const priorities = sections
     .slice()
     .sort((a, b) => b.priority - a.priority)
@@ -328,15 +347,93 @@ function buildHeightStrategy(request, sections) {
   if (hasMap) {
     notes.push('Preserve side-column height by keeping KPI blocks out of a full-width top strip.');
   }
+  if (directives.emphasizeBottomTable) {
+    notes.push('Increase bottom table height so operational rows remain readable above the fold.');
+  }
+  if (directives.compactRightSummary) {
+    notes.push('Keep the right-side summary zone light: one dominant visual plus one supporting module at most.');
+  }
 
   return { overall, notes };
+}
+
+function inferDirectives(request, desiredSections) {
+  const prompt = String(request.originalPrompt || '').toLowerCase();
+  const directives = {
+    leadershipMode: /领导|executive|leader/.test(prompt),
+    emphasizeBottomTable: /底部表格|table.*(larger|taller|bigger)|加高.*表格|表格加高/.test(prompt),
+    compactRightSummary: /右侧摘要|summary zone|不要太复杂|简洁图例|single visual/.test(prompt),
+    preserveOverview: /首页|overview-home|保留首页|不要切换成专题页/.test(prompt),
+    preferAlerts: /告警优先|alert first|先看告警/.test(prompt),
+  };
+
+  if (directives.leadershipMode && desiredSections.includes('table') && !directives.emphasizeBottomTable) {
+    directives.emphasizeBottomTable = false;
+  }
+
+  return directives;
+}
+
+function maybeExpandSections(desiredSections, directives) {
+  const result = [...desiredSections];
+  if (directives.compactRightSummary) {
+    if (!result.includes('ranking')) result.push('ranking');
+    if (!result.includes('composition')) result.push('composition');
+  }
+  return [...new Set(result)];
+}
+
+function assignAreas(sections, request, directives) {
+  const nonTop = sections.filter((section) => section.component !== 'StatCard');
+  const sorted = nonTop.slice().sort((a, b) => b.priority - a.priority);
+  const hero = sorted[0]?.purpose;
+  const pageType = directives.preserveOverview ? 'overview-home' : request.pageType;
+
+  for (const section of sections) {
+    const purpose = section.purpose;
+    if (section.component === 'StatCard') {
+      section.area = 'top';
+      continue;
+    }
+
+    if (pageType === 'overview-home') {
+      if (purpose === hero) section.area = 'center';
+      else if (purpose === 'table') section.area = 'bottom';
+      else if (purpose === 'alerts') section.area = directives.preferAlerts ? 'center' : 'bottom';
+      else if (purpose === 'ranking' || purpose === 'composition') section.area = 'right';
+      else if (purpose === 'compare') section.area = 'left';
+      else if (purpose === 'trend') section.area = hero === 'trend' ? 'center' : 'left';
+      else if (purpose === 'map') section.area = hero === 'map' ? 'center' : 'left';
+      else section.area = 'side';
+      continue;
+    }
+
+    if (pageType === 'map-command-page') {
+      if (purpose === 'map') section.area = 'center';
+      else if (purpose === 'table' || purpose === 'alerts') section.area = 'bottom';
+      else if (purpose === 'ranking' || purpose === 'composition') section.area = 'right';
+      else section.area = 'left';
+      continue;
+    }
+
+    if (pageType === 'alarm-center') {
+      if (purpose === 'alerts') section.area = 'center';
+      else if (purpose === 'table') section.area = 'bottom';
+      else if (purpose === 'composition' || purpose === 'ranking') section.area = 'right';
+      else section.area = 'left';
+      continue;
+    }
+  }
+
+  return pageType;
 }
 
 export function generateBlueprint(requestInput, options = {}) {
   const request = parseRequestInput(requestInput);
   const templateFeaturesPath = options.templateFeaturesPath || path.resolve(__dirname, '..', 'references', 'template-features.json');
   const maxReferences = Number(options.maxReferences || 5);
-  const desiredSections = inferSections(request);
+  const directives = inferDirectives(request, inferSections(request));
+  const desiredSections = maybeExpandSections(inferSections(request), directives);
   const templates = loadTemplateFeatures(templateFeaturesPath)
     .map((template) => ({
       ...template,
@@ -358,15 +455,24 @@ export function generateBlueprint(requestInput, options = {}) {
     return {
       ...baseSection,
       priority: deriveSectionPriority(baseSection),
-      heightPolicy: deriveHeightPolicy(baseSection),
+      heightPolicy: deriveHeightPolicy(baseSection, directives),
     };
   });
+
+  const layoutPattern = assignAreas(sections, request, directives);
 
   const blockPriority = sections
     .slice()
     .sort((a, b) => b.priority - a.priority)
     .map((section) => section.purpose);
-  const heightStrategy = buildHeightStrategy(request, sections);
+  const heightStrategy = buildHeightStrategy(request, sections, directives);
+  const rightSummaryCount = sections.filter((section) => ['right', 'side'].includes(section.area)).length;
+  const layoutDirectives = {
+    ...directives,
+    heroSection: blockPriority[0] || null,
+    rightSummaryCount,
+    avoidEqualSplit: true,
+  };
 
   return {
     pageName: request.pageType
@@ -374,10 +480,11 @@ export function generateBlueprint(requestInput, options = {}) {
       .map((part) => part[0].toUpperCase() + part.slice(1))
       .join(''),
     goal: `Support ${request.domain} dashboards for ${request.pageType}.`,
-    layoutPattern: request.pageType,
+    layoutPattern,
     themeDirection: buildThemeDirection(request, templates),
     blockPriority,
     heightStrategy,
+    layoutDirectives,
     referenceTemplates: templates.map((template) => ({
       id: template.id,
       templateName: template.templateName,
@@ -414,6 +521,12 @@ ${(blueprint.blockPriority || []).map((item) => `- ${item}`).join('\n')}
 ${blueprint.heightStrategy?.overall || ''}
 
 ${(blueprint.heightStrategy?.notes || []).map((item) => `- ${item}`).join('\n')}
+
+## Layout Directives
+
+${Object.entries(blueprint.layoutDirectives || {})
+  .map(([key, value]) => `- ${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
+  .join('\n')}
 
 ## Reference Templates
 

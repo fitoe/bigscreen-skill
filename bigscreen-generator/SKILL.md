@@ -46,6 +46,11 @@ Treat template libraries such as `BigDataView` as reference corpora only. Do not
     - theme tokens
     - page spec doc
     - blueprint json and markdown artifacts
+11. For follow-up change requests, revise the existing blueprint instead of regenerating blindly:
+    - apply the new prompt as a blueprint revision
+    - preserve page intent unless the user explicitly requests a different page type
+    - re-run project generation from the revised blueprint
+12. Run `scripts/validate-screen-output.mjs` on the generated result before claiming completion.
 
 ## Prompt Interface (Direct Use)
 
@@ -85,7 +90,14 @@ Use this when the user wants a prompt-only flow, without running scripts.
 必须模块：kpi、趋势、地图、排行、告警、表格
 数据密度：高
 ```
-11. Run `scripts/validate-screen-output.mjs` on the generated result before claiming completion.
+
+### 追加改版示例
+
+```
+保留首页，不要切专题页。
+右侧摘要区改成排行和构成，不要太复杂。
+底部表格加高一点。
+```
 
 ## Hard Rules
 
@@ -116,6 +128,8 @@ Use this when the user wants a prompt-only flow, without running scripts.
 - `node scripts/build-blueprint.mjs --request-file <request.json|txt> --format json --output docs/screen-specs/<name>.blueprint.json`
 - `node scripts/scaffold-screen.mjs --name SmartParkOverview --target <project-path>`
 - `node scripts/generate-screen.mjs --request-file <request.json|txt> --target <project-path> --name <ScreenName>`
+- `node scripts/revise-blueprint.mjs --blueprint-file <existing.blueprint.json> --revision-file <revision.txt> --format json --output docs/screen-specs/<name>.blueprint.json`
+- `node scripts/revise-screen.mjs --blueprint-file <existing.blueprint.json> --revision-file <revision.txt> --target <project-path> --name <ScreenName>`
 - `node scripts/validate-screen-output.mjs --target <project-path>`
 
 Use the scripts for deterministic setup and validation. Prefer updating the generated output rather than rewriting the same boilerplate by hand.

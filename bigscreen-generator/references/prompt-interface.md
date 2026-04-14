@@ -26,6 +26,7 @@ The same prompt can also be saved as a plain text request file and passed into t
 - `docs/screen-specs/<page-name>.blueprint.md`
 - `docs/screen-specs/<page-name>.blueprint.json`
 - Blueprint metadata including `blockPriority`, `heightStrategy`, and per-section height policies
+- Validation summary or warnings when the generated layout violates big-screen quality rules
 
 ## 约束
 
@@ -39,6 +40,18 @@ The same prompt can also be saved as a plain text request file and passed into t
 - Enforce big-screen readability floors for KPI, titles, axes, and tables.
 - Auto-resize charts with stable container heights.
 - Default-enable list auto-rotate and fixed table headers with hidden native scrollbars.
+
+## Revision flow
+
+Use a short follow-up prompt to revise the existing screen instead of rebuilding from scratch.
+
+Example:
+
+```
+保留首页，不要切专题页。
+右侧摘要区改成排行和构成，不要太复杂。
+底部表格加高一点。
+```
 
 ## 中文简化示例
 

@@ -33,6 +33,44 @@ function resolveAliasImport(fromFile, specifier, targetRoot) {
   return path.join(targetRoot, 'src', relative);
 }
 
+function analyzeBlueprintQuality(blueprint, warnings) {
+  if (!Array.isArray(blueprint.blockPriority) || !blueprint.blockPriority.length) {
+    warnings.push('Missing blueprint blockPriority metadata.');
+  }
+  if (!blueprint.heightStrategy?.overall) {
+    warnings.push('Missing blueprint heightStrategy metadata.');
+  }
+
+  const sections = Array.isArray(blueprint.sections) ? blueprint.sections : [];
+  if (sections.length > 8) {
+    warnings.push(`Section count is high (${sections.length}); consider merging weak modules to protect readability.`);
+  }
+
+  const rightSummary = sections.filter((section) => ['right', 'side'].includes(section.area));
+  const bottomTable = sections.find((section) => section.purpose === 'table');
+  const sameMinHeights = new Set(
+    sections
+      .map((section) => section.heightPolicy?.min)
+      .filter((value) => typeof value === 'number'),
+  );
+  const smallChartPanels = sections.filter(
+    (section) => section.dataContract?.type === 'chart-series' && Number(section.heightPolicy?.min || 0) < 220,
+  );
+
+  if (rightSummary.length > 2) {
+    warnings.push(`Right-side summary zone is too dense (${rightSummary.length} modules).`);
+  }
+  if (bottomTable && Number(bottomTable.heightPolicy?.min || 0) < 240) {
+    warnings.push(`Bottom table height is low (${bottomTable.heightPolicy?.min}px).`);
+  }
+  if (sameMinHeights.size <= 1 && sections.length >= 4) {
+    warnings.push('Section minimum heights are too uniform; this suggests even area splitting.');
+  }
+  if (smallChartPanels.length >= 2) {
+    warnings.push('Multiple chart panels have low minimum heights; consider promoting one primary chart.');
+  }
+}
+
 const args = parseArgs(process.argv);
 const target = args.target ? path.resolve(args.target) : null;
 
@@ -56,10 +94,20 @@ const required = [
 for (const file of required) assertExists(file, errors);
 
 const files = walk(path.join(target, 'src'));
+const blueprintFiles = walk(path.join(target, 'docs', 'screen-specs')).filter((file) => file.endsWith('.blueprint.json'));
 const pageFiles = files.filter((file) => file.includes(`${path.sep}views${path.sep}`) && file.endsWith('.vue'));
 for (const file of pageFiles) {
   const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/).length;
   if (lines > 260) warnings.push(`Page file is large (${lines} lines): ${file}`);
+}
+
+for (const blueprintFile of blueprintFiles) {
+  try {
+    const blueprint = JSON.parse(fs.readFileSync(blueprintFile, 'utf8'));
+    analyzeBlueprintQuality(blueprint, warnings);
+  } catch (error) {
+    warnings.push(`Unable to parse blueprint file: ${blueprintFile}`);
+  }
 }
 
 for (const file of files.filter((entry) => /\.(vue|ts|scss|css)$/i.test(entry))) {

@@ -110,6 +110,8 @@ sections:
 - Default-enable: chart auto resize, long list auto-rotate, fixed table header, hidden native scrollbars, font-size floor.
 - For each section, record: priority, height strategy, and whether it is fixed/min/flex/scroll/auto-rotate.
 - Explicitly block: even area splitting, multiple charts in tiny panels, summary panels more complex than primary visuals, and admin-style dense typography.
+- For revision prompts, update the existing blueprint first, then regenerate from the revised blueprint.
+- Preserve page type and first-screen narrative unless the revision explicitly requests a different page intent.
 
 ## Reference usage rules
 
@@ -131,3 +133,4 @@ sections:
 - Are chart options isolated from layout?
 - Are tokens used instead of repeated literal colors?
 - Is there enough mock data to render the page without backend wiring?
+- Does the validation output flag missing blueprint metadata or weak first-screen composition?
