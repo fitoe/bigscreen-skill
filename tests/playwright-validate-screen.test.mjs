@@ -62,6 +62,40 @@ test('evaluateBrowserSnapshot compares reference-driven expectations', () => {
   assert.match(result.warnings.join('\n'), /table is not placed at the bottom/);
 });
 
+test('evaluateBrowserSnapshot reports advanced layout and composition regressions', () => {
+  const result = evaluateBrowserSnapshot(
+    {
+      pageFitsViewport: true,
+      verticalScrollbar: false,
+      horizontalScrollbar: false,
+      outOfBoundsPanels: [],
+      minFontSize: 14,
+      tableVisibleRows: [{ rows: 5, scrollable: false, shouldScroll: true }],
+      largestRole: 'map-panel',
+      roleCounts: { 'map-panel': 1, 'stat-card': 6, chart: 1 },
+      roleZones: { 'map-panel': 'center' },
+      bandRoles: { left: ['stat-card'], center: ['map-panel'], right: ['chart'], bottom: ['scroll-table'] },
+      panelChrome: 'grid-frame',
+      panelOverflowCount: 2,
+      rootLayout: { shellPaddingX: 8, shellPaddingY: 10, headerHeight: 96, bodyCutOff: true, viewportHeightMismatch: true },
+      mapCenterOffset: { x: 0.19, y: 0.16 },
+      fixedCardGroups: [{ role: 'stat-card', total: 6, clipped: 1, verticalCoverage: 0.71 }],
+      chartLegendOverlaps: 1,
+    },
+    { blockPriority: ['map'] },
+    null,
+  );
+
+  assert.equal(result.status, 'fail');
+  assert.match(result.findings.join('\n'), /panel content area\(s\) overflow/);
+  assert.match(result.findings.join('\n'), /header height was not correctly accounted for/);
+  assert.match(result.findings.join('\n'), /fixed-count card group is clipped/);
+  assert.match(result.findings.join('\n'), /table should scroll or auto-rotate/);
+  assert.match(result.warnings.join('\n'), /outer margin is too small/);
+  assert.match(result.warnings.join('\n'), /map is visibly off-center/);
+  assert.match(result.warnings.join('\n'), /chart and legend overlap/);
+});
+
 test('buildValidationOutputDir defaults to system temp artifacts directory', () => {
   const target = path.resolve('tmp', 'demo-screen');
   const outputDir = buildValidationOutputDir({ target });

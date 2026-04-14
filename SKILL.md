@@ -13,6 +13,10 @@ Treat business requests through a generic semantic profile layer. Infer entities
 
 Preserve reusable template panel chrome when it improves the result. Border shapes, title-bar backgrounds, corners, and glow shells may be inherited as reusable visual metadata, but full-page markup and fragile selectors must still be rejected.
 
+Maintain readable outer margins instead of pressing the main content against the viewport edge.
+Prioritize information hierarchy, whitespace rhythm, and panel emphasis over mechanically copying every border or decorative fragment from a reference image.
+Treat chart-adjacent copy for pie, ring, and composition modules as live legends by default unless the requirement explicitly asks for explanatory text.
+
 When a map page names a province, city, district, county, or explicit adcode, resolve the area through Datav GeoJSON boundaries and use the real boundary file in the generated map component when possible.
 
 ## Workflow

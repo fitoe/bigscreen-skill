@@ -143,6 +143,37 @@ export function evaluateBrowserSnapshot(snapshot, blueprint = null, referenceSpe
     const lowTable = snapshot.tableVisibleRows.find((item) => item.rows < 3);
     if (lowTable) findings.push(`A table shows too few visible rows (${lowTable.rows}).`);
     else passes.push('Visible table rows meet the minimum threshold.');
+
+    const missingScroll = snapshot.tableVisibleRows.find((item) => item.shouldScroll && !item.scrollable);
+    if (missingScroll) findings.push('A table should scroll or auto-rotate based on its content volume, but scrolling is not enabled.');
+  }
+
+  if (snapshot.panelOverflowCount > 0) {
+    findings.push(`Detected ${snapshot.panelOverflowCount} panel content area(s) overflow their assigned layout box.`);
+  }
+
+  if (snapshot.rootLayout?.bodyCutOff || snapshot.rootLayout?.viewportHeightMismatch) {
+    findings.push('Main layout appears cropped because the header height was not correctly accounted for before body sizing.');
+  }
+
+  if ((snapshot.rootLayout?.shellPaddingX ?? 0) < 16 || (snapshot.rootLayout?.shellPaddingY ?? 0) < 16) {
+    warnings.push('Dashboard outer margin is too small; main content is pressed too close to the viewport edge.');
+  }
+
+  if (snapshot.fixedCardGroups?.length) {
+    const clippedGroup = snapshot.fixedCardGroups.find((group) => group.clipped > 0);
+    if (clippedGroup) findings.push('A fixed-count card group is clipped instead of being resized to remain fully visible.');
+
+    const sparseGroup = snapshot.fixedCardGroups.find((group) => group.verticalCoverage < 0.8);
+    if (sparseGroup) warnings.push('A fixed-count card group is not evenly distributed vertically, leaving avoidable blank space.');
+  }
+
+  if (snapshot.mapCenterOffset && (Math.abs(snapshot.mapCenterOffset.x) > 0.12 || Math.abs(snapshot.mapCenterOffset.y) > 0.12)) {
+    warnings.push('The map is visibly off-center inside its container.');
+  }
+
+  if (snapshot.chartLegendOverlaps > 0) {
+    warnings.push('At least one chart and legend overlap; the composition should reflow before compressing content.');
   }
 
   const priorityPurpose = blueprint?.blockPriority?.[0];
@@ -220,6 +251,10 @@ export async function runPlaywrightValidation(options) {
     await page.screenshot({ path: path.join(outputDir, 'playwright-screen.png'), fullPage: false });
 
     const snapshot = await page.evaluate(() => {
+      function asHTMLElement(node) {
+        return node instanceof HTMLElement ? node : null;
+      }
+
       function zoneFromRect(rect, viewport) {
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
@@ -232,9 +267,13 @@ export async function runPlaywrightValidation(options) {
       const viewport = { width: window.innerWidth, height: window.innerHeight };
       const pageFitsViewport = doc.scrollHeight <= viewport.height + 1 && doc.scrollWidth <= viewport.width + 1;
       const panelChrome = document.querySelector('[data-panel-chrome]')?.getAttribute('data-panel-chrome') || '';
+      const shellNode = asHTMLElement(document.querySelector('[data-bigscreen-role="screen-shell"]'));
+      const shellStyle = shellNode ? getComputedStyle(shellNode) : null;
+      const headerNode = asHTMLElement(document.querySelector('header'));
 
       const panels = [...document.querySelectorAll('[data-panel-card]')].map((node) => {
         const rect = node.getBoundingClientRect();
+        const element = asHTMLElement(node);
         return {
           left: rect.left,
           top: rect.top,
@@ -242,12 +281,14 @@ export async function runPlaywrightValidation(options) {
           bottom: rect.bottom,
           width: rect.width,
           height: rect.height,
+          overflows: element ? element.scrollHeight > element.clientHeight + 1 || element.scrollWidth > element.clientWidth + 1 : false,
         };
       });
 
       const outOfBoundsPanels = panels.filter(
         (panel) => panel.left < -1 || panel.top < -1 || panel.right > viewport.width + 1 || panel.bottom > viewport.height + 1,
       );
+      const panelOverflowCount = panels.filter((panel) => panel.overflows).length;
 
       const visibleTextNodes = [...document.querySelectorAll('body *')]
         .filter((node) => node instanceof HTMLElement && node.innerText?.trim())
@@ -287,14 +328,77 @@ export async function runPlaywrightValidation(options) {
       };
 
       const tableVisibleRows = [...document.querySelectorAll('[data-bigscreen-role="scroll-table"]')].map((table) => {
+        const tableElement = asHTMLElement(table);
         const viewportNode = table.querySelector('[data-table-viewport]');
         const cells = [...table.querySelectorAll('[data-table-cell]')];
         const uniqueTops = [...new Set(cells.map((cell) => Math.round(cell.getBoundingClientRect().top)))];
+        const scrollableHost = viewportNode || tableElement;
         return {
           rows: Math.max(0, uniqueTops.length),
           viewportHeight: viewportNode?.getBoundingClientRect().height || 0,
+          scrollable: Boolean(scrollableHost && scrollableHost.scrollHeight > scrollableHost.clientHeight + 1),
+          shouldScroll: Boolean(scrollableHost && uniqueTops.length > 6),
         };
       });
+
+      const mapNode = asHTMLElement(document.querySelector('[data-bigscreen-role="map-panel"]'));
+      const mapRect = mapNode?.getBoundingClientRect();
+      const mapCenterOffset = mapRect
+        ? {
+            x: (mapRect.left + mapRect.width / 2 - viewport.width / 2) / viewport.width,
+            y: (mapRect.top + mapRect.height / 2 - viewport.height / 2) / viewport.height,
+          }
+        : null;
+
+      const fixedCardGroups = [...document.querySelectorAll('[data-bigscreen-role]')]
+        .reduce((acc, node) => {
+          const element = asHTMLElement(node);
+          const role = node.getAttribute('data-bigscreen-role') || '';
+          if (!element || !role) return acc;
+          const parent = element.parentElement;
+          if (!parent) return acc;
+          const key = `${role}::${[...parent.children].filter((child) => child.getAttribute?.('data-bigscreen-role') === role).length}`;
+          if (![4, 5, 6, 8].includes(Number(key.split('::')[1]))) return acc;
+          if (!acc.has(parent)) acc.set(parent, { role, items: [] });
+          acc.get(parent).items.push(element);
+          return acc;
+        }, new Map())
+        .values()
+        .map((group) => {
+          const parentRect = group.items[0]?.parentElement?.getBoundingClientRect();
+          const tops = group.items.map((item) => item.getBoundingClientRect().top).sort((a, b) => a - b);
+          const bottoms = group.items.map((item) => item.getBoundingClientRect().bottom);
+          const clipped = group.items.filter((item) => {
+            const rect = item.getBoundingClientRect();
+            return rect.bottom > (parentRect?.bottom || 0) + 1 || rect.right > (parentRect?.right || 0) + 1;
+          }).length;
+          return {
+            role: group.role,
+            total: group.items.length,
+            clipped,
+            verticalCoverage: parentRect ? (Math.max(...bottoms) - Math.min(...tops)) / Math.max(parentRect.height, 1) : 1,
+          };
+        });
+
+      const chartLegendOverlaps = [...document.querySelectorAll('[data-bigscreen-role="chart"]')]
+        .reduce((count, chartNode) => {
+          const chartRect = chartNode.getBoundingClientRect();
+          const legends = [...chartNode.parentElement?.querySelectorAll('[class*="legend"], [data-chart-legend]') || []];
+          const overlaps = legends.some((legend) => {
+            const rect = legend.getBoundingClientRect();
+            return !(rect.right < chartRect.left || rect.left > chartRect.right || rect.bottom < chartRect.top || rect.top > chartRect.bottom);
+          });
+          return count + (overlaps ? 1 : 0);
+        }, 0);
+
+      const bodyPanels = panels.length ? Math.max(...panels.map((panel) => panel.bottom)) : 0;
+      const rootLayout = {
+        shellPaddingX: shellStyle ? Number.parseFloat(shellStyle.paddingLeft) + Number.parseFloat(shellStyle.paddingRight) : 0,
+        shellPaddingY: shellStyle ? Number.parseFloat(shellStyle.paddingTop) + Number.parseFloat(shellStyle.paddingBottom) : 0,
+        headerHeight: headerNode?.getBoundingClientRect().height || 0,
+        bodyCutOff: bodyPanels > viewport.height + 1,
+        viewportHeightMismatch: Boolean(shellNode && Math.abs(shellNode.getBoundingClientRect().height - viewport.height) > 2),
+      };
 
       return {
         viewport,
@@ -303,12 +407,17 @@ export async function runPlaywrightValidation(options) {
         horizontalScrollbar: doc.scrollWidth > viewport.width + 1,
         panelChrome,
         outOfBoundsPanels,
+        panelOverflowCount,
         minFontSize: visibleTextNodes.length ? Math.min(...visibleTextNodes) : 0,
         largestRole,
         roleCounts,
         roleZones,
         bandRoles,
         tableVisibleRows,
+        rootLayout,
+        mapCenterOffset,
+        fixedCardGroups,
+        chartLegendOverlaps,
       };
     });
 

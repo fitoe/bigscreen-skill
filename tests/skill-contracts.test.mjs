@@ -31,3 +31,25 @@ test('documentation sends playwright artifacts to temp storage instead of projec
   assert.match(readme, /项目目录不默认保留 Playwright 截图产物/);
   assert.match(promptInterface, /Optional Playwright validation artifacts when browser validation is enabled are written to a temporary artifacts directory by default/);
 });
+
+test('bigscreen rules include layout, map, table, and legend constraints', () => {
+  const skill = read('SKILL.md');
+  const rules = read('references/generation-rules.md');
+
+  assert.match(skill, /Maintain readable outer margins instead of pressing the main content against the viewport edge/);
+  assert.match(skill, /Prioritize information hierarchy, whitespace rhythm, and panel emphasis over mechanically copying every border/);
+  assert.match(skill, /Treat chart-adjacent copy for pie, ring, and composition modules as live legends by default/);
+
+  assert.match(rules, /subtract the real header height before allocating the main body area/);
+  assert.match(rules, /Prefer `fr` and `minmax\(0, 1fr\)` tracks over percentage grids when gaps are present/);
+  assert.match(rules, /Map primary visuals must remain visually centered inside their container/);
+  assert.match(rules, /Fixed-count KPI or service-card groups should distribute evenly before decorative treatment/);
+  assert.match(rules, /Choose static or scrollable table mode from visible capacity/);
+  assert.match(rules, /Pie, ring, and other chart-plus-legend compositions should switch legend direction from the container aspect ratio/);
+  assert.match(rules, /text beside the chart should default to being treated as a legend/);
+  assert.match(rules, /Legend items must bind directly to chart data items/);
+  assert.match(rules, /Wide containers should prefer left-right chart-and-legend composition/);
+  assert.match(rules, /Do not replace legends with static explanatory text unless the requirement explicitly asks/);
+  assert.match(rules, /Legends should preserve minimum readability with color markers, names, and when useful the value or ratio/);
+  assert.match(rules, /Check every main block for hidden overflow using `scrollHeight\/clientHeight` and `scrollWidth\/clientWidth`/);
+});

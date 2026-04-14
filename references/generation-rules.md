@@ -98,6 +98,7 @@ sections:
 
 - Full-screen occupancy is mandatory: the dashboard root should fit the viewport before child layout is resolved.
 - Root layout should distribute size top-down through constrained containers instead of content-driven expansion.
+- Use real viewport-height allocation: subtract the real header height before allocating the main body area.
 - Use a three-column layout for dense overview pages with 6 to 12 sections.
 - Use a center-map layout when geography is central to the page narrative.
 - Use a KPI strip when the user emphasizes leadership summary or health status.
@@ -109,9 +110,13 @@ sections:
 - KPI blocks should not automatically consume a full top row; place them in the main column or above the primary view to preserve side-column height.
 - Keep section count restrained and merge weakly related micro-panels to prevent unreadable tiles.
 - At every level, prefer mixed sizing strategies: fixed + flex, flex + fixed, fixed + flex + fixed, or all flex where appropriate.
+- Prefer `fr` and `minmax(0, 1fr)` tracks over percentage grids when gaps are present.
 - Inside each panel, use a fixed-or-compact header plus a flexible content area.
 - All shrinkable layout children must preserve `min-width: 0` and `min-height: 0` behavior so nested content cannot overflow by default.
 - Overflow should be owned by the section content, not by the page root.
+- Main panels must fill their assigned grid or flex cell; child content must not size the parent beyond its layout box.
+- Keep moderate outer whitespace; the dashboard should not visually glue primary content to the viewport edge.
+- Use panel emphasis hierarchically: avoid drawing a full equal-weight border around every nested sub-block.
 
 ## Content composition rules
 
@@ -119,6 +124,7 @@ sections:
 - Reduce summary panels; avoid stacking multiple sub-blocks inside one panel.
 - If a panel contains two charts, prefer splitting or keep only one primary chart to avoid tiny visuals.
 - Right-side summary zones should favor one dominant visual plus a minimal legend, not multiple small cards.
+- When a reference image is visually dense, restore hierarchy, whitespace rhythm, and dominant-vs-secondary relationships before copying decorative detail.
 
 ## Typography and readability
 
@@ -132,6 +138,14 @@ sections:
 - Chart containers must have stable usable heights; do not rely on parent auto-stretching that can collapse.
 - In narrow/tall panels where complex ECharts configs become unstable, prefer simpler SVG/CSS visualizations.
 - Legends, labels, radii, and centers must be constrained by container size, never default values.
+- For ring, pie, and composition charts, text beside the chart should default to being treated as a legend rather than fixed explanatory copy.
+- Legend items must bind directly to chart data items so color, name, and order remain consistent with the rendered slices.
+- Pie, ring, and other chart-plus-legend compositions should switch legend direction from the container aspect ratio.
+- Narrow-tall containers may stack chart and legend vertically; wide-flat containers should prefer side-by-side placement.
+- Wide containers should prefer left-right chart-and-legend composition; tall containers may switch to top-bottom composition.
+- Do not replace legends with static explanatory text unless the requirement explicitly asks for explanatory prose.
+- Legends should preserve minimum readability with color markers, names, and when useful the value or ratio.
+- Reflow legend and chart before compressing them into overlap.
 
 ## Lists and tables
 
@@ -140,6 +154,17 @@ sections:
 - Tables should use fixed headers with independently scrolling bodies.
 - Column widths should follow field semantics, not equal widths.
 - Bottom tables typically deserve more height; avoid showing only one or two visible rows.
+- Choose static or scrollable table mode from visible capacity: when row count exceeds visible capacity, enable scroll or rotation by default.
+- In constrained widths, redistribute semantic column widths before compressing every column equally.
+- Fixed-count KPI or service-card groups should distribute evenly before decorative treatment; shrink padding, icon size, and font size before clipping content.
+
+## Map rules
+
+- Map primary visuals must remain visually centered inside their container.
+- Fixed-count metric stacks beside the map should distribute evenly in height to avoid bottom voids or overflow.
+- Map tooltips are interaction layers only; they should appear on hover, focus, or active state instead of being pinned by default.
+- Keep map fill and label contrast readable; do not place light text directly on light geographic fills without stroke, shadow, or darker backing.
+- Prefer complete visible geography over aggressive zoom; do not crop administrative boundaries just to enlarge the map.
 
 ## Responsive strategy
 
@@ -159,7 +184,7 @@ sections:
 - Put the Tailwind entry and chrome class helpers in `src/theme/`.
 - Put generated page rationale in `docs/screen-specs/`.
 - Default-enable: chart auto resize, long list auto-rotate, fixed table header, hidden native scrollbars, font-size floor.
-- When Playwright is available, support browser-level validation after generation: full-screen fit, page overflow, bounded panels, minimum font size, visible table rows, and primary-view dominance.
+- When Playwright is available, support browser-level validation after generation: full-screen fit, page overflow, bounded panels, minimum font size, visible table rows, primary-view dominance, map centering, fixed-card visibility, and chart-legend separation.
 - If a reference image or image-derived spec exists, compare the generated page against reference layout intent in addition to generic dashboard quality checks.
 - When the request names a province, city, district, or adcode for a map page, resolve and download the corresponding Datav GeoJSON boundary and wire the map component to that real boundary by default.
 - For each section, record: priority, height strategy, and whether it is fixed/min/flex/scroll/auto-rotate.
@@ -173,6 +198,8 @@ sections:
 - If labels are unreadable in the image, infer stable semantic replacements and avoid placeholder names.
 - Do not stop image-driven requests for blueprint confirmation unless the user explicitly asks to inspect the blueprint first.
 - Keep Playwright screenshots and validation JSON out of the generated project by default; use a temporary artifacts directory unless the user explicitly asks to preserve them.
+- Check every main block for hidden overflow using `scrollHeight/clientHeight` and `scrollWidth/clientWidth` before relying on clipping styles.
+- Verify that the real header height has been accounted for in body sizing, that main content is not cropped, that maps remain centered, that fixed-count card groups stay fully visible, that tables enable scroll when needed, and that legends do not overlap charts.
 
 ## Reference usage rules
 
