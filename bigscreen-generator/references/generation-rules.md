@@ -30,6 +30,14 @@ goal:
 layout_pattern:
 reference_templates: []
 theme_direction:
+first_screen_priority:
+height_strategy:
+  viewport_policy:
+  panels:
+    - id:
+      mode:
+      min_height:
+      overflow_behavior:
 sections:
   - id:
     area:
@@ -45,6 +53,13 @@ sections:
 - Use a KPI strip when the user emphasizes leadership summary or health status.
 - Use a bottom event rail when alerts, work orders, or incidents must stay visible.
 - Use fewer but larger panels for executive pages. Use more compact panels for operational monitoring.
+- Default to a one-screen composition for standard command-center big screens. Treat page-level vertical scrolling as an exception, not the baseline.
+- Allocate space by decision value, not by component count. Hero sections such as map, master trend, and bottom operations table should receive explicit priority.
+- Avoid symmetric panel grids unless the content is genuinely symmetric. Most generated big screens should have one dominant section and two supporting columns.
+- KPI cards do not need to own a full-width top band. If moving them into the center column improves usable height for the side columns, prefer that arrangement.
+- Summary panels should be simplified aggressively. If a summary panel contains a hero chart plus four micro-cards, consider dropping or merging the micro-cards first.
+- Long rankings, alerts, and tables should be generated as self-contained scrolling or auto-loop regions with fixed headers where applicable.
+- If the viewport becomes short, compress spacing and secondary decoration first; do not immediately reduce text below readable large-screen baselines.
 
 ## Code generation rules
 
@@ -57,6 +72,10 @@ sections:
 - Put transport stubs in `src/api/`.
 - Put tokens in `src/theme/`.
 - Put generated page rationale in `docs/screen-specs/`.
+- Prefer viewport-relative track sizing such as `auto / 1fr / 0.xfr` over hardcoded page pixel heights.
+- Allow content sections to define their own minimum readable height. Only apply hard pixel heights to a panel when the panel itself needs a stable rendering box, not to the entire page.
+- Keep the bottom operational table large enough to show multiple rows in the target viewport. Do not leave only one or two visible rows unless the user explicitly asks for a ticker-only table.
+- Table columns should use semantic width allocation instead of equal-width defaults.
 
 ## Reference usage rules
 
@@ -78,3 +97,8 @@ sections:
 - Are chart options isolated from layout?
 - Are tokens used instead of repeated literal colors?
 - Is there enough mock data to render the page without backend wiring?
+- Does the first screen show the page's most important sections without clipping or browser-level vertical scroll?
+- Are dominant sections visually dominant, or did the layout over-fragment into too many equal blocks?
+- Are typography sizes still readable at big-screen viewing distance?
+- Do long lists and tables use auto-loop or controlled internal scrolling instead of exposed native scrollbars?
+- Do chart containers have stable minimum heights so resize events do not collapse them?

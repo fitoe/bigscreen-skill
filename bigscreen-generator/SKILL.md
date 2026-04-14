@@ -29,6 +29,8 @@ Treat template libraries such as `BigDataView` as reference corpora only. Do not
    - chart types
    - data contracts
    - theme direction
+   - section priority and first-screen visibility
+   - per-section height strategy: fixed / flexible / minimum / scroll / auto-loop
 8. Stop and ask the user to confirm the blueprint before generating code.
 9. After approval, generate the screen directly from the prompt response:
    - If scripts are available, you may use them, but prompt-only generation is valid and expected.
@@ -92,6 +94,13 @@ Use this when the user wants a prompt-only flow, without running scripts.
 - Do not hardcode large numbers of colors, borders, or shadows directly in page files.
 - Do not skip the blueprint confirmation gate.
 - Do not favor visual similarity over maintainability, composition, and data replaceability.
+- Default to first-screen completeness. A generated big-screen page should fit the intended viewport without page-level vertical scrolling unless the user explicitly asks for a scrolling canvas.
+- Do not evenly split space across all modules. Assign more area to the strongest narrative sections such as map, hero trend, primary alarm rail, or main table.
+- Do not over-fragment the page. Merge weak summary modules when doing so improves readability and preserves panel size.
+- Do not place two full chart systems into one medium or small panel unless the request explicitly requires a composite view and both charts remain readable.
+- Do not let summary widgets consume more space than the page's main decision-making visuals.
+- Do not shrink typography below a large-screen readable baseline just to fit more modules. Reduce content density before reducing text to dashboard-app sizes.
+- Do not rely on default browser scrolling or native visible scrollbars for long lists and tables in a big-screen design. Prefer auto-loop regions, fixed headers, and hidden scrollbar chrome.
 
 ## Resource Map
 
