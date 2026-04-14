@@ -1,9 +1,0 @@
-{
-  "domain": "traffic",
-  "pageType": "map-command-page",
-  "mustHaveSections": ["map", "alerts", "ranking", "table"],
-  "keyMetrics": ["vehicle count", "incident count"],
-  "preferredStyle": "deep blue command center",
-  "mapRequired": true,
-  "dataDensity": "high"
-}

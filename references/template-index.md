@@ -20,7 +20,7 @@ Use this file as a curated reference map for `BigDataView`-style templates. Entr
 
 ## Seed entries
 
-These are starter examples that describe retrieval patterns and structure. They are illustrative, not compatibility targets.
+These are reference examples that describe retrieval patterns and structure. They are illustrative, not compatibility targets.
 
 ```yaml
 - id: seed-overview-blue

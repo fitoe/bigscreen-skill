@@ -174,7 +174,7 @@ sections:
 
 ## Code generation rules
 
-- Scaffold from `assets/starter/` first.
+- Generate files directly from the manifest; do not scaffold from a template scaffold.
 - Put orchestration in the page entry.
 - Put section-specific presentation in `src/components/bigscreen/`.
 - Put reusable chart wrappers in `src/components/bigscreen/charts/`.

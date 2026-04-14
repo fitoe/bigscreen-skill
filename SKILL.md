@@ -1,194 +1,89 @@
 ---
 name: bigscreen-generator
-description: Use when generating Vue 3 plus ECharts big-screen dashboard projects from business requirements, especially when the result should be custom-built instead of copied from template libraries, while using existing big-screen templates only as structure and style references.
+description: Use when generating runnable Vue 3 big-screen dashboards from structured requirements, especially when you need a manifest-first pipeline instead of template copying.
 ---
 
-# Bigscreen Generator
+# Bigscreen Generator (Harnessed)
 
-Generate componentized `Vue 3 + TypeScript + Vite + Tailwind CSS + ECharts` big-screen projects from requirements.
+Generate runnable `Vue 3 + TypeScript + Vite + ECharts` big-screen projects through a manifest-first harness.
 
-Treat template libraries such as `BigDataView` as reference corpora only. Do not copy full-page source code, preserve original template structure, or optimize for visual imitation over maintainability.
+This skill does **not** rely on a template scaffold. Every output file is generated from structured contracts and validated by the harness.
 
-Treat business requests through a generic semantic profile layer. Infer entities, metrics, events, ledgers, and narrative roles from the prompt instead of hardcoding industry-specific page presets.
+## Core Pipeline
 
-Preserve reusable template panel chrome when it improves the result. Border shapes, title-bar backgrounds, corners, and glow shells may be inherited as reusable visual metadata, but full-page markup and fragile selectors must still be rejected.
+`request spec -> blueprint -> project manifest -> file generation -> validation`
 
-Maintain readable outer margins instead of pressing the main content against the viewport edge.
-Prioritize information hierarchy, whitespace rhythm, and panel emphasis over mechanically copying every border or decorative fragment from a reference image.
-Treat chart-adjacent copy for pie, ring, and composition modules as live legends by default unless the requirement explicitly asks for explanatory text.
+### Request Spec
 
-When a map page names a province, city, district, county, or explicit adcode, resolve the area through Datav GeoJSON boundaries and use the real boundary file in the generated map component when possible.
+Normalize user intent into a minimal, structured request with:
 
-## Workflow
+- `sourceMode`
+- `pageIntent`
+- `styleDirection`
+- `requiredModules`
 
-### Image-driven entry
+### Blueprint
 
-If the user uploads a dashboard design image, screenshot, or mockup in the current multimodal session, treat the image as a first-class requirement source.
+Produce a design contract with:
 
-Default to direct image-to-project generation when the user uploads a screenshot or asks to reproduce the design effect.
+- `pageName`
+- `layoutPattern`
+- `themeDirection`
+- `sections` (semantic slots, priority, component mapping)
 
-Before normal requirement parsing:
+### Project Manifest
 
-1. Read [references/image-to-prompt.md](references/image-to-prompt.md).
-2. Analyze the uploaded image and extract:
-   - layout narrative
-   - primary modules
-   - panel chrome
-   - visible labels and plausible semantic replacements
-   - first-screen constraints
-3. Produce an `image analysis summary` and a `normalized prompt`.
-4. Continue with blueprint generation from the normalized prompt.
-5. Continue in one response as:
-   - image analysis summary
-   - normalized prompt
-   - blueprint summary
-   - runnable project output
+Describe the exact runnable project output:
 
-Use the image to preserve composition rhythm, panel borders, title-bar backgrounds, and main visual hierarchy. Do not treat the image as permission to copy markup or page source.
+- `files` (including `index.html`, `package.json`, `vite.config.ts`, `src/main.ts`, `src/router/index.ts`, `src/views/*.vue`)
+- `routes`
+- `projectName`
 
-1. Parse the request into:
-   - business domain
-   - page type
-   - required sections
-   - priority metrics
-   - style direction
-2. If inputs are incomplete, ask at most 1 focused clarification round.
-   - Only ask when the missing information would materially change page type, dominant layout, or the primary modules.
-   - Otherwise choose sensible defaults that maximize similarity to the screenshot's visible effect.
-3. Read [references/page-patterns.md](references/page-patterns.md) and choose the closest page pattern.
-4. Read [references/template-index.curated.md](references/template-index.curated.md) first, then fall back to [references/template-index.generated.md](references/template-index.generated.md) when the curated list is insufficient.
-5. Read [references/component-catalog.md](references/component-catalog.md) and map each required section to standard components before inventing new ones.
-6. Read [references/vue3-echarts-conventions.md](references/vue3-echarts-conventions.md) and follow its code boundaries.
-7. Produce a page blueprint first:
-   - page goal
-   - section list
-   - component tree
-   - chart types
-   - data contracts
-   - theme direction
-   - block priority
-   - height strategy
-   - full-screen layout sizing strategy
-   - per-section height policy
-   - per-section size policy
-   - semantic profile
-   - panel chrome
-8. Do not stop for blueprint confirmation in image-driven mode unless the user explicitly asks to review the blueprint first.
-9. For text-only requests, prefer presenting the recommended blueprint as the default plan instead of asking the user to decide each item manually.
-10. Generate the screen directly from the prompt response:
-   - If scripts are available, you may use them, but prompt-only generation is valid and expected.
-   - Output a full project structure and key files in the response.
-11. Generate or update:
-    - page entry
-    - section components
-    - chart components
-    - composables
-    - mock data
-    - API adapter stub
-    - Tailwind theme entry and chrome helpers
-    - page spec doc
-    - blueprint json and markdown artifacts
-12. For follow-up change requests, revise the existing blueprint instead of regenerating blindly:
-    - apply the new prompt as a blueprint revision
-    - preserve page intent unless the user explicitly requests a different page type
-    - re-run project generation from the revised blueprint
-13. Run `scripts/validate-screen-output.mjs` on the generated result before claiming completion.
-14. If Playwright is available, optionally run `scripts/playwright-validate-screen.mjs` for browser-level full-screen and visual-quality checks.
-15. Keep Playwright screenshots and validation artifacts in a temporary directory by default unless the user explicitly asks to preserve them in the project output.
-16. When generation scripts trigger Playwright validation automatically, clean those temporary artifacts by default unless the user explicitly asks to keep them.
+### File Generation
 
-## Prompt Interface (Direct Use)
+Use manifest-driven generators to write the project to disk. No template copying.
 
-Use this when the user wants a prompt-only flow, without running scripts.
+### Validation
 
-If the user provides an uploaded image in the same session, first convert that image into the same normalized prompt shape before generating the project.
+- Contract checks (`evals/contract/*`)
+- Build checks (`validators/build`)
 
-### 中文简化输入格式
+## Usage
 
-```
-生成一个可运行的大屏首页（Vue3 + ECharts）。
-主题：<行业/场景>
-关键指标：<逗号分隔>
-风格：<科技蓝/工业风/指挥中心/极简等>
-必须模块：<kpi、趋势、地图、排行、告警、表格等>
-数据密度：高/中/低
+Build a blueprint from a request:
+
+```bash
+node scripts/build-blueprint.mjs --request-file request.json --format json --output docs/screen-specs/overview.blueprint.json
 ```
 
-### 输出格式要求
+Build a manifest from a blueprint:
 
-必须输出“可运行项目”，包含：
-- `imageAnalysisSummary` when the request includes an uploaded image
-- `normalizedPrompt` when the request includes an uploaded image
-- 项目树（含 `package.json`、`vite.config.ts`、`src/main.ts`）
-- `src/views/<PageName>.vue`
-- `src/components/bigscreen/*` 及必要的派生区块组件
-- `src/composables/use<PageName>.ts`
-- `src/mock/<page-name>.ts`
-- `src/router/index.ts`
-- `docs/screen-specs/<page-name>.blueprint.md`
-- `docs/screen-specs/<page-name>.blueprint.json`
-- Blueprint metadata with `blockPriority`, `heightStrategy`, and per-section height policies
-- Semantic profile metadata describing entities, metric labels, event labels, and ledger columns
-- A short blueprint summary when the request starts from an uploaded image
-
-### 中文简化示例
-
-```
-生成一个可运行的大屏首页（Vue3 + ECharts）。
-主题：智慧园区
-关键指标：在线设备、告警数量、能耗负载
-风格：深蓝指挥中心
-必须模块：kpi、趋势、地图、排行、告警、表格
-数据密度：高
+```bash
+node scripts/build-project-manifest.mjs --blueprint-file docs/screen-specs/overview.blueprint.json --output docs/screen-specs/overview.manifest.json
 ```
 
-### 追加改版示例
+Generate a runnable project:
 
+```bash
+node scripts/generate-screen.mjs --request-file request.json --target ./out/overview --name Overview
 ```
-保留首页，不要切专题页。
-右侧摘要区改成排行和构成，不要太复杂。
-底部表格加高一点。
+
+Optional build validation:
+
+```bash
+node scripts/generate-screen.mjs --request-file request.json --target ./out/overview --build
 ```
 
 ## Hard Rules
 
-- Do not copy a reference template page wholesale.
-- Do not preserve the original template's file tree or CSS naming as a compatibility target.
+- Do not copy template source code or preserve template file trees.
 - Do not generate a single giant page component when sections should be split.
 - Do not mix layout orchestration, chart options, and business data assembly in one file.
-- Do not hardcode large numbers of colors, borders, or shadows directly in page files.
-- Do not stop image-driven requests at the blueprint gate unless the user explicitly asks to review the blueprint first.
-- Do not turn defaultable choices into user questionnaires when the screenshot already makes the intended layout, chrome, and dominant modules clear.
-- Do not favor visual similarity over maintainability, composition, and data replaceability.
-- Do not claim image-perfect reproduction when the source image lacks readable labels or hidden states; infer stable semantics and say so.
-- Do not copy page markup, DOM structure, or fragile CSS from a screenshot or mockup.
+- Do not hardcode fragile CSS naming from reference templates.
 
 ## Resource Map
 
-- Layout and IA choices: [references/page-patterns.md](references/page-patterns.md)
-- Template retrieval and style references: [references/template-index.md](references/template-index.md)
-- Curated first-pass template retrieval: [references/template-index.curated.md](references/template-index.curated.md)
-- Full generated template retrieval corpus: [references/template-index.generated.md](references/template-index.generated.md)
-- Reusable building blocks: [references/component-catalog.md](references/component-catalog.md)
-- Generation decision rules: [references/generation-rules.md](references/generation-rules.md)
-- Vue/ECharts code boundaries: [references/vue3-echarts-conventions.md](references/vue3-echarts-conventions.md)
-- Prompt scaffolds for requirement parsing and blueprinting: [references/prompt-templates.md](references/prompt-templates.md)
-- Image-to-prompt extraction guide: [references/image-to-prompt.md](references/image-to-prompt.md)
-
-## Scripts
-
-- `node scripts/build-template-index.mjs --source <BigDataView-path>`
-- `node scripts/extract-template-features.mjs --source <BigDataView-path> --output references/template-index.generated.md`
-- `node scripts/build-curated-catalog.mjs --input references/template-features.json --output references/template-index.curated.md`
-- `node scripts/build-blueprint.mjs --request-file <request.json|txt> --format json --output docs/screen-specs/<name>.blueprint.json`
-- `node scripts/datav-geojson.mjs` is available as an internal helper for extracting and resolving Datav map targets during generation
-- `node scripts/build-prompt-from-image-spec.mjs --input-file <image-spec.json> --output <prompt-package.json>`
-- `node scripts/generate-screen-from-image-spec.mjs --input-file <image-spec.json> --target <project-path> --name <ScreenName>`
-- `node scripts/scaffold-screen.mjs --name SmartParkOverview --target <project-path>`
-- `node scripts/generate-screen.mjs --request-file <request.json|txt> --target <project-path> --name <ScreenName>`
-- `node scripts/revise-blueprint.mjs --blueprint-file <existing.blueprint.json> --revision-file <revision.txt> --format json --output docs/screen-specs/<name>.blueprint.json`
-- `node scripts/revise-screen.mjs --blueprint-file <existing.blueprint.json> --revision-file <revision.txt> --target <project-path> --name <ScreenName>`
-- `node scripts/validate-screen-output.mjs --target <project-path>`
-- `node scripts/playwright-validate-screen.mjs --target <project-path> [--reference-spec-file <image-spec.json>] [--reference-image <image.png>] [--install-deps] [--output-dir <dir>]`
-
-Use the scripts for deterministic setup and validation. Prefer updating the generated output rather than rewriting the same boilerplate by hand.
+- Layout patterns: `references/page-patterns.md`
+- Component catalog: `references/component-catalog.md`
+- Generation rules: `references/generation-rules.md`
+- Vue/ECharts conventions: `references/vue3-echarts-conventions.md`
