@@ -24,7 +24,7 @@ test('generate-screen-from-image-spec builds a manifest-first project', () => {
   const result = spawnSync(
     'node',
     ['scripts/generate-screen-from-image-spec.mjs', '--input-file', imageSpecFile, '--target', tempDir],
-    { encoding: 'utf8' },
+    { encoding: 'utf8', env: { ...process.env, BIGSCREEN_SKIP_UX: '1' } },
   );
 
   assert.equal(result.status, 0);

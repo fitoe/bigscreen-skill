@@ -22,7 +22,7 @@ test('generate-screen CLI uses the manifest-first pipeline', () => {
   const result = spawnSync(
     'node',
     ['scripts/generate-screen.mjs', '--request-file', requestFile, '--target', tempDir, '--name', 'GeneratedOverview'],
-    { encoding: 'utf8' },
+    { encoding: 'utf8', env: { ...process.env, BIGSCREEN_SKIP_UX: '1' } },
   );
 
   assert.equal(result.status, 0);

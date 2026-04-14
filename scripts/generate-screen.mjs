@@ -9,6 +9,7 @@ import { applyBlueprintPolicies } from '../core/policies/apply-blueprint-policie
 import { applyManifestPolicies } from '../core/policies/apply-manifest-policies.mjs';
 import { generateProject } from '../generators/project/generate-project.mjs';
 import { validateBuild } from '../validators/build/validate-build.mjs';
+import { validateUx } from '../validators/ux/validate-ux.mjs';
 import { formatBlueprintMarkdown } from './build-blueprint.mjs';
 
 function parseArgs(argv) {
@@ -64,5 +65,8 @@ if (args.build) {
   const report = await validateBuild(target);
   fs.writeFileSync(path.join(docsDir, `${manifest.projectName}.build.json`), JSON.stringify(report, null, 2), 'utf8');
 }
+
+const uxReport = validateUx(target);
+fs.writeFileSync(path.join(docsDir, `${manifest.projectName}.ux.json`), JSON.stringify(uxReport, null, 2), 'utf8');
 
 console.log(`Generated screen project at ${target}`);

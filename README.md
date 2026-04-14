@@ -42,6 +42,9 @@ node scripts/build-project-manifest.mjs --blueprint-file docs/screen-specs/overv
 node scripts/generate-screen.mjs --request-file request.json --target ./out/overview --name Overview
 ```
 
+UX validation runs by default and will auto-install Playwright dependencies if missing.
+Set `BIGSCREEN_SKIP_UX=1` to skip UX validation (useful for CI).
+
 Image-driven generation:
 
 ```bash

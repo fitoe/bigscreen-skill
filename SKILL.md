@@ -86,6 +86,9 @@ Optional build validation:
 node scripts/generate-screen.mjs --request-file request.json --target ./out/overview --build
 ```
 
+UX validation runs by default and will auto-install Playwright dependencies if missing.
+Set `BIGSCREEN_SKIP_UX=1` to skip UX validation (useful for CI).
+
 ## Hard Rules
 
 - Do not copy template source code or preserve template file trees.

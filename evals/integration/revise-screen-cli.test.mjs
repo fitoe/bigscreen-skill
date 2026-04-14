@@ -33,7 +33,7 @@ test('revise-screen regenerates a project from a blueprint revision', () => {
   const reviseResult = spawnSync(
     'node',
     ['scripts/revise-screen.mjs', '--blueprint-file', blueprintFile, '--revision-file', revisionFile, '--target', tempDir],
-    { encoding: 'utf8' },
+    { encoding: 'utf8', env: { ...process.env, BIGSCREEN_SKIP_UX: '1' } },
   );
 
   assert.equal(reviseResult.status, 0);
