@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 
-test('revise-screen regenerates a project from a blueprint revision', () => {
+test('revise-screen applies add/remove/replace semantics', () => {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bigscreen-revise-'));
   const requestFile = path.join(tempDir, 'request.json');
   const blueprintFile = path.join(tempDir, 'base.blueprint.json');
@@ -28,7 +28,7 @@ test('revise-screen regenerates a project from a blueprint revision', () => {
   );
 
   assert.equal(buildResult.status, 0);
-  fs.writeFileSync(revisionFile, '右侧摘要区改成排行和构成');
+  fs.writeFileSync(revisionFile, '去掉地图，加排行和构成，表格改成告警');
 
   const reviseResult = spawnSync(
     'node',
@@ -37,7 +37,13 @@ test('revise-screen regenerates a project from a blueprint revision', () => {
   );
 
   assert.equal(reviseResult.status, 0);
-  assert.equal(fs.existsSync(path.join(tempDir, 'index.html')), true);
-  assert.equal(fs.existsSync(path.join(tempDir, 'src', 'main.ts')), true);
-  assert.equal(fs.existsSync(path.join(tempDir, 'docs', 'screen-specs')), true);
+
+  const revised = JSON.parse(fs.readFileSync(path.join(tempDir, 'docs', 'screen-specs', 'Overview.blueprint.json'), 'utf8'));
+  const slots = revised.sections.map((section) => section.semanticSlot);
+
+  assert.equal(slots.includes('geo-focus'), false);
+  assert.equal(slots.includes('ranking-list'), true);
+  assert.equal(slots.includes('composition-chart'), true);
+  assert.equal(slots.includes('alert-stream'), true);
+  assert.equal(slots.includes('data-table'), false);
 });

@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { applyRevisionSemantics } from '../core/revision/revision-semantics.mjs';
 import { normalizeRequest } from '../core/request/normalize-request.mjs';
 import { buildBlueprint } from '../core/blueprint/build-blueprint.mjs';
 import { formatBlueprintMarkdown } from './build-blueprint.mjs';
@@ -67,7 +68,10 @@ export function reviseBlueprint(baseBlueprintInput, revisionInput, options = {})
     originalPrompt: [baseRequest.originalPrompt, revisionPatch.originalPrompt].filter(Boolean).join('\n'),
   };
 
-  return buildBlueprint(normalizeRequest(nextRequest), options);
+  const revisedBlueprint = buildBlueprint(normalizeRequest(nextRequest), options);
+  const { blueprint } = applyRevisionSemantics(revisedBlueprint, revisionPatch.originalPrompt || String(revisionInput || ''));
+
+  return blueprint;
 }
 
 const args = parseArgs(process.argv);
