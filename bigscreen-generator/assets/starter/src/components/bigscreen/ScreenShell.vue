@@ -1,5 +1,5 @@
 <template>
-  <div :class="shellClasses">
+  <div :class="shellClasses" :data-panel-chrome="chromeVariant" data-bigscreen-role="screen-shell">
     <slot />
   </div>
 </template>

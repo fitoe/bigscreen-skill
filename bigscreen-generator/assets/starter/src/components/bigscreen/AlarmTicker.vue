@@ -1,6 +1,7 @@
 <template>
   <PanelCard :title="title">
     <div
+      data-bigscreen-role="alarm-ticker"
       class="overflow-hidden"
       :style="{ height: `calc(72px * ${visibleRows})` }"
       @mouseenter="handleEnter"

@@ -1,6 +1,7 @@
 <template>
   <PanelCard :title="title">
     <div
+      data-bigscreen-role="ranking-list"
       class="overflow-hidden"
       :style="{ height: `calc(56px * ${visibleRows})` }"
       @mouseenter="handleEnter"

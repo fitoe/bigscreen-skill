@@ -427,6 +427,29 @@ function deriveHeightPolicy(section, context = {}) {
   return { fixed: false, min: 220, flex: 1, scroll: false, autoRotate: false };
 }
 
+function deriveSectionSizePolicy(section) {
+  const isTop = section.area === 'top';
+  const isBottom = section.area === 'bottom';
+  const isCenter = section.area === 'center' || section.area === 'main';
+  const scroll = Boolean(section.heightPolicy?.scroll);
+
+  return {
+    widthMode: isCenter ? 'flex' : ['left', 'right', 'side'].includes(section.area) ? 'fixed-or-flex' : 'flex',
+    heightMode: isTop ? 'fixed-or-flex' : isBottom ? 'fixed-or-flex' : 'flex',
+    minWidth: isCenter ? 0 : 280,
+    minHeight: section.heightPolicy?.min ?? 0,
+    maxWidth: ['left', 'right', 'side'].includes(section.area) ? 360 : null,
+    maxHeight: null,
+    overflowMode: scroll ? 'auto' : 'hidden',
+    shrinkable: true,
+    internalLayout: {
+      header: 'fixed',
+      content: 'flex',
+      contentOverflowOwner: scroll ? 'content' : 'self',
+    },
+  };
+}
+
 function buildHeightStrategy(request, sections, directives = {}) {
   const priorities = sections
     .slice()
@@ -464,6 +487,55 @@ function buildHeightStrategy(request, sections, directives = {}) {
   }
 
   return { overall, notes };
+}
+
+function deriveLayoutSizing(layoutPattern, sections, directives = {}) {
+  const hasBottom = sections.some((section) => section.area === 'bottom');
+  const hasTop = sections.some((section) => section.area === 'top');
+
+  const defaultColumnsByPattern = {
+    'overview-home': ['fixed', 'flex', 'fixed'],
+    'map-command-page': ['fixed', 'flex', 'fixed'],
+    'alarm-center': ['flex', 'flex', 'flex'],
+    'monitoring-analysis': ['flex', 'fixed'],
+    'thematic-cockpit': ['flex'],
+  };
+
+  const rootLayout = {
+    viewportMode: 'full-screen',
+    widthPolicy: '100vw',
+    heightPolicy: '100vh',
+    pageOverflow: 'hidden',
+  };
+
+  const rowStrategy = {
+    top: hasTop ? 'fixed-or-flex' : 'none',
+    main: 'flex',
+    bottom: hasBottom ? (directives.emphasizeBottomTable ? 'fixed-plus-flex' : 'fixed-or-flex') : 'none',
+  };
+
+  return {
+    rootLayout,
+    columnStrategy: {
+      mode: 'mixed',
+      pattern: defaultColumnsByPattern[layoutPattern] || ['flex'],
+      allowFixedAndFlexMix: true,
+    },
+    rowStrategy,
+    internalSectionRule: {
+      sectionMustFillParent: true,
+      allowNestedFlex: true,
+      requireMinWidthZero: true,
+      requireMinHeightZero: true,
+      overflowOwner: 'section-content',
+    },
+    shortScreenStrategy: {
+      compressGapFirst: true,
+      reduceDecorationFirst: true,
+      preservePrimaryViewWeight: true,
+      increaseBottomWeightWhenNeeded: true,
+    },
+  };
 }
 
 function inferDirectives(request, desiredSections) {
@@ -565,8 +637,13 @@ export function generateBlueprint(requestInput, options = {}) {
       ...baseSection,
       priority: deriveSectionPriority(baseSection),
       heightPolicy: deriveHeightPolicy(baseSection, directives),
+      sizePolicy: null,
     };
   });
+
+  for (const section of sections) {
+    section.sizePolicy = deriveSectionSizePolicy(section);
+  }
 
   const layoutPattern = assignAreas(sections, request, directives);
 
@@ -584,6 +661,7 @@ export function generateBlueprint(requestInput, options = {}) {
   };
   const semanticProfile = inferSemanticProfile(request, sections);
   const panelChrome = derivePanelChrome(request, templates);
+  const layoutSizing = deriveLayoutSizing(layoutPattern, sections, layoutDirectives);
 
   return {
     pageName: request.pageType
@@ -596,6 +674,7 @@ export function generateBlueprint(requestInput, options = {}) {
     blockPriority,
     heightStrategy,
     layoutDirectives,
+    layoutSizing,
     semanticProfile,
     mapTarget: request.mapTarget || null,
     panelChrome,
@@ -642,6 +721,17 @@ ${Object.entries(blueprint.layoutDirectives || {})
   .map(([key, value]) => `- ${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
   .join('\n')}
 
+## Layout Sizing
+
+- viewportMode: ${blueprint.layoutSizing?.rootLayout?.viewportMode || ''}
+- widthPolicy: ${blueprint.layoutSizing?.rootLayout?.widthPolicy || ''}
+- heightPolicy: ${blueprint.layoutSizing?.rootLayout?.heightPolicy || ''}
+- pageOverflow: ${blueprint.layoutSizing?.rootLayout?.pageOverflow || ''}
+- columnPattern: ${(blueprint.layoutSizing?.columnStrategy?.pattern || []).join(', ')}
+- topRow: ${blueprint.layoutSizing?.rowStrategy?.top || ''}
+- mainRow: ${blueprint.layoutSizing?.rowStrategy?.main || ''}
+- bottomRow: ${blueprint.layoutSizing?.rowStrategy?.bottom || ''}
+
 ## Semantic Profile
 
 - entity: ${blueprint.semanticProfile?.entity?.plural || ''}
@@ -666,7 +756,7 @@ ${blueprint.referenceTemplates
 ${blueprint.sections
   .map(
     (section) =>
-      `- ${section.id} | area=${section.area} | component=${section.component} | purpose=${section.purpose} | priority=${section.priority} | min=${section.heightPolicy?.min} | scroll=${section.heightPolicy?.scroll} | autoRotate=${section.heightPolicy?.autoRotate} | data=${section.dataContract.type}`,
+      `- ${section.id} | area=${section.area} | component=${section.component} | purpose=${section.purpose} | priority=${section.priority} | min=${section.heightPolicy?.min} | scroll=${section.heightPolicy?.scroll} | autoRotate=${section.heightPolicy?.autoRotate} | widthMode=${section.sizePolicy?.widthMode} | heightMode=${section.sizePolicy?.heightMode} | overflow=${section.sizePolicy?.overflowMode} | data=${section.dataContract.type}`,
   )
   .join('\n')}
 `;

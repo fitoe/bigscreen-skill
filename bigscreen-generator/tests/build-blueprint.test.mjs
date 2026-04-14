@@ -99,9 +99,18 @@ Data density: high`,
   assert.ok(blueprint.blockPriority.length > 0);
   assert.ok(blueprint.heightStrategy);
   assert.equal(typeof blueprint.heightStrategy.overall, 'string');
+  assert.ok(blueprint.layoutSizing);
+  assert.equal(blueprint.layoutSizing.rootLayout.viewportMode, 'full-screen');
+  assert.equal(blueprint.layoutSizing.rootLayout.pageOverflow, 'hidden');
   assert.ok(blueprint.sections.every((section) => typeof section.priority === 'number'));
   assert.ok(
     blueprint.sections.every((section) => section.heightPolicy && Object.hasOwn(section.heightPolicy, 'min')),
+  );
+  assert.ok(
+    blueprint.sections.every((section) => section.sizePolicy && Object.hasOwn(section.sizePolicy, 'widthMode')),
+  );
+  assert.ok(
+    blueprint.sections.every((section) => section.sizePolicy && Object.hasOwn(section.sizePolicy, 'overflowMode')),
   );
   assert.ok(blueprint.sections.some((section) => section.heightPolicy.autoRotate === true));
   assert.ok(blueprint.sections.some((section) => section.heightPolicy.scroll === true));

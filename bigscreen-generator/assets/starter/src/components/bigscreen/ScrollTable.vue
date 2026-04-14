@@ -1,22 +1,24 @@
 <template>
   <PanelCard :title="title">
-    <div class="grid gap-3">
-      <div class="grid items-center pr-2 text-[15px] text-slate-100" :style="gridStyle">
+    <div class="grid gap-3" data-bigscreen-role="scroll-table">
+      <div class="grid items-center pr-2 text-[15px] text-slate-100" :style="gridStyle" data-table-head>
         <span v-for="column in normalizedColumns" :key="column.key" class="min-w-0 px-2.5 py-3">{{ column.label }}</span>
       </div>
 
       <div
         class="overflow-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         :style="{ height: `calc(48px * ${visibleRows})` }"
+        data-table-viewport
         @mouseenter="handleEnter"
         @mouseleave="handleLeave"
       >
-        <div class="grid items-center text-sm text-slate-300/78 transition-transform duration-[450ms] ease-out" :style="[gridStyle, bodyStyle]">
+        <div class="grid items-center text-sm text-slate-300/78 transition-transform duration-[450ms] ease-out" :style="[gridStyle, bodyStyle]" data-table-body>
           <template v-for="(row, rowIndex) in displayRows" :key="rowKey(row, rowIndex)">
             <span
               v-for="column in normalizedColumns"
               :key="`${rowKey(row, rowIndex)}-${column.key}`"
               class="min-w-0 border-b border-white/6 px-2.5 py-3 leading-6"
+              data-table-cell
             >
               {{ row[column.key] ?? '-' }}
             </span>

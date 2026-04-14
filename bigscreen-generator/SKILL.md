@@ -60,7 +60,9 @@ Use the image to preserve composition rhythm, panel borders, title-bar backgroun
    - theme direction
    - block priority
    - height strategy
+   - full-screen layout sizing strategy
    - per-section height policy
+   - per-section size policy
    - semantic profile
    - panel chrome
 8. Stop and ask the user to confirm the blueprint before generating code unless the user explicitly requests direct image-to-project generation.
@@ -82,6 +84,7 @@ Use the image to preserve composition rhythm, panel borders, title-bar backgroun
     - preserve page intent unless the user explicitly requests a different page type
     - re-run project generation from the revised blueprint
 12. Run `scripts/validate-screen-output.mjs` on the generated result before claiming completion.
+13. If Playwright is available, optionally run `scripts/playwright-validate-screen.mjs` for browser-level full-screen and visual-quality checks.
 
 ## Prompt Interface (Direct Use)
 
@@ -174,5 +177,6 @@ If the user provides an uploaded image in the same session, first convert that i
 - `node scripts/revise-blueprint.mjs --blueprint-file <existing.blueprint.json> --revision-file <revision.txt> --format json --output docs/screen-specs/<name>.blueprint.json`
 - `node scripts/revise-screen.mjs --blueprint-file <existing.blueprint.json> --revision-file <revision.txt> --target <project-path> --name <ScreenName>`
 - `node scripts/validate-screen-output.mjs --target <project-path>`
+- `node scripts/playwright-validate-screen.mjs --target <project-path> [--reference-spec-file <image-spec.json>] [--reference-image <image.png>] [--install-deps]`
 
 Use the scripts for deterministic setup and validation. Prefer updating the generated output rather than rewriting the same boilerplate by hand.

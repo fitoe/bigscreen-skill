@@ -36,6 +36,26 @@ block_priority: []
 height_strategy:
   overall:
   notes:
+layout_sizing:
+  root_layout:
+    viewport_mode:
+    width_policy:
+    height_policy:
+    page_overflow:
+  column_strategy:
+    mode:
+    pattern: []
+    allow_fixed_and_flex_mix:
+  row_strategy:
+    top:
+    main:
+    bottom:
+  internal_section_rule:
+    section_must_fill_parent:
+    allow_nested_flex:
+    require_min_width_zero:
+    require_min_height_zero:
+    overflow_owner:
 semantic_profile:
   entity:
     singular:
@@ -61,10 +81,21 @@ sections:
       flex:
       scroll:
       auto_rotate:
+    size_policy:
+      width_mode:
+      height_mode:
+      min_width:
+      min_height:
+      max_width:
+      max_height:
+      overflow_mode:
+      shrinkable:
 ```
 
 ## Layout heuristics
 
+- Full-screen occupancy is mandatory: the dashboard root should fit the viewport before child layout is resolved.
+- Root layout should distribute size top-down through constrained containers instead of content-driven expansion.
 - Use a three-column layout for dense overview pages with 6 to 12 sections.
 - Use a center-map layout when geography is central to the page narrative.
 - Use a KPI strip when the user emphasizes leadership summary or health status.
@@ -75,6 +106,10 @@ sections:
 - Separate layout into title / primary content / auxiliary content layers instead of evenly slicing columns.
 - KPI blocks should not automatically consume a full top row; place them in the main column or above the primary view to preserve side-column height.
 - Keep section count restrained and merge weakly related micro-panels to prevent unreadable tiles.
+- At every level, prefer mixed sizing strategies: fixed + flex, flex + fixed, fixed + flex + fixed, or all flex where appropriate.
+- Inside each panel, use a fixed-or-compact header plus a flexible content area.
+- All shrinkable layout children must preserve `min-width: 0` and `min-height: 0` behavior so nested content cannot overflow by default.
+- Overflow should be owned by the section content, not by the page root.
 
 ## Content composition rules
 
@@ -122,8 +157,11 @@ sections:
 - Put the Tailwind entry and chrome class helpers in `src/theme/`.
 - Put generated page rationale in `docs/screen-specs/`.
 - Default-enable: chart auto resize, long list auto-rotate, fixed table header, hidden native scrollbars, font-size floor.
+- When Playwright is available, support browser-level validation after generation: full-screen fit, page overflow, bounded panels, minimum font size, visible table rows, and primary-view dominance.
+- If a reference image or image-derived spec exists, compare the generated page against reference layout intent in addition to generic dashboard quality checks.
 - When the request names a province, city, district, or adcode for a map page, resolve and download the corresponding Datav GeoJSON boundary and wire the map component to that real boundary by default.
 - For each section, record: priority, height strategy, and whether it is fixed/min/flex/scroll/auto-rotate.
+- Record page-level full-screen sizing metadata and per-section width/height sizing metadata so generation can mix fixed and flexible tracks explicitly.
 - Generate mock data from a domain-agnostic semantic profile instead of industry-specific hardcoded labels.
 - Explicitly block: even area splitting, multiple charts in tiny panels, summary panels more complex than primary visuals, and admin-style dense typography.
 - For revision prompts, update the existing blueprint first, then regenerate from the revised blueprint.

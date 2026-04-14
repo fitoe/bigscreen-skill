@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 import { buildPromptFromImageSpec } from './build-prompt-from-image-spec.mjs';
 import { formatBlueprintMarkdown, generateBlueprint } from './build-blueprint.mjs';
@@ -45,3 +46,16 @@ fs.writeFileSync(path.join(docsDir, `${result.slug}.blueprint.md`), formatBluepr
 fs.writeFileSync(path.join(docsDir, `${result.slug}.image-prompt.json`), JSON.stringify(promptPackage, null, 2), 'utf8');
 
 console.log(`Generated screen project from image spec at ${result.target}`);
+
+if (args.playwright) {
+  const validatorArgs = [
+    path.resolve('bigscreen-generator/scripts/playwright-validate-screen.mjs'),
+    '--target',
+    result.target,
+    '--reference-spec-file',
+    inputFile,
+  ];
+  if (args['install-deps']) validatorArgs.push('--install-deps');
+  if (args['reference-image']) validatorArgs.push('--reference-image', path.resolve(args['reference-image']));
+  execFileSync(process.execPath, validatorArgs, { stdio: 'inherit' });
+}

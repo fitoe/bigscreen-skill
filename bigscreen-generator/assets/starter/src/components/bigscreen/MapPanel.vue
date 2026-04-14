@@ -1,6 +1,6 @@
 <template>
   <PanelCard :title="title">
-    <div class="relative min-h-[360px] overflow-hidden rounded-[1rem]">
+    <div class="relative min-h-[360px] overflow-hidden rounded-[1rem]" data-bigscreen-role="map-panel">
       <BaseChart v-if="hasGeoJson" :option="mapOption" />
       <div
         v-else

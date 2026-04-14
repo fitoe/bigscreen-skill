@@ -1,5 +1,5 @@
 <template>
-  <section :class="shellClasses">
+  <section :class="shellClasses" data-panel-card>
     <span :class="['absolute left-2 top-2 h-[18px] w-[18px] border-l-2 border-t-2', cornerClasses]"></span>
     <span :class="['absolute right-2 top-2 h-[18px] w-[18px] border-r-2 border-t-2', cornerClasses]"></span>
     <span :class="['absolute bottom-2 left-2 h-[18px] w-[18px] border-b-2 border-l-2', cornerClasses]"></span>

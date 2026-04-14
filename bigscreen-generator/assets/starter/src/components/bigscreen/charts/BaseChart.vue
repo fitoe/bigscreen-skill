@@ -1,5 +1,5 @@
 <template>
-  <div ref="container" class="h-full min-h-[240px]"></div>
+  <div ref="container" class="h-full min-h-[240px]" data-bigscreen-role="chart"></div>
 </template>
 
 <script setup lang="ts">

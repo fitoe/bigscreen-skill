@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 import { formatBlueprintMarkdown } from './build-blueprint.mjs';
 import { generateProjectFromBlueprint } from './generate-from-blueprint.mjs';
@@ -51,3 +52,15 @@ fs.writeFileSync(path.join(docsDir, `${result.slug}.blueprint.json`), JSON.strin
 fs.writeFileSync(path.join(docsDir, `${result.slug}.blueprint.md`), formatBlueprintMarkdown(revised), 'utf8');
 
 console.log(`Revised screen project at ${target} (${toSlug(projectName)})`);
+
+if (args.playwright) {
+  const validatorArgs = [
+    path.resolve('bigscreen-generator/scripts/playwright-validate-screen.mjs'),
+    '--target',
+    result.target,
+  ];
+  if (args['install-deps']) validatorArgs.push('--install-deps');
+  if (args['reference-spec-file']) validatorArgs.push('--reference-spec-file', path.resolve(args['reference-spec-file']));
+  if (args['reference-image']) validatorArgs.push('--reference-image', path.resolve(args['reference-image']));
+  execFileSync(process.execPath, validatorArgs, { stdio: 'inherit' });
+}

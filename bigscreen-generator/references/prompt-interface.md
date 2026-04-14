@@ -38,10 +38,11 @@ This keeps image-driven generation aligned with the same prompt and blueprint co
 - `src/router/index.ts`
 - `docs/screen-specs/<page-name>.blueprint.md`
 - `docs/screen-specs/<page-name>.blueprint.json`
-- Blueprint metadata including `blockPriority`, `heightStrategy`, and per-section height policies
+- Blueprint metadata including `blockPriority`, `heightStrategy`, `layoutSizing`, and per-section size policies
 - Semantic profile metadata so labels, events, tables, and mock rows follow the prompt instead of fixed industry placeholders
 - Panel chrome metadata so module borders and title-bar backgrounds can inherit the chosen template shell
 - Validation summary or warnings when the generated layout violates big-screen quality rules
+- Optional Playwright validation artifacts when browser validation is enabled: screenshot and `playwright-validation.json`
 
 When the request starts from an uploaded image, prepend:
 - `imageAnalysisSummary`
@@ -57,6 +58,7 @@ When the request starts from an uploaded image, prepend:
 - Use mock data in `mock/`.
 - Prefer full above-the-fold visibility with no page-level vertical scroll by default.
 - Prioritize layout by title / primary content / auxiliary content, not equal slicing.
+- Use full-screen constrained layout by default: root fills the viewport, rows and columns use fixed/flex mixes, and section overflow stays inside the owning panel.
 - Enforce big-screen readability floors for KPI, titles, axes, and tables.
 - Auto-resize charts with stable container heights.
 - Default-enable list auto-rotate and fixed table headers with hidden native scrollbars.
