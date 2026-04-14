@@ -1,6 +1,7 @@
 # build/output
 /tmp/
 /.tmp/
+/.worktrees/
 /playwright-artifacts/
 /artifacts/tmp/
 /vendor/
