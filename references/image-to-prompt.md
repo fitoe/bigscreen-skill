@@ -27,6 +27,8 @@ When the current session supports image input, use this sequence:
 
 If the image is incomplete or labels are unreadable, infer plausible semantics and say so briefly. Do not block unless the page intent is fundamentally ambiguous.
 
+Default to continuing through runnable project generation instead of stopping after prompt construction.
+
 ## What To Extract
 
 ### 1. Page framing
@@ -151,6 +153,7 @@ avoid:
 - If the screenshot shows rankings or alert lists, mention auto-rotate when appropriate.
 - If exact labels are unreadable, infer generic but plausible labels.
 - If the user says "directly reference this image" or "restore this screen", continue through project generation instead of stopping after prompt construction.
+- Even without that exact wording, prefer direct generation when the user's goal is clearly to reproduce the screenshot's effect.
 - Prefer stable phrases such as:
   - "保留模板式模块边框与标题栏背景"
   - "中间主视觉是地图"

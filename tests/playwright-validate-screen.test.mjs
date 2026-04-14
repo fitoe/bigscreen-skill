@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import os from 'node:os';
+import path from 'node:path';
 
-import { evaluateBrowserSnapshot } from '../scripts/playwright-validate-screen.mjs';
+import { buildValidationOutputDir, evaluateBrowserSnapshot } from '../scripts/playwright-validate-screen.mjs';
 
 test('evaluateBrowserSnapshot reports generic layout failures', () => {
   const result = evaluateBrowserSnapshot(
@@ -58,4 +60,13 @@ test('evaluateBrowserSnapshot compares reference-driven expectations', () => {
   assert.match(result.warnings.join('\n'), /Panel chrome differs/);
   assert.match(result.warnings.join('\n'), /map is not centered/);
   assert.match(result.warnings.join('\n'), /table is not placed at the bottom/);
+});
+
+test('buildValidationOutputDir defaults to system temp artifacts directory', () => {
+  const target = path.resolve('tmp', 'demo-screen');
+  const outputDir = buildValidationOutputDir({ target });
+
+  assert.match(outputDir, new RegExp(`${path.join(os.tmpdir(), 'bigscreen-skill').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`));
+  assert.match(outputDir, /playwright-artifacts/);
+  assert.doesNotMatch(outputDir, /docs[\\/]+screen-specs/);
 });

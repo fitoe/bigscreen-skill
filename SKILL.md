@@ -21,6 +21,8 @@ When a map page names a province, city, district, county, or explicit adcode, re
 
 If the user uploads a dashboard design image, screenshot, or mockup in the current multimodal session, treat the image as a first-class requirement source.
 
+Default to direct image-to-project generation when the user uploads a screenshot or asks to reproduce the design effect.
+
 Before normal requirement parsing:
 
 1. Read [references/image-to-prompt.md](references/image-to-prompt.md).
@@ -32,7 +34,7 @@ Before normal requirement parsing:
    - first-screen constraints
 3. Produce an `image analysis summary` and a `normalized prompt`.
 4. Continue with blueprint generation from the normalized prompt.
-5. If the user explicitly asks to implement directly from the image, you may continue in one response as:
+5. Continue in one response as:
    - image analysis summary
    - normalized prompt
    - blueprint summary
@@ -46,7 +48,9 @@ Use the image to preserve composition rhythm, panel borders, title-bar backgroun
    - required sections
    - priority metrics
    - style direction
-2. If inputs are incomplete, ask at most 3 focused clarification rounds.
+2. If inputs are incomplete, ask at most 1 focused clarification round.
+   - Only ask when the missing information would materially change page type, dominant layout, or the primary modules.
+   - Otherwise choose sensible defaults that maximize similarity to the screenshot's visible effect.
 3. Read [references/page-patterns.md](references/page-patterns.md) and choose the closest page pattern.
 4. Read [references/template-index.curated.md](references/template-index.curated.md) first, then fall back to [references/template-index.generated.md](references/template-index.generated.md) when the curated list is insufficient.
 5. Read [references/component-catalog.md](references/component-catalog.md) and map each required section to standard components before inventing new ones.
@@ -65,11 +69,12 @@ Use the image to preserve composition rhythm, panel borders, title-bar backgroun
    - per-section size policy
    - semantic profile
    - panel chrome
-8. Stop and ask the user to confirm the blueprint before generating code unless the user explicitly requests direct image-to-project generation.
-9. After approval, generate the screen directly from the prompt response:
+8. Do not stop for blueprint confirmation in image-driven mode unless the user explicitly asks to review the blueprint first.
+9. For text-only requests, prefer presenting the recommended blueprint as the default plan instead of asking the user to decide each item manually.
+10. Generate the screen directly from the prompt response:
    - If scripts are available, you may use them, but prompt-only generation is valid and expected.
    - Output a full project structure and key files in the response.
-10. Generate or update:
+11. Generate or update:
     - page entry
     - section components
     - chart components
@@ -79,12 +84,14 @@ Use the image to preserve composition rhythm, panel borders, title-bar backgroun
     - Tailwind theme entry and chrome helpers
     - page spec doc
     - blueprint json and markdown artifacts
-11. For follow-up change requests, revise the existing blueprint instead of regenerating blindly:
+12. For follow-up change requests, revise the existing blueprint instead of regenerating blindly:
     - apply the new prompt as a blueprint revision
     - preserve page intent unless the user explicitly requests a different page type
     - re-run project generation from the revised blueprint
-12. Run `scripts/validate-screen-output.mjs` on the generated result before claiming completion.
-13. If Playwright is available, optionally run `scripts/playwright-validate-screen.mjs` for browser-level full-screen and visual-quality checks.
+13. Run `scripts/validate-screen-output.mjs` on the generated result before claiming completion.
+14. If Playwright is available, optionally run `scripts/playwright-validate-screen.mjs` for browser-level full-screen and visual-quality checks.
+15. Keep Playwright screenshots and validation artifacts in a temporary directory by default unless the user explicitly asks to preserve them in the project output.
+16. When generation scripts trigger Playwright validation automatically, clean those temporary artifacts by default unless the user explicitly asks to keep them.
 
 ## Prompt Interface (Direct Use)
 
@@ -146,7 +153,8 @@ If the user provides an uploaded image in the same session, first convert that i
 - Do not generate a single giant page component when sections should be split.
 - Do not mix layout orchestration, chart options, and business data assembly in one file.
 - Do not hardcode large numbers of colors, borders, or shadows directly in page files.
-- Do not skip the blueprint confirmation gate unless the user explicitly requests direct image-to-project generation in the current session.
+- Do not stop image-driven requests at the blueprint gate unless the user explicitly asks to review the blueprint first.
+- Do not turn defaultable choices into user questionnaires when the screenshot already makes the intended layout, chrome, and dominant modules clear.
 - Do not favor visual similarity over maintainability, composition, and data replaceability.
 - Do not claim image-perfect reproduction when the source image lacks readable labels or hidden states; infer stable semantics and say so.
 - Do not copy page markup, DOM structure, or fragile CSS from a screenshot or mockup.
@@ -177,6 +185,6 @@ If the user provides an uploaded image in the same session, first convert that i
 - `node scripts/revise-blueprint.mjs --blueprint-file <existing.blueprint.json> --revision-file <revision.txt> --format json --output docs/screen-specs/<name>.blueprint.json`
 - `node scripts/revise-screen.mjs --blueprint-file <existing.blueprint.json> --revision-file <revision.txt> --target <project-path> --name <ScreenName>`
 - `node scripts/validate-screen-output.mjs --target <project-path>`
-- `node scripts/playwright-validate-screen.mjs --target <project-path> [--reference-spec-file <image-spec.json>] [--reference-image <image.png>] [--install-deps]`
+- `node scripts/playwright-validate-screen.mjs --target <project-path> [--reference-spec-file <image-spec.json>] [--reference-image <image.png>] [--install-deps] [--output-dir <dir>]`
 
 Use the scripts for deterministic setup and validation. Prefer updating the generated output rather than rewriting the same boilerplate by hand.

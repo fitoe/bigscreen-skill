@@ -1,5 +1,8 @@
 # build/output
 /tmp/
+/.tmp/
+/playwright-artifacts/
+/artifacts/tmp/
 /vendor/
 /*.zip
 /*.gif

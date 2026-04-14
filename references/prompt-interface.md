@@ -17,6 +17,12 @@ Standard sequence:
 
 This keeps image-driven generation aligned with the same prompt and blueprint contracts as text-only generation.
 
+Treat uploaded-image requests as direct-generation by default:
+
+- Assume the user's goal is to reproduce the screenshot's visible effect as closely as possible with maintainable code.
+- Only ask follow-up questions when ambiguity would materially change layout or page intent.
+- Otherwise choose sensible defaults and continue.
+
 ## 中文简化输入格式
 
 ```
@@ -42,7 +48,7 @@ This keeps image-driven generation aligned with the same prompt and blueprint co
 - Semantic profile metadata so labels, events, tables, and mock rows follow the prompt instead of fixed industry placeholders
 - Panel chrome metadata so module borders and title-bar backgrounds can inherit the chosen template shell
 - Validation summary or warnings when the generated layout violates big-screen quality rules
-- Optional Playwright validation artifacts when browser validation is enabled: screenshot and `playwright-validation.json`
+- Optional Playwright validation artifacts when browser validation is enabled are written to a temporary artifacts directory by default: screenshot and `playwright-validation.json`
 
 When the request starts from an uploaded image, prepend:
 - `imageAnalysisSummary`

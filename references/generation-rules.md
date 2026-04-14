@@ -20,6 +20,8 @@ If three or more of `page_type`, `must_have_sections`, `key_metrics`, `preferred
 
 When the request starts from an uploaded dashboard image, treat the image as an upstream requirement source and normalize it into the same fields before clarification.
 
+For image-driven requests, prefer a single default-forward pass: infer sensible values from the screenshot and only ask follow-up questions when the missing information would materially change the page type or dominant composition.
+
 ## Blueprint generation
 
 Always create the blueprint before writing code.
@@ -169,6 +171,8 @@ sections:
 - For image-driven requests, output a short image analysis summary and normalized prompt before code generation.
 - In image-driven mode, preserve layout rhythm, dominant module ordering, and panel chrome, but rebuild with maintainable components.
 - If labels are unreadable in the image, infer stable semantic replacements and avoid placeholder names.
+- Do not stop image-driven requests for blueprint confirmation unless the user explicitly asks to inspect the blueprint first.
+- Keep Playwright screenshots and validation JSON out of the generated project by default; use a temporary artifacts directory unless the user explicitly asks to preserve them.
 
 ## Reference usage rules
 

@@ -55,7 +55,9 @@ if (args.playwright) {
     '--reference-spec-file',
     inputFile,
   ];
+  if (!args['output-dir'] && !args['keep-playwright-artifacts']) validatorArgs.push('--cleanup');
   if (args['install-deps']) validatorArgs.push('--install-deps');
+  if (args['output-dir']) validatorArgs.push('--output-dir', path.resolve(args['output-dir']));
   if (args['reference-image']) validatorArgs.push('--reference-image', path.resolve(args['reference-image']));
   execFileSync(process.execPath, validatorArgs, { stdio: 'inherit' });
 }

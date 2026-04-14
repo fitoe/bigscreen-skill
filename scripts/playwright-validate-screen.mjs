@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import http from 'node:http';
@@ -21,6 +22,14 @@ function toSlug(value) {
     .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
     .replace(/\s+/g, '-')
     .toLowerCase();
+}
+
+export function buildValidationOutputDir(options = {}) {
+  if (options.outputDir) return path.resolve(options.outputDir);
+
+  const target = options.target ? path.resolve(options.target) : process.cwd();
+  const slug = toSlug(path.basename(target)) || 'screen';
+  return path.join(os.tmpdir(), 'bigscreen-skill', 'playwright-artifacts', slug);
 }
 
 function sleep(ms) {
@@ -335,12 +344,14 @@ const isMainModule = process.argv[1] && path.resolve(process.argv[1]) === fileUR
 
 if (isMainModule) {
   if (!target) {
-    console.error('Usage: node scripts/playwright-validate-screen.mjs --target <project-path> [--reference-spec-file file] [--reference-image file] [--install-deps]');
+    console.error('Usage: node scripts/playwright-validate-screen.mjs --target <project-path> [--reference-spec-file file] [--reference-image file] [--install-deps] [--output-dir dir] [--cleanup]');
     process.exit(1);
   }
 
-  const slug = toSlug(path.basename(target));
-  const outputDir = path.resolve(args['output-dir'] || path.join(target, 'docs', 'screen-specs', `${slug}.playwright`));
+  const outputDir = buildValidationOutputDir({
+    target,
+    outputDir: args['output-dir'] ? path.resolve(args['output-dir']) : null,
+  });
 
   try {
     const { report, reportPath } = await runPlaywrightValidation({
@@ -352,10 +363,16 @@ if (isMainModule) {
       installDeps: Boolean(args['install-deps']),
     });
 
-    console.log(`Playwright validation ${report.evaluation.status}: ${reportPath}`);
+    const shouldCleanup = Boolean(args.cleanup);
+    console.log(
+      shouldCleanup
+        ? `Playwright validation ${report.evaluation.status}: temporary artifacts cleaned`
+        : `Playwright validation ${report.evaluation.status}: ${reportPath}`,
+    );
     for (const item of report.evaluation.findings) console.log(`FAIL: ${item}`);
     for (const item of report.evaluation.warnings) console.log(`WARN: ${item}`);
     for (const item of report.evaluation.passes) console.log(`PASS: ${item}`);
+    if (shouldCleanup) fs.rmSync(outputDir, { recursive: true, force: true });
     if (report.evaluation.status === 'fail') process.exit(2);
   } catch (error) {
     console.error(error instanceof Error ? error.message : String(error));

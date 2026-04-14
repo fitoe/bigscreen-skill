@@ -8,7 +8,7 @@
 
 - 根据中文 prompt 生成大屏首页或专题页
 - 先产出 blueprint，再生成项目代码
-- 支持图片驱动：上传设计图后先提炼结构化 prompt，再生成项目
+- 支持图片驱动：默认按“尽量还原截图效果”直接生成，只在确实影响布局意图时才补 1 轮追问
 - 支持改版：基于已有 blueprint 做 revision，而不是盲目重建
 - 支持真实地图边界：识别省/市/区县或 adcode，自动下载 Datav GeoJSON
 - 支持浏览器级验收：生成后可选调用 Playwright 做满屏、溢出、可读性和参考图对照检查
@@ -55,7 +55,7 @@ node scripts/generate-screen.mjs --request-file request.txt --target ./out/demo 
 
 ### 2. 图片驱动生成
 
-先把图片分析结果整理成 `image-spec`，再生成：
+先把图片分析结果整理成 `image-spec`，再生成。默认目标是直接产出可运行项目，而不是把大量默认项继续抛回给用户确认：
 
 ```bash
 node scripts/build-prompt-from-image-spec.mjs --input-file tests/fixtures/inclusive-finance-image-spec.json
@@ -108,6 +108,10 @@ node scripts/revise-screen.mjs --blueprint-file ./out/demo/docs/screen-specs/dem
 
 如果环境里已经安装 Playwright，可以在生成后自动做浏览器级核验。
 
+Playwright 截图和校验报告默认输出到系统临时目录，并在通过生成脚本联动触发时自动清理。
+项目目录不默认保留 Playwright 截图产物。
+如果你需要保留这些产物，再显式传 `--output-dir` 或 `--keep-playwright-artifacts`。
+
 ### 直接生成后核验
 
 ```bash
@@ -130,6 +134,7 @@ node scripts/playwright-validate-screen.mjs --target ./out/demo
 
 ```bash
 node scripts/playwright-validate-screen.mjs --target ./out/demo --reference-spec-file image-spec.json --reference-image design.png
+node scripts/playwright-validate-screen.mjs --target ./out/demo --output-dir ./tmp/playwright/demo
 ```
 
 当前核验内容包括：
@@ -202,4 +207,5 @@ node --test tests/build-blueprint.test.mjs tests/generate-screen.test.mjs tests/
 
 - 图片直转能力在 skill / 多模态会话里最好用；本地脚本本身不直接做视觉识别，而是消费 `image-spec`
 - Playwright 校验是可选能力，不内置安装
+- Playwright 默认把截图与校验 JSON 放到系统临时目录；通过生成脚本触发时会自动清理，避免进入项目产物；需要保留时请显式指定 `--output-dir` 或 `--keep-playwright-artifacts`
 - 参考图对照目前是“布局和结构意图对比”，不是像素级还原比对
