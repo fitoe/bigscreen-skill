@@ -5,7 +5,7 @@
     <span :class="['absolute bottom-2 left-2 h-[18px] w-[18px] border-b-2 border-l-2', cornerClasses]"></span>
     <span :class="['absolute bottom-2 right-2 h-[18px] w-[18px] border-b-2 border-r-2', cornerClasses]"></span>
     <SectionTitle v-if="title" :title="title" />
-    <div class="mt-4 min-h-0">
+    <div class="mt-4 h-full min-h-0">
       <slot />
     </div>
   </section>

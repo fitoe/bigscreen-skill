@@ -152,6 +152,62 @@ test('generated starter components include fixed header and carousel-ready behav
   assert.match(rankingSource, /pauseOnHover/);
 });
 
+test('starter templates follow layout, map, legend, and table baseline rules', async () => {
+  const tempDir = makeTempDir();
+  const blueprint = {
+    pageName: 'StarterAuditPage',
+    goal: 'Audit starter baseline.',
+    layoutPattern: 'overview-home',
+    themeDirection: 'deep blue',
+    blockPriority: ['map', 'table'],
+    heightStrategy: { overall: 'Keep body visible.', notes: [] },
+    referenceTemplates: [],
+    sections: [
+      { id: 'StatCard-1', area: 'top', component: 'StatCard', purpose: 'kpi', priority: 70, heightPolicy: { fixed: false, min: 120, flex: 0.8, scroll: false, autoRotate: false }, dataContract: { type: 'metric-list', keys: ['online'] } },
+      { id: 'MapPanel-2', area: 'center', component: 'MapPanel', purpose: 'map', priority: 100, heightPolicy: { fixed: false, min: 360, flex: 1.8, scroll: false, autoRotate: false }, dataContract: { type: 'map-payload', keys: ['regions', 'points'] } },
+      { id: 'PieRingChart-3', area: 'right', component: 'PieRingChart', purpose: 'composition', priority: 90, heightPolicy: { fixed: false, min: 260, flex: 1.1, scroll: false, autoRotate: false }, dataContract: { type: 'chart-series', keys: ['items'] } },
+      { id: 'ScrollTable-4', area: 'bottom', component: 'ScrollTable', purpose: 'table', priority: 92, heightPolicy: { fixed: false, min: 260, flex: 1.35, scroll: true, autoRotate: true }, dataContract: { type: 'row-list', keys: ['id', 'name', 'status', 'value'] } },
+    ],
+  };
+
+  await generateProjectFromBlueprint(blueprint, {
+    target: tempDir,
+    projectName: 'StarterAuditPage',
+  });
+
+  const layoutSource = fs.readFileSync(path.join(tempDir, 'src', 'layouts', 'BigscreenLayout.vue'), 'utf8');
+  const chromeSource = fs.readFileSync(path.join(tempDir, 'src', 'theme', 'chrome.ts'), 'utf8');
+  const viewSource = fs.readFileSync(path.join(tempDir, 'src', 'views', 'StarterAuditPage.vue'), 'utf8');
+  const pieSource = fs.readFileSync(path.join(tempDir, 'src', 'components', 'bigscreen', 'charts', 'PieRingChart.vue'), 'utf8');
+  const mapSource = fs.readFileSync(path.join(tempDir, 'src', 'components', 'bigscreen', 'MapPanel.vue'), 'utf8');
+  const tableSource = fs.readFileSync(path.join(tempDir, 'src', 'components', 'bigscreen', 'ScrollTable.vue'), 'utf8');
+  const alarmSource = fs.readFileSync(path.join(tempDir, 'src', 'components', 'bigscreen', 'AlarmTicker.vue'), 'utf8');
+  const rankingSource = fs.readFileSync(path.join(tempDir, 'src', 'components', 'bigscreen', 'RankingList.vue'), 'utf8');
+
+  assert.match(layoutSource, /h-dvh|min-h-dvh/);
+  assert.match(chromeSource, /flex h-full min-h-0 flex-col/);
+  assert.doesNotMatch(chromeSource, /calc\(100vh-3rem\)/);
+  assert.match(viewSource, /flex-1/);
+  assert.match(viewSource, /min-h-0/);
+
+  assert.match(pieSource, /data-chart-legend/);
+  assert.match(pieSource, /legendItems/);
+  assert.match(pieSource, /ResizeObserver/);
+
+  assert.match(mapSource, /grid-cols-\[minmax\(0,220px\)_minmax\(0,1fr\)\]/);
+  assert.doesNotMatch(mapSource, /v-for="\(region, index\) in regions"[\s\S]*class="absolute grid/);
+
+  assert.match(tableSource, /ResizeObserver/);
+  assert.match(tableSource, /clientHeight/);
+  assert.match(tableSource, /shouldScroll/);
+  assert.match(alarmSource, /ResizeObserver/);
+  assert.match(alarmSource, /clientHeight/);
+  assert.match(alarmSource, /visibleCapacity/);
+  assert.match(rankingSource, /ResizeObserver/);
+  assert.match(rankingSource, /clientHeight/);
+  assert.match(rankingSource, /visibleCapacity/);
+});
+
 test('generated mock data follows semantic profile instead of fixed industry labels', async () => {
   const tempDir = makeTempDir();
   const blueprint = {

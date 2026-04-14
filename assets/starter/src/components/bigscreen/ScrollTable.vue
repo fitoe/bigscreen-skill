@@ -1,13 +1,13 @@
 <template>
   <PanelCard :title="title">
-    <div class="grid gap-3" data-bigscreen-role="scroll-table">
+    <div class="grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)] gap-3" data-bigscreen-role="scroll-table">
       <div class="grid items-center pr-2 text-[15px] text-slate-100" :style="gridStyle" data-table-head>
         <span v-for="column in normalizedColumns" :key="column.key" class="min-w-0 px-2.5 py-3">{{ column.label }}</span>
       </div>
 
       <div
-        class="overflow-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        :style="{ height: `calc(48px * ${visibleRows})` }"
+        ref="viewport"
+        class="min-h-0 overflow-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         data-table-viewport
         @mouseenter="handleEnter"
         @mouseleave="handleLeave"
@@ -53,9 +53,13 @@ const props = withDefaults(
   },
 );
 
+const rowHeight = 48;
 const currentIndex = ref(0);
 const isPaused = ref(false);
+const viewport = ref<HTMLDivElement | null>(null);
+const viewportHeight = ref(0);
 let timer: ReturnType<typeof setInterval> | null = null;
+let observer: ResizeObserver | null = null;
 
 function inferWidth(column: TableColumn) {
   if (column.width) return column.width;
@@ -71,15 +75,22 @@ const normalizedColumns = computed(() =>
     width: inferWidth(column),
   })),
 );
-const loopEnabled = computed(() => props.rows.length > props.visibleCount);
-const visibleRows = computed(() => Math.max(1, Math.min(props.visibleCount, props.rows.length || props.visibleCount)));
-const displayRows = computed(() => (loopEnabled.value ? [...props.rows, ...props.rows] : props.rows));
+const visibleCapacity = computed(() => {
+  const measured = Math.floor(viewportHeight.value / rowHeight);
+  return Math.max(1, measured || props.visibleCount);
+});
+const shouldScroll = computed(() => props.rows.length > visibleCapacity.value);
+const displayRows = computed(() => (shouldScroll.value ? [...props.rows, ...props.rows] : props.rows));
 const gridStyle = computed(() => ({
   gridTemplateColumns: normalizedColumns.value.map((column) => column.width).join(' '),
 }));
 const bodyStyle = computed(() => ({
-  transform: `translateY(-${currentIndex.value * 48}px)`,
+  transform: `translateY(-${currentIndex.value * rowHeight}px)`,
 }));
+
+function syncViewportHeight() {
+  viewportHeight.value = viewport.value?.clientHeight || 0;
+}
 
 function rowKey(row: TableRow, index: number) {
   return String(row.id ?? row.name ?? index);
@@ -92,7 +103,7 @@ function stopTicker() {
 
 function startTicker() {
   stopTicker();
-  if (!loopEnabled.value) return;
+  if (!shouldScroll.value) return;
   timer = setInterval(() => {
     if (isPaused.value) return;
     currentIndex.value = (currentIndex.value + 1) % props.rows.length;
@@ -108,7 +119,7 @@ function handleLeave() {
 }
 
 watch(
-  () => [props.rows, props.columns, props.visibleCount, props.interval],
+  () => [props.rows, props.columns, props.visibleCount, props.interval, visibleCapacity.value],
   () => {
     currentIndex.value = 0;
     startTicker();
@@ -116,6 +127,17 @@ watch(
   { deep: true },
 );
 
-onMounted(startTicker);
-onBeforeUnmount(stopTicker);
+onMounted(() => {
+  syncViewportHeight();
+  if (viewport.value) {
+    observer = new ResizeObserver(syncViewportHeight);
+    observer.observe(viewport.value);
+  }
+  startTicker();
+});
+
+onBeforeUnmount(() => {
+  observer?.disconnect();
+  stopTicker();
+});
 </script>

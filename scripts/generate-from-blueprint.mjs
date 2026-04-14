@@ -385,10 +385,11 @@ function buildViewSource(projectName, blueprint) {
   <BigscreenLayout>
     <ScreenShell variant="${chromeVariant}">
       <HeaderBar :title="view.title" :subtitle="view.subtitle" :status-items="view.statusItems" />
-
+      <div class="grid min-h-0 flex-1 gap-5 [grid-template-rows:auto_minmax(0,1fr)_auto]">
 ${renderedTop}
 ${renderedMain}
 ${renderedBottom}
+      </div>
     </ScreenShell>
   </BigscreenLayout>
 </template>

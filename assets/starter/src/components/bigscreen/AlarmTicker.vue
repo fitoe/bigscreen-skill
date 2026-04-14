@@ -1,9 +1,9 @@
 <template>
   <PanelCard :title="title">
     <div
+      ref="viewport"
       data-bigscreen-role="alarm-ticker"
-      class="overflow-hidden"
-      :style="{ height: `calc(72px * ${visibleRows})` }"
+      class="min-h-0 overflow-hidden"
       @mouseenter="handleEnter"
       @mouseleave="handleLeave"
     >
@@ -42,16 +42,27 @@ const props = withDefaults(
   },
 );
 
+const rowHeight = 72;
 const currentIndex = ref(0);
 const isPaused = ref(false);
+const viewport = ref<HTMLDivElement | null>(null);
+const viewportHeight = ref(0);
 let timer: ReturnType<typeof setInterval> | null = null;
+let observer: ResizeObserver | null = null;
 
-const loopEnabled = computed(() => props.items.length > props.visibleCount);
-const visibleRows = computed(() => Math.max(1, Math.min(props.visibleCount, props.items.length || props.visibleCount)));
-const displayItems = computed(() => (loopEnabled.value ? [...props.items, ...props.items] : props.items));
+const visibleCapacity = computed(() => {
+  const measured = Math.floor(viewportHeight.value / rowHeight);
+  return Math.max(1, measured || props.visibleCount);
+});
+const shouldScroll = computed(() => props.items.length > visibleCapacity.value);
+const displayItems = computed(() => (shouldScroll.value ? [...props.items, ...props.items] : props.items));
 const listStyle = computed(() => ({
-  transform: `translateY(-${currentIndex.value * 72}px)`,
+  transform: `translateY(-${currentIndex.value * rowHeight}px)`,
 }));
+
+function syncViewportHeight() {
+  viewportHeight.value = viewport.value?.clientHeight || 0;
+}
 
 function levelClass(level: 'critical' | 'major' | 'minor') {
   return [
@@ -71,7 +82,7 @@ function stopTicker() {
 
 function startTicker() {
   stopTicker();
-  if (!loopEnabled.value) return;
+  if (!shouldScroll.value) return;
   timer = setInterval(() => {
     if (isPaused.value) return;
     currentIndex.value = (currentIndex.value + 1) % props.items.length;
@@ -87,7 +98,7 @@ function handleLeave() {
 }
 
 watch(
-  () => [props.items, props.visibleCount, props.interval],
+  () => [props.items, props.visibleCount, props.interval, visibleCapacity.value],
   () => {
     currentIndex.value = 0;
     startTicker();
@@ -95,6 +106,17 @@ watch(
   { deep: true },
 );
 
-onMounted(startTicker);
-onBeforeUnmount(stopTicker);
+onMounted(() => {
+  syncViewportHeight();
+  if (viewport.value) {
+    observer = new ResizeObserver(syncViewportHeight);
+    observer.observe(viewport.value);
+  }
+  startTicker();
+});
+
+onBeforeUnmount(() => {
+  observer?.disconnect();
+  stopTicker();
+});
 </script>

@@ -11,7 +11,7 @@ export function resolveChromeVariant(value?: string): ChromeVariant {
 }
 
 export const shellBaseClass =
-  'grid min-h-[calc(100vh-3rem)] grid-rows-[auto_auto_minmax(0,1fr)_auto] gap-5 overflow-hidden';
+  'flex h-full min-h-0 flex-col gap-5 overflow-hidden';
 
 export const shellVariantClasses: Record<ChromeVariant, string> = {
   'tech-frame': 'text-slate-50',
@@ -21,17 +21,17 @@ export const shellVariantClasses: Record<ChromeVariant, string> = {
 };
 
 export const panelBaseClass =
-  "relative grid min-h-0 grid-rows-[auto_minmax(0,1fr)] overflow-hidden rounded-[1.25rem] border p-5 shadow-[0_20px_70px_rgba(1,8,20,0.45)] before:pointer-events-none before:absolute before:inset-2 before:rounded-[1rem] before:border before:content-['']";
+  "relative grid min-h-0 grid-rows-[auto_minmax(0,1fr)] overflow-hidden rounded-[1.25rem] border p-5 shadow-[0_20px_70px_rgba(1,8,20,0.45)]";
 
 export const panelVariantClasses: Record<ChromeVariant, string> = {
   'tech-frame':
-    'border-cyan-300/24 bg-[linear-gradient(180deg,rgba(11,28,49,0.92),rgba(5,14,25,0.92))] before:border-cyan-200/10',
+    'border-cyan-300/24 bg-[linear-gradient(180deg,rgba(11,28,49,0.92),rgba(5,14,25,0.92))]',
   'grid-frame':
-    'border-cyan-200/26 bg-[linear-gradient(180deg,rgba(8,34,56,0.94),rgba(5,16,28,0.9))] before:border-teal-200/12',
+    'border-cyan-200/26 bg-[linear-gradient(180deg,rgba(8,34,56,0.94),rgba(5,16,28,0.9))]',
   'cyan-bracket':
-    'border-teal-300/28 bg-[linear-gradient(180deg,rgba(6,28,34,0.94),rgba(5,14,25,0.92))] before:border-teal-200/14',
+    'border-teal-300/28 bg-[linear-gradient(180deg,rgba(6,28,34,0.94),rgba(5,14,25,0.92))]',
   'command-angled':
-    'border-amber-200/26 bg-[linear-gradient(180deg,rgba(13,26,47,0.95),rgba(5,14,25,0.92))] before:border-white/8',
+    'border-amber-200/26 bg-[linear-gradient(180deg,rgba(13,26,47,0.95),rgba(5,14,25,0.92))]',
 };
 
 export const panelCornerClasses: Record<ChromeVariant, string> = {

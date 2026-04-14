@@ -1,7 +1,7 @@
 <template>
   <article
     data-bigscreen-role="stat-card"
-    class="rounded-[1rem] border border-cyan-300/16 bg-[linear-gradient(180deg,rgba(83,213,255,0.14),rgba(83,213,255,0.04))] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+    class="rounded-[1rem] bg-[linear-gradient(180deg,rgba(83,213,255,0.14),rgba(83,213,255,0.04))] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] ring-1 ring-inset ring-cyan-300/10"
   >
     <p class="m-0 text-sm text-slate-300/78">{{ label }}</p>
     <div class="my-3 flex items-end gap-2">
