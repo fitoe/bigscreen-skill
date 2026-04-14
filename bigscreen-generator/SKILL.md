@@ -29,6 +29,9 @@ Treat template libraries such as `BigDataView` as reference corpora only. Do not
    - chart types
    - data contracts
    - theme direction
+   - block priority
+   - height strategy
+   - per-section height policy
 8. Stop and ask the user to confirm the blueprint before generating code.
 9. After approval, generate the screen directly from the prompt response:
    - If scripts are available, you may use them, but prompt-only generation is valid and expected.
@@ -70,6 +73,7 @@ Use this when the user wants a prompt-only flow, without running scripts.
 - `src/router/index.ts`
 - `docs/screen-specs/<page-name>.blueprint.md`
 - `docs/screen-specs/<page-name>.blueprint.json`
+- Blueprint metadata with `blockPriority`, `heightStrategy`, and per-section height policies
 
 ### 中文简化示例
 
@@ -109,9 +113,9 @@ Use this when the user wants a prompt-only flow, without running scripts.
 - `node scripts/build-template-index.mjs --source <BigDataView-path>`
 - `node scripts/extract-template-features.mjs --source <BigDataView-path> --output references/template-index.generated.md`
 - `node scripts/build-curated-catalog.mjs --input references/template-features.json --output references/template-index.curated.md`
-- `node scripts/build-blueprint.mjs --request-file <request.json> --format json --output docs/screen-specs/<name>.blueprint.json`
+- `node scripts/build-blueprint.mjs --request-file <request.json|txt> --format json --output docs/screen-specs/<name>.blueprint.json`
 - `node scripts/scaffold-screen.mjs --name SmartParkOverview --target <project-path>`
-- `node scripts/generate-screen.mjs --request-file <request.json> --target <project-path> --name <ScreenName>`
+- `node scripts/generate-screen.mjs --request-file <request.json|txt> --target <project-path> --name <ScreenName>`
 - `node scripts/validate-screen-output.mjs --target <project-path>`
 
 Use the scripts for deterministic setup and validation. Prefer updating the generated output rather than rewriting the same boilerplate by hand.

@@ -12,6 +12,21 @@ map-command-page
 
 deep blue command center
 
+## Block Priority
+
+- map
+- alerts
+- table
+- trend
+- ranking
+
+## Height Strategy
+
+Keep the map and bottom operational table visible above the fold, with the map holding the largest elastic area.
+
+- Use title / primary content / auxiliary content layering instead of equal slices.
+- Allocate more height to tables and event streams for high-density data.
+
 ## Reference Templates
 
 - 034 晋城高速综合管控大数据: 晋城高速综合管控大数据 | scenes=traffic | charts=line, bar, pie, gauge, scatter
@@ -22,8 +37,8 @@ deep blue command center
 
 ## Sections
 
-- StatCard-1 | area=top | component=StatCard | purpose=kpi | data=metric-list
-- MapPanel-2 | area=center | component=MapPanel | purpose=map | data=map-payload
-- AlarmTicker-3 | area=bottom | component=AlarmTicker | purpose=alerts | data=event-stream
-- RankingList-4 | area=side | component=RankingList | purpose=ranking | data=chart-series
-- ScrollTable-5 | area=bottom | component=ScrollTable | purpose=table | data=row-list
+- StatCard-1 | area=top | component=StatCard | purpose=kpi | priority=70 | min=120 | scroll=false | autoRotate=false | data=metric-list
+- MapPanel-2 | area=center | component=MapPanel | purpose=map | priority=100 | min=360 | scroll=false | autoRotate=false | data=map-payload
+- AlarmTicker-3 | area=bottom | component=AlarmTicker | purpose=alerts | priority=95 | min=220 | scroll=true | autoRotate=true | data=event-stream
+- RankingList-4 | area=side | component=RankingList | purpose=ranking | priority=74 | min=220 | scroll=false | autoRotate=false | data=chart-series
+- ScrollTable-5 | area=bottom | component=ScrollTable | purpose=table | priority=92 | min=260 | scroll=true | autoRotate=true | data=row-list

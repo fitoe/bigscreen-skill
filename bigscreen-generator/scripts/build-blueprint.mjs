@@ -24,6 +24,53 @@ const defaultSectionsByPageType = {
   'map-command-page': ['kpi', 'map', 'trend', 'compare', 'ranking', 'alerts', 'table'],
 };
 
+const promptLabelMap = {
+  domain: ['theme', '主题', 'domain', '行业', '场景'],
+  pageType: ['page type', '页面类型', 'page', '页面'],
+  keyMetrics: ['key metrics', '关键指标', '核心指标'],
+  preferredStyle: ['style', '风格'],
+  mustHaveSections: ['must modules', 'must-have sections', '必须模块', '模块'],
+  dataDensity: ['data density', '数据密度'],
+  audience: ['audience', '对象'],
+  refreshExpectation: ['refresh', '刷新频率'],
+};
+
+const sectionAliases = new Map([
+  ['kpi', 'kpi'],
+  ['指标', 'kpi'],
+  ['summary', 'kpi'],
+  ['metrics', 'kpi'],
+  ['stats', 'kpi'],
+  ['趋势', 'trend'],
+  ['trend', 'trend'],
+  ['line', 'trend'],
+  ['地图', 'map'],
+  ['map', 'map'],
+  ['geo', 'map'],
+  ['排行', 'ranking'],
+  ['排名', 'ranking'],
+  ['ranking', 'ranking'],
+  ['rank', 'ranking'],
+  ['告警', 'alerts'],
+  ['预警', 'alerts'],
+  ['alerts', 'alerts'],
+  ['alert', 'alerts'],
+  ['alarm', 'alerts'],
+  ['事件', 'alerts'],
+  ['表格', 'table'],
+  ['表单', 'table'],
+  ['table', 'table'],
+  ['list', 'table'],
+  ['ledger', 'table'],
+  ['对比', 'compare'],
+  ['compare', 'compare'],
+  ['bar', 'compare'],
+  ['占比', 'composition'],
+  ['构成', 'composition'],
+  ['composition', 'composition'],
+  ['pie', 'composition'],
+]);
+
 function parseArgs(argv) {
   const args = {};
   for (let i = 2; i < argv.length; i += 1) {
@@ -39,22 +86,106 @@ function normalizeArray(value) {
   if (!value) return [];
   if (Array.isArray(value)) return value.map((item) => String(item).trim()).filter(Boolean);
   return String(value)
-    .split(/[,，]/)
+    .split(/[,，、/]/)
     .map((item) => item.trim())
     .filter(Boolean);
 }
 
+function normalizeDensity(value) {
+  const text = String(value || '').trim().toLowerCase();
+  if (['高', 'high'].includes(text)) return 'high';
+  if (['低', 'low'].includes(text)) return 'low';
+  return 'medium';
+}
+
+function canonicalizeSectionToken(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return raw;
+  const lower = raw.toLowerCase();
+  for (const [token, canonical] of sectionAliases.entries()) {
+    if (raw.includes(token) || lower.includes(token)) return canonical;
+  }
+  return lower;
+}
+
+function detectPageTypeFromPrompt(text) {
+  const source = String(text);
+  if (/首页|home page|home\b|overview/i.test(source)) return 'overview-home';
+  if (/地图|map/.test(source) && /command|指挥/.test(source)) return 'map-command-page';
+  if (/告警|alert|alarm/.test(source) && /中心|center/.test(source)) return 'alarm-center';
+  if (/monitor|analysis|分析|监测/.test(source)) return 'monitoring-analysis';
+  if (/专题|thematic/.test(source)) return 'thematic-cockpit';
+  return 'overview-home';
+}
+
+function normalizePageType(value, fallbackSource = '') {
+  const text = String(value || '').trim();
+  if (!text) return detectPageTypeFromPrompt(fallbackSource);
+  if (['overview-home', 'monitoring-analysis', 'alarm-center', 'thematic-cockpit', 'map-command-page'].includes(text)) {
+    return text;
+  }
+  return detectPageTypeFromPrompt(text || fallbackSource);
+}
+
+function extractPromptValue(text, keys) {
+  const lines = String(text).split(/\r?\n/);
+  for (const line of lines) {
+    const trimmed = line.trim();
+    for (const key of keys) {
+      const pattern = new RegExp(`^${key}\\s*[:：]\\s*(.+)$`, 'i');
+      const match = trimmed.match(pattern);
+      if (match) return match[1].trim();
+    }
+  }
+  return '';
+}
+
+function parsePromptInput(raw) {
+  const text = String(raw).trim();
+  const mustHaveSections = normalizeArray(extractPromptValue(text, promptLabelMap.mustHaveSections));
+  const keyMetrics = normalizeArray(extractPromptValue(text, promptLabelMap.keyMetrics));
+  const pageType = normalizePageType(extractPromptValue(text, promptLabelMap.pageType), text);
+  const domain = extractPromptValue(text, promptLabelMap.domain) || 'general';
+  const preferredStyle = extractPromptValue(text, promptLabelMap.preferredStyle) || 'deep blue glow';
+  const densityValue = extractPromptValue(text, promptLabelMap.dataDensity);
+  const audience = extractPromptValue(text, promptLabelMap.audience) || 'operations';
+  const refreshExpectation = extractPromptValue(text, promptLabelMap.refreshExpectation) || 'realtime';
+  const normalizedSections = mustHaveSections.map((section) => canonicalizeSectionToken(section));
+
+  return {
+    domain,
+    pageType,
+    audience,
+    mustHaveSections: normalizedSections.length ? normalizedSections : mustHaveSections,
+    keyMetrics,
+    preferredStyle,
+    dataDensity: normalizeDensity(densityValue),
+    mapRequired: normalizedSections.includes('map') || /地图|map|geo/i.test(text),
+    refreshExpectation,
+  };
+}
+
 export function parseRequestInput(raw) {
-  const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
+  if (typeof raw === 'string') {
+    const trimmed = raw.trim();
+    if (!trimmed) return parsePromptInput('{}');
+    try {
+      return parseRequestInput(JSON.parse(trimmed));
+    } catch {
+      return parsePromptInput(trimmed);
+    }
+  }
+
+  const parsed = raw;
   return {
     domain: parsed.domain || 'general',
-    pageType: parsed.pageType || 'overview-home',
+    pageType: normalizePageType(parsed.pageType, JSON.stringify(parsed)),
     audience: parsed.audience || 'operations',
-    mustHaveSections: normalizeArray(parsed.mustHaveSections),
+    mustHaveSections: normalizeArray(parsed.mustHaveSections).map((item) => canonicalizeSectionToken(item)),
     keyMetrics: normalizeArray(parsed.keyMetrics),
     preferredStyle: parsed.preferredStyle || 'deep blue glow',
-    dataDensity: parsed.dataDensity || 'medium',
-    mapRequired: Boolean(parsed.mapRequired),
+    dataDensity: normalizeDensity(parsed.dataDensity || 'medium'),
+    mapRequired: Boolean(parsed.mapRequired) || normalizeArray(parsed.mustHaveSections).some((item) => canonicalizeSectionToken(item) === 'map'),
     refreshExpectation: parsed.refreshExpectation || 'realtime',
   };
 }
@@ -73,7 +204,7 @@ function inferSections(request) {
 }
 
 function componentForSection(sectionName) {
-  const lower = sectionName.toLowerCase();
+  const lower = canonicalizeSectionToken(sectionName);
   for (const entry of sectionComponentMap) {
     if (entry.match.some((token) => lower.includes(token))) {
       return {
@@ -118,11 +249,87 @@ function buildThemeDirection(request, references) {
 }
 
 function buildDataContract(sectionName, request) {
-  if (/kpi|summary|metrics|stats/.test(sectionName)) return { type: 'metric-list', keys: request.keyMetrics };
-  if (/map|geo/.test(sectionName)) return { type: 'map-payload', keys: ['regions', 'points', ...request.keyMetrics] };
-  if (/alert|alarm|event/.test(sectionName)) return { type: 'event-stream', keys: ['time', 'level', 'message'] };
-  if (/table|list/.test(sectionName)) return { type: 'row-list', keys: ['id', 'name', 'status', 'value'] };
+  const normalized = canonicalizeSectionToken(sectionName);
+  if (/kpi|summary|metrics|stats/.test(normalized)) return { type: 'metric-list', keys: request.keyMetrics };
+  if (/map|geo/.test(normalized)) return { type: 'map-payload', keys: ['regions', 'points', ...request.keyMetrics] };
+  if (/alert|alarm|event/.test(normalized)) return { type: 'event-stream', keys: ['time', 'level', 'message'] };
+  if (/table|list/.test(normalized)) return { type: 'row-list', keys: ['id', 'name', 'status', 'value'] };
   return { type: 'chart-series', keys: ['categories', 'series'] };
+}
+
+function deriveSectionPriority(section) {
+  const purpose = canonicalizeSectionToken(section.purpose);
+  if (purpose === 'map') return 100;
+  if (purpose === 'alerts') return 95;
+  if (purpose === 'table') return 92;
+  if (purpose === 'trend') return 90;
+  if (purpose === 'compare') return 84;
+  if (purpose === 'composition') return 78;
+  if (purpose === 'ranking') return 74;
+  if (purpose === 'kpi') return 70;
+  return 76;
+}
+
+function deriveHeightPolicy(section) {
+  const type = section.dataContract.type;
+  if (type === 'metric-list') {
+    return { fixed: false, min: 120, flex: 0.8, scroll: false, autoRotate: false };
+  }
+  if (type === 'map-payload') {
+    return { fixed: false, min: 360, flex: 1.8, scroll: false, autoRotate: false };
+  }
+  if (type === 'event-stream') {
+    return { fixed: false, min: 220, flex: 1.1, scroll: true, autoRotate: true };
+  }
+  if (type === 'row-list') {
+    return { fixed: false, min: 260, flex: 1.35, scroll: true, autoRotate: true };
+  }
+
+  const purpose = canonicalizeSectionToken(section.purpose);
+  if (purpose === 'trend') {
+    return { fixed: false, min: 240, flex: 1.2, scroll: false, autoRotate: false };
+  }
+  if (purpose === 'compare') {
+    return { fixed: false, min: 220, flex: 1, scroll: false, autoRotate: false };
+  }
+  if (purpose === 'composition') {
+    return { fixed: false, min: 200, flex: 0.9, scroll: false, autoRotate: false };
+  }
+
+  return { fixed: false, min: 220, flex: 1, scroll: false, autoRotate: false };
+}
+
+function buildHeightStrategy(request, sections) {
+  const priorities = sections
+    .slice()
+    .sort((a, b) => b.priority - a.priority)
+    .map((section) => canonicalizeSectionToken(section.purpose));
+  const primary = priorities[0] || 'trend';
+  const hasTable = priorities.includes('table');
+  const hasMap = priorities.includes('map');
+
+  let overall = 'Use weighted blocks with readable minimum heights and avoid page-level vertical scrolling.';
+  if (hasMap && hasTable) {
+    overall = 'Keep the map and bottom operational table visible above the fold, with the map holding the largest elastic area.';
+  } else if (primary === 'trend') {
+    overall = 'Give the primary trend chart the largest readable block and keep summary modules compressed.';
+  } else if (primary === 'alerts') {
+    overall = 'Prioritize the alert stream and supporting table while keeping side summaries compact.';
+  }
+
+  const notes = [
+    'Use title / primary content / auxiliary content layering instead of equal slices.',
+    'Reduce panel count before shrinking typography below big-screen readability limits.',
+  ];
+
+  if (request.dataDensity === 'high') {
+    notes.push('Allocate more height to tables and event streams for high-density data.');
+  }
+  if (hasMap) {
+    notes.push('Preserve side-column height by keeping KPI blocks out of a full-width top strip.');
+  }
+
+  return { overall, notes };
 }
 
 export function generateBlueprint(requestInput, options = {}) {
@@ -139,16 +346,27 @@ export function generateBlueprint(requestInput, options = {}) {
     .slice(0, maxReferences);
 
   const sections = desiredSections.map((section, index) => {
-    const normalized = section.toLowerCase();
+    const normalized = canonicalizeSectionToken(section);
     const mapped = componentForSection(normalized);
-    return {
+    const baseSection = {
       id: `${mapped.component}-${index + 1}`,
       area: mapped.area,
       purpose: normalized,
       component: mapped.component,
       dataContract: buildDataContract(normalized, request),
     };
+    return {
+      ...baseSection,
+      priority: deriveSectionPriority(baseSection),
+      heightPolicy: deriveHeightPolicy(baseSection),
+    };
   });
+
+  const blockPriority = sections
+    .slice()
+    .sort((a, b) => b.priority - a.priority)
+    .map((section) => section.purpose);
+  const heightStrategy = buildHeightStrategy(request, sections);
 
   return {
     pageName: request.pageType
@@ -158,6 +376,8 @@ export function generateBlueprint(requestInput, options = {}) {
     goal: `Support ${request.domain} dashboards for ${request.pageType}.`,
     layoutPattern: request.pageType,
     themeDirection: buildThemeDirection(request, templates),
+    blockPriority,
+    heightStrategy,
     referenceTemplates: templates.map((template) => ({
       id: template.id,
       templateName: template.templateName,
@@ -185,6 +405,16 @@ ${blueprint.layoutPattern}
 
 ${blueprint.themeDirection}
 
+## Block Priority
+
+${(blueprint.blockPriority || []).map((item) => `- ${item}`).join('\n')}
+
+## Height Strategy
+
+${blueprint.heightStrategy?.overall || ''}
+
+${(blueprint.heightStrategy?.notes || []).map((item) => `- ${item}`).join('\n')}
+
 ## Reference Templates
 
 ${blueprint.referenceTemplates
@@ -196,7 +426,7 @@ ${blueprint.referenceTemplates
 ${blueprint.sections
   .map(
     (section) =>
-      `- ${section.id} | area=${section.area} | component=${section.component} | purpose=${section.purpose} | data=${section.dataContract.type}`,
+      `- ${section.id} | area=${section.area} | component=${section.component} | purpose=${section.purpose} | priority=${section.priority} | min=${section.heightPolicy?.min} | scroll=${section.heightPolicy?.scroll} | autoRotate=${section.heightPolicy?.autoRotate} | data=${section.dataContract.type}`,
   )
   .join('\n')}
 `;

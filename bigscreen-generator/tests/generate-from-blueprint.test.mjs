@@ -17,6 +17,11 @@ test('generateProjectFromBlueprint scaffolds files from blueprint', () => {
     goal: 'Support traffic dashboards for map-command-page.',
     layoutPattern: 'map-command-page',
     themeDirection: 'deep blue command center',
+    blockPriority: ['map', 'alerts', 'table'],
+    heightStrategy: {
+      overall: 'Keep map and bottom operational rail visible above the fold.',
+      notes: ['Reserve larger height for map and bottom table.'],
+    },
     referenceTemplates: [
       {
         id: '034 晋城高速综合管控大数据',
@@ -28,10 +33,10 @@ test('generateProjectFromBlueprint scaffolds files from blueprint', () => {
       },
     ],
     sections: [
-      { id: 'StatCard-1', area: 'top', component: 'StatCard', purpose: 'kpi', dataContract: { type: 'metric-list', keys: ['vehicle count'] } },
-      { id: 'MapPanel-2', area: 'center', component: 'MapPanel', purpose: 'map', dataContract: { type: 'map-payload', keys: ['regions', 'points'] } },
-      { id: 'AlarmTicker-3', area: 'bottom', component: 'AlarmTicker', purpose: 'alerts', dataContract: { type: 'event-stream', keys: ['time', 'level', 'message'] } },
-      { id: 'ScrollTable-4', area: 'bottom', component: 'ScrollTable', purpose: 'table', dataContract: { type: 'row-list', keys: ['id', 'name', 'status', 'value'] } },
+      { id: 'StatCard-1', area: 'top', component: 'StatCard', purpose: 'kpi', priority: 70, heightPolicy: { fixed: false, min: 120, flex: 0.8, scroll: false, autoRotate: false }, dataContract: { type: 'metric-list', keys: ['vehicle count'] } },
+      { id: 'MapPanel-2', area: 'center', component: 'MapPanel', purpose: 'map', priority: 100, heightPolicy: { fixed: false, min: 360, flex: 1.8, scroll: false, autoRotate: false }, dataContract: { type: 'map-payload', keys: ['regions', 'points'] } },
+      { id: 'AlarmTicker-3', area: 'bottom', component: 'AlarmTicker', purpose: 'alerts', priority: 92, heightPolicy: { fixed: false, min: 220, flex: 1.1, scroll: true, autoRotate: true }, dataContract: { type: 'event-stream', keys: ['time', 'level', 'message'] } },
+      { id: 'ScrollTable-4', area: 'bottom', component: 'ScrollTable', purpose: 'table', priority: 90, heightPolicy: { fixed: false, min: 260, flex: 1.35, scroll: true, autoRotate: true }, dataContract: { type: 'row-list', keys: ['id', 'name', 'status', 'value'] } },
     ],
   };
 
@@ -53,6 +58,8 @@ test('generateProjectFromBlueprint scaffolds files from blueprint', () => {
   const docSource = fs.readFileSync(path.join(tempDir, 'docs', 'screen-specs', 'traffic-command-center.md'), 'utf8');
   assert.match(docSource, /Reference Templates/);
   assert.match(docSource, /晋城高速综合管控大数据/);
+  assert.match(docSource, /Block Priority/);
+  assert.match(docSource, /Height Strategy/);
 });
 
 test('generateProjectFromBlueprint uses grouped layout wrappers for alarm center pages', () => {
@@ -107,4 +114,35 @@ test('generateProjectFromBlueprint creates section components for PanelCard sect
 
   const componentPath = path.join(tempDir, 'src', 'components', 'bigscreen', 'sections', 'SectionCustomWorkload.vue');
   assert.ok(fs.existsSync(componentPath));
+});
+
+test('generated starter components include fixed header and carousel-ready behaviors', () => {
+  const tempDir = makeTempDir();
+  const blueprint = {
+    pageName: 'OverviewHome',
+    goal: 'Overview page',
+    layoutPattern: 'overview-home',
+    themeDirection: 'deep blue',
+    blockPriority: ['trend', 'table'],
+    heightStrategy: { overall: 'Keep primary trend and table visible.', notes: [] },
+    referenceTemplates: [],
+    sections: [
+      { id: 'StatCard-1', area: 'top', component: 'StatCard', purpose: 'kpi', priority: 70, heightPolicy: { fixed: false, min: 120, flex: 0.8, scroll: false, autoRotate: false }, dataContract: { type: 'metric-list', keys: ['online'] } },
+    ],
+  };
+
+  generateProjectFromBlueprint(blueprint, {
+    target: tempDir,
+    projectName: 'OverviewHome',
+  });
+
+  const tableSource = fs.readFileSync(path.join(tempDir, 'src', 'components', 'bigscreen', 'ScrollTable.vue'), 'utf8');
+  const alarmSource = fs.readFileSync(path.join(tempDir, 'src', 'components', 'bigscreen', 'AlarmTicker.vue'), 'utf8');
+  const rankingSource = fs.readFileSync(path.join(tempDir, 'src', 'components', 'bigscreen', 'RankingList.vue'), 'utf8');
+
+  assert.match(tableSource, /table-head/);
+  assert.match(tableSource, /body-viewport/);
+  assert.match(tableSource, /pauseOnHover/);
+  assert.match(alarmSource, /pauseOnHover/);
+  assert.match(rankingSource, /pauseOnHover/);
 });

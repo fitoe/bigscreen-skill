@@ -12,22 +12,35 @@ const props = defineProps<{
 
 const container = ref<HTMLDivElement | null>(null);
 let chart: echarts.ECharts | null = null;
+let observer: ResizeObserver | null = null;
+
+function ensureChart() {
+  if (!container.value) return null;
+  chart ??= echarts.init(container.value);
+  return chart;
+}
 
 function render() {
-  if (!container.value) return;
-  chart ??= echarts.init(container.value);
-  chart.setOption(props.option);
+  const instance = ensureChart();
+  if (!instance) return;
+  instance.setOption(props.option, true);
+  instance.resize();
 }
 
 onMounted(() => {
   render();
-  window.addEventListener('resize', render);
+  if (container.value) {
+    observer = new ResizeObserver(() => {
+      chart?.resize();
+    });
+    observer.observe(container.value);
+  }
 });
 
 watch(() => props.option, render, { deep: true });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('resize', render);
+  observer?.disconnect();
   chart?.dispose();
 });
 </script>
@@ -35,5 +48,6 @@ onBeforeUnmount(() => {
 <style scoped lang="scss">
 .chart {
   min-height: 240px;
+  height: 100%;
 }
 </style>

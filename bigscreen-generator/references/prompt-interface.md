@@ -2,6 +2,8 @@
 
 Use this interface when the user wants prompt-only generation without executing scripts.
 
+The same prompt can also be saved as a plain text request file and passed into the Node scripts.
+
 ## 中文简化输入格式
 
 ```
@@ -23,6 +25,7 @@ Use this interface when the user wants prompt-only generation without executing 
 - `src/router/index.ts`
 - `docs/screen-specs/<page-name>.blueprint.md`
 - `docs/screen-specs/<page-name>.blueprint.json`
+- Blueprint metadata including `blockPriority`, `heightStrategy`, and per-section height policies
 
 ## 约束
 

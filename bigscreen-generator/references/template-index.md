@@ -20,11 +20,11 @@ Use this file as a curated reference map for `BigDataView`-style templates. Entr
 
 ## Seed entries
 
-These are starter examples for manual curation. Replace `source_path` and tags with repository-specific values after running the indexing scripts.
+These are starter examples that describe retrieval patterns and structure. They are illustrative, not compatibility targets.
 
 ```yaml
 - id: seed-overview-blue
-  source_path: pending/manual-curation
+  source_path: examples/overview/seed-overview-blue
   scene_tags: [smart-city, operations]
   page_types: [overview-home, map-command-page]
   layout_type: center-map-three-column
@@ -36,7 +36,7 @@ These are starter examples for manual curation. Replace `source_path` and tags w
   avoid: [exact markup reuse, fixed-pixel cloning]
 
 - id: seed-energy-monitoring
-  source_path: pending/manual-curation
+  source_path: examples/monitoring/seed-energy-monitoring
   scene_tags: [energy, industrial]
   page_types: [monitoring-analysis, thematic-cockpit]
   layout_type: bilateral-panels
@@ -48,7 +48,7 @@ These are starter examples for manual curation. Replace `source_path` and tags w
   avoid: [inline chart options in page]
 
 - id: seed-alarm-center
-  source_path: pending/manual-curation
+  source_path: examples/alarm/seed-alarm-center
   scene_tags: [security, command]
   page_types: [alarm-center, map-command-page]
   layout_type: stacked-center-stream

@@ -29,3 +29,40 @@ test('generate-screen script writes project and blueprint artifacts', () => {
   assert.ok(fs.existsSync(path.join(tempDir, 'docs', 'screen-specs', 'traffic-command-center.blueprint.json')));
   assert.ok(fs.existsSync(path.join(tempDir, 'docs', 'screen-specs', 'traffic-command-center.blueprint.md')));
 });
+
+test('generate-screen script accepts plain prompt request files', () => {
+  const tempDir = makeTempDir();
+  const promptFile = path.join(tempDir, 'prompt.txt');
+  fs.writeFileSync(
+    promptFile,
+    `生成一个可运行的大屏首页（Vue3 + ECharts）。
+主题：智慧交通
+关键指标：在线车辆、事件告警、路网负载
+风格：深蓝指挥中心
+必须模块：kpi、地图、趋势、告警、表格
+数据密度：高`,
+    'utf8',
+  );
+
+  execFileSync(
+    process.execPath,
+    [
+      path.resolve('bigscreen-generator/scripts/generate-screen.mjs'),
+      '--request-file',
+      promptFile,
+      '--target',
+      tempDir,
+      '--name',
+      'TrafficHome',
+    ],
+    { stdio: 'pipe' },
+  );
+
+  const blueprint = JSON.parse(
+    fs.readFileSync(path.join(tempDir, 'docs', 'screen-specs', 'traffic-home.blueprint.json'), 'utf8'),
+  );
+
+  assert.equal(blueprint.layoutPattern, 'overview-home');
+  assert.ok(Array.isArray(blueprint.blockPriority));
+  assert.ok(blueprint.sections.some((section) => section.component === 'MapPanel'));
+});

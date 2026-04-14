@@ -34,6 +34,7 @@ defineProps<{
 
 .label {
   color: var(--text-secondary);
+  font-size: 14px;
 }
 
 .value-row {
@@ -44,11 +45,12 @@ defineProps<{
 }
 
 strong {
-  font-size: 30px;
+  font-size: 34px;
 }
 
 .delta {
   color: var(--danger);
+  font-size: 14px;
 }
 
 .delta.positive {

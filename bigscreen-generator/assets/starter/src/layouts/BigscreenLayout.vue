@@ -7,6 +7,8 @@
 <style scoped lang="scss">
 .layout {
   min-height: 100vh;
+  height: 100vh;
   padding: 24px;
+  overflow: hidden;
 }
 </style>

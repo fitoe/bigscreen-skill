@@ -81,7 +81,7 @@ function dataBindingForSection(section) {
     case 'StatCard':
       return `v-for="item in view.stats"\n          :key="item.label"\n          :label="item.label"\n          :value="item.value"\n          :unit="item.unit"\n          :delta="item.delta"`;
     case 'MapPanel':
-      return `title="${title}"`;
+      return `title="${title}"\n          :regions="view.mapRegions"\n          :points="view.mapPoints"`;
     case 'AlarmTicker':
       return `title="${title}"\n          :items="view.alarms"`;
     case 'RankingList':
@@ -128,10 +128,13 @@ function dataBindingForGeneratedSection(section) {
 
 function buildSectionComponentSource(componentName, section, layoutPattern) {
   const contractType = section.dataContract?.type || 'chart-series';
+  const imports = [];
+  let useWrapper = true;
   let propsSource = 'defineProps<{ title: string }>();';
   let templateBody = '<div class="placeholder">Replace with real content</div>';
 
   if (contractType === 'metric-list') {
+    imports.push(`import PanelCard from '@/components/bigscreen/PanelCard.vue';`);
     propsSource = `defineProps<{ title: string; items: Array<{ label: string; value: string | number; unit?: string; delta: number }> }>();`;
     templateBody = `<ul class="metric-list">
       <li v-for="item in items" :key="item.label">
@@ -140,72 +143,55 @@ function buildSectionComponentSource(componentName, section, layoutPattern) {
       </li>
     </ul>`;
   } else if (contractType === 'map-payload') {
+    useWrapper = false;
+    imports.push(`import MapPanel from '@/components/bigscreen/MapPanel.vue';`);
     propsSource = `defineProps<{ title: string; regions: unknown[]; points: unknown[] }>();`;
-    templateBody = `<div class="map-placeholder">
-      <div class="glow-ring"></div>
-      <p>Map section ready for custom rendering.</p>
-    </div>`;
+    templateBody = `<MapPanel :title="title" :regions="regions" :points="points" />`;
   } else if (contractType === 'event-stream') {
+    useWrapper = false;
+    imports.push(`import AlarmTicker from '@/components/bigscreen/AlarmTicker.vue';`);
     propsSource = `defineProps<{ title: string; items: Array<{ time: string; level: string; message: string }> }>();`;
-    templateBody = `<ul class="event-list">
-      <li v-for="item in items" :key="\`\${item.time}-\${item.message}\`">
-        <span>{{ item.time }}</span>
-        <span>{{ item.message }}</span>
-        <em>{{ item.level }}</em>
-      </li>
-    </ul>`;
+    templateBody = `<AlarmTicker :title="title" :items="items" />`;
   } else if (contractType === 'row-list') {
-    propsSource = `defineProps<{ title: string; columns: Array<{ key: string; label: string }>; rows: Array<Record<string, string | number>> }>();`;
-    templateBody = `<table class="table">
-      <thead>
-        <tr>
-          <th v-for="column in columns" :key="column.key">{{ column.label }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="row in rows" :key="row.id">
-          <td v-for="column in columns" :key="column.key">{{ row[column.key] }}</td>
-        </tr>
-      </tbody>
-    </table>`;
+    useWrapper = false;
+    imports.push(`import ScrollTable from '@/components/bigscreen/ScrollTable.vue';`);
+    propsSource = `defineProps<{ title: string; columns: Array<{ key: string; label: string; width?: string }>; rows: Array<Record<string, string | number>> }>();`;
+    templateBody = `<ScrollTable :title="title" :columns="columns" :rows="rows" />`;
   } else if (contractType === 'chart-series') {
+    useWrapper = false;
     propsSource = `defineProps<{ title: string; categories?: string[]; series?: number[]; items?: Array<{ name: string; value: number }> }>();`;
-    templateBody = `<div class="chart-placeholder">
-      <p>Chart placeholder: wire to custom chart implementation.</p>
-    </div>`;
+    if (section.purpose.includes('compare')) {
+      imports.push(`import BarCompareChart from '@/components/bigscreen/charts/BarCompareChart.vue';`);
+      templateBody = `<BarCompareChart :title="title" :categories="categories ?? []" :series="series ?? []" />`;
+    } else if (section.purpose.includes('composition')) {
+      imports.push(`import PieRingChart from '@/components/bigscreen/charts/PieRingChart.vue';`);
+      templateBody = `<PieRingChart :title="title" :items="items ?? []" />`;
+    } else {
+      imports.push(`import LineTrendChart from '@/components/bigscreen/charts/LineTrendChart.vue';`);
+      templateBody = `<LineTrendChart :title="title" :categories="categories ?? []" :series="series ?? []" />`;
+    }
   }
 
-  if (layoutPattern === 'alarm-center' && contractType === 'event-stream') {
-    templateBody = `<ul class="event-list event-list--alert">
-      <li v-for="item in items" :key="\`\${item.time}-\${item.message}\`">
-        <span class="time">{{ item.time }}</span>
-        <span class="message">{{ item.message }}</span>
-        <em class="level">{{ item.level }}</em>
-      </li>
-    </ul>`;
+  if (layoutPattern === 'thematic-cockpit' && contractType === 'chart-series' && !section.purpose.includes('compare') && !section.purpose.includes('composition')) {
+    imports.length = 0;
+    imports.push(`import LineTrendChart from '@/components/bigscreen/charts/LineTrendChart.vue';`);
+    templateBody = `<LineTrendChart :title="title" :categories="categories ?? []" :series="series ?? []" />`;
   }
 
-  if (layoutPattern === 'monitoring-analysis' && contractType === 'chart-series') {
-    templateBody = `<div class="chart-placeholder chart-placeholder--monitoring">
-      <p>Monitoring chart placeholder. Wire series to live signals.</p>
-    </div>`;
-  }
-
-  if (layoutPattern === 'thematic-cockpit') {
-    templateBody = `<div class="chart-placeholder chart-placeholder--thematic">
-      <p>Thematic block placeholder. Replace with narrative chart.</p>
-    </div>`;
-  }
-
-  return `<template>
+  const templateSource = useWrapper
+    ? `<template>
   <PanelCard :title="title">
     ${templateBody}
   </PanelCard>
-</template>
+</template>`
+    : `<template>
+  ${templateBody}
+</template>`;
+
+  return `${templateSource}
 
 <script setup lang="ts">
-import PanelCard from '@/components/bigscreen/PanelCard.vue';
-
+${imports.join('\n')}
 ${propsSource}
 </script>
 
@@ -289,7 +275,9 @@ function sectionMarkup(section) {
 }
 
 function buildPanelSlot(section) {
-  return `<div class="panel-slot panel-slot--${section.area}">
+  const minHeight = section.heightPolicy?.min ?? 0;
+  const scrollClass = section.heightPolicy?.scroll ? ' panel-slot--scroll' : '';
+  return `<div class="panel-slot panel-slot--${section.area}${scrollClass}" style="--section-min-height: ${minHeight}px">
 ${indentBlock(sectionMarkup(section), 2)}
 </div>`;
 }
@@ -318,13 +306,13 @@ function renderOverviewLayout(groups) {
   return `
       <section class="hero-grid hero-grid--overview-home">
         <div class="hero-column hero-column--left">
-${leftSections.map((section) => indentBlock(sectionMarkup(section), 10)).join('\n')}
+${leftSections.map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
         <div class="hero-column hero-column--center">
-${centerSections.map((section) => indentBlock(sectionMarkup(section), 10)).join('\n')}
+${centerSections.map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
         <div class="hero-column hero-column--right">
-${rightSections.map((section) => indentBlock(sectionMarkup(section), 10)).join('\n')}
+${rightSections.map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
       </section>`;
 }
@@ -335,10 +323,10 @@ function renderMonitoringLayout(groups) {
   return `
       <section class="hero-grid hero-grid--monitoring-analysis">
         <div class="hero-column hero-column--main">
-${mainSections.map((section) => indentBlock(sectionMarkup(section), 10)).join('\n')}
+${mainSections.map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
         <div class="hero-column hero-column--side">
-${sideSections.map((section) => indentBlock(sectionMarkup(section), 10)).join('\n')}
+${sideSections.map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
       </section>`;
 }
@@ -347,13 +335,13 @@ function renderAlarmLayout(groups) {
   return `
       <section class="hero-grid hero-grid--alarm-center">
         <div class="hero-column hero-column--left">
-${groups.left.map((section) => indentBlock(sectionMarkup(section), 10)).join('\n')}
+${groups.left.map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
         <div class="hero-column hero-column--center">
-${groups.center.map((section) => indentBlock(sectionMarkup(section), 10)).join('\n')}
+${groups.center.map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
         <div class="hero-column hero-column--right">
-${[...groups.right, ...groups.side].map((section) => indentBlock(sectionMarkup(section), 10)).join('\n')}
+${[...groups.right, ...groups.side].map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
       </section>`;
 }
@@ -362,13 +350,13 @@ function renderMapCommandLayout(groups) {
   return `
       <section class="hero-grid hero-grid--map-command-page">
         <div class="hero-column hero-column--left">
-${[...groups.left, ...groups.side].map((section) => indentBlock(sectionMarkup(section), 10)).join('\n')}
+${[...groups.left, ...groups.side].map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
         <div class="hero-column hero-column--center">
-${groups.center.map((section) => indentBlock(sectionMarkup(section), 10)).join('\n')}
+${groups.center.map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
         <div class="hero-column hero-column--right">
-${groups.right.map((section) => indentBlock(sectionMarkup(section), 10)).join('\n')}
+${groups.right.map((section) => `          ${buildPanelSlot(section)}`).join('\n')}
         </div>
       </section>`;
 }
@@ -504,6 +492,28 @@ const view = use${projectName}();
 
 .panel-slot {
   min-width: 0;
+  min-height: var(--section-min-height, 0px);
+}
+
+.panel-slot > * {
+  height: 100%;
+}
+
+.panel-slot--scroll {
+  min-height: max(var(--section-min-height, 0px), 220px);
+}
+
+@media (max-height: 900px) {
+  .hero-grid,
+  .bottom-grid,
+  .hero-column,
+  .support-grid {
+    gap: var(--space-4);
+  }
+
+  .panel-slot {
+    min-height: max(calc(var(--section-min-height, 0px) - 20px), 160px);
+  }
 }
 
 @media (max-width: 1280px) {
@@ -543,8 +553,17 @@ function buildMockSource(projectName, blueprint) {
     categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     series: [90, 96, 98, 120, 110, 108, 130],
   },
-  mapRegions: [],
-  mapPoints: [],
+  mapRegions: [
+    { name: 'North Zone', value: '128 assets' },
+    { name: 'Core Hub', value: '32 alerts' },
+    { name: 'East Link', value: '84 tasks' },
+    { name: 'South Park', value: '96.4%' },
+  ],
+  mapPoints: [
+    { name: 'Hub A', x: 28, y: 34 },
+    { name: 'Hub B', x: 64, y: 42 },
+    { name: 'Depot C', x: 44, y: 66 },
+  ],
   compare: {
     categories: ['North', 'South', 'East', 'West', 'Central'],
     series: [88, 121, 96, 104, 137],
@@ -567,9 +586,9 @@ function buildMockSource(projectName, blueprint) {
   ],
   table: {
     columns: [
-      { key: 'name', label: 'Name' },
-      { key: 'status', label: 'Status' },
-      { key: 'value', label: 'Value' },
+      { key: 'name', label: 'Name', width: '1.8fr' },
+      { key: 'status', label: 'Status', width: '1fr' },
+      { key: 'value', label: 'Value', width: '0.9fr' },
     ],
     rows: [
       { id: 1, name: 'Item 01', status: 'Normal', value: '56.2' },
@@ -615,13 +634,23 @@ ${blueprint.layoutPattern}
 
 ${blueprint.themeDirection}
 
+## Block Priority
+
+${(blueprint.blockPriority || []).map((item) => `- ${item}`).join('\n')}
+
+## Height Strategy
+
+${blueprint.heightStrategy?.overall || ''}
+
+${(blueprint.heightStrategy?.notes || []).map((item) => `- ${item}`).join('\n')}
+
 ## Reference Templates
 
 ${blueprint.referenceTemplates.map((item) => `- ${item.id}: ${item.templateName} | scenes=${item.sceneTags.join(', ')} | charts=${item.chartFamilies.join(', ')}`).join('\n')}
 
 ## Sections
 
-${blueprint.sections.map((section) => `- ${section.id} | component=${section.component} | area=${section.area} | purpose=${section.purpose}`).join('\n')}
+${blueprint.sections.map((section) => `- ${section.id} | component=${section.component} | area=${section.area} | purpose=${section.purpose} | priority=${section.priority} | min=${section.heightPolicy?.min} | scroll=${section.heightPolicy?.scroll} | autoRotate=${section.heightPolicy?.autoRotate}`).join('\n')}
 `;
 }
 
